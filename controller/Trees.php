@@ -17,16 +17,12 @@
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013 (update and modification) Open Assessment Technologies SA;
+ *               2015 (update and modification) Open Assessment Technologies SA;
  * 
  */
 
 namespace oat\taoBackOffice\controller;
 
-use tao_helpers_Scriptloader;
-use tao_models_classes_ListService;
-use tao_actions_form_List;
-use tao_helpers_Uri;
 use core_kernel_classes_Class;
 use oat\taoBackOffice\model\tree\TreeService;
 
@@ -43,7 +39,6 @@ class Trees extends \tao_actions_CommonModule {
 
 	/**
 	 * Constructor performs initializations actions
-	 * @return void
 	 */
 	public function __construct(){
 
@@ -64,17 +59,21 @@ class Trees extends \tao_actions_CommonModule {
 	/**
 	 * Visualises the tree
 	 */
-	public function viewTree()
+	public function getTree()
 	{
 	    $tree = new core_kernel_classes_Class($this->getRequestParameter('uri'));
 	    $treeService = new TreeService();
-	    $struct = $treeService->getTreeStructure($tree);
-	    
-	    // debug code
-	    echo '<pre>';
-	    var_dump($struct);
-	    echo '</pre>';
-	     
+	    $struct = $treeService->getFlatStructure($tree);
+		$this->returnJson($struct);
+
+	}
+
+	public function viewTree(){
+
+		$this->setData('uri', $this->getRequestParameter('uri'));
+
+		$this->setView('Trees/viewTree.tpl');
+
 	}
 	
 	public function getTreeData()

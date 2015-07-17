@@ -1,0 +1,37 @@
+define([
+    'layout/actions/binder',
+    'uri',
+    'jquery',
+    'context',
+    'helpers',
+    'taoBackOffice/treeRender'
+], function (binder, uri, $, context, helpers, treeRender) {
+    'use strict';
+
+    /**
+     *
+     * @type {{start: Function}}
+     */
+    var itemRunnerController = {
+
+        //the controller initialization
+        start: function () {
+
+            var $container = $('#tree-container');
+            var uri = $container.data('uri');
+
+            $.post(helpers._url('getTree', 'Trees', context.shownExtension), {uri: uri}, function (treeData) {
+
+                var $parent = $container.closest('.content-block');
+                $container.height($parent.height()-$parent.find('.panel').eq(0).outerHeight());
+                $container.width($parent.width());
+                treeRender.init($container[0], treeData);
+                treeRender.run();
+
+            });
+        }
+    };
+
+    // the controller is exposed
+    return itemRunnerController;
+});
