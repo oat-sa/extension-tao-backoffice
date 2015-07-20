@@ -23,8 +23,15 @@ define([
             $.post(helpers._url('getTree', 'Trees', context.shownExtension), {uri: uri}, function (treeData) {
 
                 var $parent = $container.closest('.content-block');
-                $container.height($parent.height()-$parent.find('.panel').eq(0).outerHeight());
-                $container.width($parent.width());
+
+                var resizeContainer = function () {
+                    $container.height($parent.height() - $parent.find('.panel').eq(0).outerHeight());
+                    $container.width($parent.width());
+                };
+
+                $(window).on('resize', resizeContainer);
+
+                resizeContainer();
                 treeRender.init($container[0], treeData);
                 treeRender.run();
 

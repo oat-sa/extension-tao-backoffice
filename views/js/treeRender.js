@@ -54,22 +54,22 @@ define([
                     shape: 'box',
                     "color": {
                         "border": "#266d9c",
-                        "background": "#266d9c",
+                        "background": "rgba(255,247,246,1)",
 
                         "highlight": {
                             "border": "#266d9c",
-                            "background": "#266d9c"
+                            "background": "rgba(255,247,246,1)"
                         }
                     },
 
                     "font": {
                         "face": "Franklin Gothic",
-                        "color": "rgba(255,247,246,1)"
+                        "color": "#266d9c"
                     }
 
                 },
                 edges: {
-                    smooth: true,
+                    smooth: false,
                     arrows: {to: true},
                     "physics": false,
                     "scaling": {
