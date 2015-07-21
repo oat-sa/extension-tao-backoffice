@@ -79,14 +79,9 @@ class Trees extends \tao_actions_CommonModule {
 	        throw new Exception("wrong request mode");
 	    }
 	    $clazz = new core_kernel_classes_Class($this->getRequestParameter('id'));
-	    if ($this->getRootClass()->equals($clazz)) {
-	        $success = false;
-	        $msg = __('You cannot delete the root node');
-	    } else {
-	        $label = $clazz->getLabel();
-            $success = $this->getClassService()->deleteClass($clazz);
-            $msg = $success ? __('%s has been deleted', $label) : __('Unable to delete %s', $label);
-	    }
+        $label = $clazz->getLabel();
+        $success = $this->getClassService()->deleteClass($clazz);
+        $msg = $success ? __('%s has been deleted', $label) : __('Unable to delete %s', $label);
 	    return $this->returnJson(array(
 	        'deleted' => $success,
 	        'msg' => $msg
@@ -108,7 +103,7 @@ class Trees extends \tao_actions_CommonModule {
 	        $data['children'][] = array(
 	            'data' => $class->getLabel(),
 	            'attributes' => array(
-	                'id' => $class->getUri(),
+	                'id' => \tao_helpers_Uri::encode($class->getUri()),
 	                'class' => 'node-instance',
 	                'data-uri' => $class->getUri()
 	            )

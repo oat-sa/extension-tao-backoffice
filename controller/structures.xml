@@ -20,7 +20,7 @@
                     <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="test-delete" name="Delete" url="/taoBackOffice/Trees/delete" context="resource" group="tree" binding="removeNode">
+                    <action id="test-delete" name="Delete" url="/taoBackOffice/Trees/delete" context="instance" group="tree" binding="removeNode">
                         <icon id="icon-bin"/>
                     </action>
                     <action id="test-import" name="Import" url="/tao/Import/index" context="resource" group="tree" binding="loadClass">
