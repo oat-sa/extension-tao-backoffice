@@ -37,14 +37,12 @@ use oat\taoBackOffice\model\tree\TreeService;
  */
 class Trees extends \tao_actions_CommonModule {
 
-	/**
-	 * Constructor performs initializations actions
-	 */
-	public function __construct(){
-
-		parent::__construct();
-
-		//$this->defaultData();
+    /**
+     * @return TreeService
+     */
+	public function getClassService()
+	{
+	    return TreeService::singleton();
 	}
 	
 	/**
@@ -53,7 +51,7 @@ class Trees extends \tao_actions_CommonModule {
 	 */
 	protected function getRootClass()
 	{
-	    return new core_kernel_classes_Class(TreeService::CLASS_URI);
+	    return $this->getClassService()->getRootClass();
 	}
 
 	/**
@@ -62,18 +60,37 @@ class Trees extends \tao_actions_CommonModule {
 	public function getTree()
 	{
 	    $tree = new core_kernel_classes_Class($this->getRequestParameter('uri'));
-	    $treeService = new TreeService();
-	    $struct = $treeService->getFlatStructure($tree);
+	    $struct = $this->getClassService()->getFlatStructure($tree);
 		$this->returnJson($struct);
 
 	}
 
 	public function viewTree(){
 
-		$this->setData('uri', $this->getRequestParameter('uri'));
+		$this->setData('uri', $this->getRequestParameter('id'));
 
 		$this->setView('Trees/viewTree.tpl');
 
+	}
+	
+	public function delete(){
+	
+	    if(!\tao_helpers_Request::isAjax() || !$this->hasRequestParameter('id')){
+	        throw new Exception("wrong request mode");
+	    }
+	    $clazz = new core_kernel_classes_Class($this->getRequestParameter('id'));
+	    if ($this->getRootClass()->equals($clazz)) {
+	        $success = false;
+	        $msg = __('You cannot delete the root node');
+	    } else {
+	        $label = $clazz->getLabel();
+            $success = $this->getClassService()->deleteClass($clazz);
+            $msg = $success ? __('%s has been deleted', $label) : __('Unable to delete %s', $label);
+	    }
+	    return $this->returnJson(array(
+	        'deleted' => $success,
+	        'msg' => $msg
+	    ));
 	}
 	
 	public function getTreeData()
@@ -81,8 +98,9 @@ class Trees extends \tao_actions_CommonModule {
 	    $data = array(
 	        'data' => __("Trees"),
 	        'attributes' => array(
-	            'id' => $this->getRootClass()->getUri(),
-	            'class' => 'node-class'
+	            'id' => \tao_helpers_Uri::encode($this->getRootClass()->getUri()),
+	            'class' => 'node-class',
+	            'data-uri' => $this->getRootClass()->getUri()
 	        ),
 	        'children' => array()
 	    );
@@ -91,7 +109,8 @@ class Trees extends \tao_actions_CommonModule {
 	            'data' => $class->getLabel(),
 	            'attributes' => array(
 	                'id' => $class->getUri(),
-	                'class' => 'node-instance'
+	                'class' => 'node-instance',
+	                'data-uri' => $class->getUri()
 	            )
 	        );
 	    }

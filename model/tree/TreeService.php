@@ -20,19 +20,25 @@
  */
 namespace oat\taoBackOffice\model\tree;
 
+use tao_models_classes_ClassService;
 use core_kernel_classes_Class;
 use core_kernel_classes_Property;
 
 /**
  * Class TreeService
  */
-class TreeService {
+class TreeService extends tao_models_classes_ClassService {
 
     const CLASS_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Tree';
 
     const PROPERTY_ROOT_NODE = 'http://www.tao.lu/Ontologies/TAO.rdf#TreeRootNode';
 
     const PROPERTY_PARENT_NODE = 'http://www.tao.lu/Ontologies/TAO.rdf#TreeParent';
+    
+    public function getRootClass()
+    {
+        return new core_kernel_classes_Class(self::CLASS_URI);
+    }
 
     /**
      * @param core_kernel_classes_Class $tree
