@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE structures SYSTEM "../doc/structures.dtd">
 <structures>
-	<structure id="taoBo_structures" name="Structures" level="15" group="main">
-		<description>Structured meta-data</description>
-		<icon id="icon-ul"/>
+	<structure id="settings" name="Settings" level="8" group="settings">
 		<sections>
 			<section id="taoBo_list" name="Lists" url="/taoBackOffice/Lists/index" />
 			<section id="taoBo_tree" name="Trees" url="/taoBackOffice/Trees/viewTree">
