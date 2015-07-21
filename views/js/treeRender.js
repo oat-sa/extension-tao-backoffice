@@ -32,7 +32,7 @@ define([
         init: function (container, treeData, options) {
 
             if (!container instanceof Element) {
-                throw Error('tree container must be specified');
+                throw new TypeError("tree container must be specified");
             }
 
             treeContainer = container;
