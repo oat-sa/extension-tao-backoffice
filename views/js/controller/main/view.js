@@ -20,7 +20,7 @@ define([
             var $container = $('#tree-container');
             var uri = $container.data('uri');
 
-            $.post(helpers._url('getTree', 'Trees', context.shownExtension), {uri: uri}, function (treeData) {
+            $.post(helpers._url('getTree', 'Trees', 'taoBackOffice'), {uri: uri}, function (treeData) {
 
                 var $parent = $container.closest('.content-block');
 
