@@ -17,16 +17,12 @@
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013 (update and modification) Open Assessment Technologies SA;
+ *               2015 (update and modification) Open Assessment Technologies SA;
  * 
  */
 
 namespace oat\taoBackOffice\controller;
 
-use tao_helpers_Scriptloader;
-use tao_models_classes_ListService;
-use tao_actions_form_List;
-use tao_helpers_Uri;
 use core_kernel_classes_Class;
 use oat\taoBackOffice\model\tree\TreeService;
 
@@ -41,15 +37,12 @@ use oat\taoBackOffice\model\tree\TreeService;
  */
 class Trees extends \tao_actions_CommonModule {
 
-	/**
-	 * Constructor performs initializations actions
-	 * @return void
-	 */
-	public function __construct(){
-
-		parent::__construct();
-
-		//$this->defaultData();
+    /**
+     * @return TreeService
+     */
+	public function getClassService()
+	{
+	    return TreeService::singleton();
 	}
 	
 	/**
@@ -58,23 +51,45 @@ class Trees extends \tao_actions_CommonModule {
 	 */
 	protected function getRootClass()
 	{
-	    return new core_kernel_classes_Class(TreeService::CLASS_URI);
+	    return $this->getClassService()->getRootClass();
 	}
 
 	/**
 	 * Visualises the tree
 	 */
-	public function viewTree()
+	public function getTree()
 	{
 	    $tree = new core_kernel_classes_Class($this->getRequestParameter('uri'));
-	    $treeService = new TreeService();
-	    $struct = $treeService->getTreeStructure($tree);
-	    
-	    // debug code
-	    echo '<pre>';
-	    var_dump($struct);
-	    echo '</pre>';
-	     
+	    $struct = $this->getClassService()->getFlatStructure($tree);
+		$this->returnJson($struct);
+
+	}
+
+	public function viewTree(){
+
+		$this->setData('uri', $this->getRequestParameter('id'));
+
+		$this->setView('Trees/viewTree.tpl');
+
+	}
+
+	public function dummy(){
+
+	}
+	
+	public function delete(){
+	
+	    if(!\tao_helpers_Request::isAjax() || !$this->hasRequestParameter('id')){
+	        throw new Exception("wrong request mode");
+	    }
+	    $clazz = new core_kernel_classes_Class($this->getRequestParameter('id'));
+        $label = $clazz->getLabel();
+        $success = $this->getClassService()->deleteClass($clazz);
+        $msg = $success ? __('%s has been deleted', $label) : __('Unable to delete %s', $label);
+	    return $this->returnJson(array(
+	        'deleted' => $success,
+	        'msg' => $msg
+	    ));
 	}
 	
 	public function getTreeData()
@@ -82,17 +97,26 @@ class Trees extends \tao_actions_CommonModule {
 	    $data = array(
 	        'data' => __("Trees"),
 	        'attributes' => array(
-	            'id' => $this->getRootClass()->getUri(),
-	            'class' => 'node-class'
+	            'id' => \tao_helpers_Uri::encode($this->getRootClass()->getUri()),
+	            'class' => 'node-class',
+	            'data-uri' => $this->getRootClass()->getUri()
 	        ),
-	        'children' => array()
+
 	    );
-	    foreach ($this->getRootClass()->getSubClasses(false) as $class) {
+
+		$sublasses = $this->getRootClass()->getSubClasses(false);
+
+		if (count( $sublasses )) {
+			$data['children'] = array();
+		}
+
+	    foreach ( $sublasses as $class) {
 	        $data['children'][] = array(
 	            'data' => $class->getLabel(),
 	            'attributes' => array(
-	                'id' => $class->getUri(),
-	                'class' => 'node-instance'
+	                'id' => \tao_helpers_Uri::encode($class->getUri()),
+	                'class' => 'node-instance',
+	                'data-uri' => $class->getUri()
 	            )
 	        );
 	    }
