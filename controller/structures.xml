@@ -12,7 +12,7 @@
                           className="Trees"
                           dataUrl="/taoBackOffice/Trees/getTreeData"
                           selectInstance="tree-view"
-                          delete="test-delete"
+                          delete="tree-delete"
                           rootNode="http://www.tao.lu/Ontologies/TAO.rdf#Tree"
                         />
                 </trees>
@@ -20,13 +20,13 @@
                     <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="test-delete" name="Delete" url="/taoBackOffice/Trees/delete" context="instance" group="tree" binding="removeNode">
+                    <action id="tree-delete" name="Delete" url="/taoBackOffice/Trees/delete" context="instance" group="tree" binding="removeNode">
                         <icon id="icon-bin"/>
                     </action>
-                    <action id="test-import" name="Import" url="/tao/Import/index" context="resource" group="tree" binding="loadClass">
+                    <action id="tree-import" name="Import" url="/tao/Import/index" context="resource" group="tree" binding="loadClass">
                         <icon id="icon-import"/>
                     </action>
-                    <action id="test-export" name="Export" url="/tao/Export/index" context="instance" group="tree">
+                    <action id="tree-export" name="Export" url="/tao/Export/index" context="instance" group="tree">
                         <icon id="icon-export"/>
                     </action>
                 </actions>
