@@ -10,6 +10,7 @@
                 <trees>
                     <tree name="Trees"
                           className="Trees"
+                          selectClass="tree-class-select"
                           dataUrl="/taoBackOffice/Trees/getTreeData"
                           selectInstance="tree-view"
                           delete="tree-delete"
@@ -17,6 +18,10 @@
                         />
                 </trees>
                 <actions>
+                    <action id="tree-class-select" name="Properties" url="/taoBackOffice/Trees/dummy" group="content" context="class">
+                        <icon id="icon-edit"/>
+                    </action>
+
                     <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance">
                         <icon id="icon-edit"/>
                     </action>

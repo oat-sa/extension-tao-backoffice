@@ -35,7 +35,7 @@ use oat\taoBackOffice\model\tree\TreeService;
  * 
  *
  */
-class Trees extends \tao_actions_CommonModule {
+class Trees extends \tao_actions_SaSModule {
 
     /**
      * @return TreeService
@@ -72,6 +72,10 @@ class Trees extends \tao_actions_CommonModule {
 		$this->setView('Trees/viewTree.tpl');
 
 	}
+
+	public function dummy(){
+
+	}
 	
 	public function delete(){
 	
@@ -97,9 +101,16 @@ class Trees extends \tao_actions_CommonModule {
 	            'class' => 'node-class',
 	            'data-uri' => $this->getRootClass()->getUri()
 	        ),
-	        'children' => array()
+
 	    );
-	    foreach ($this->getRootClass()->getSubClasses(false) as $class) {
+		
+		$sublasses = $this->getRootClass()->getSubClasses(false);
+
+		if (count( $sublasses )) {
+			$data['children'] = array();
+		}
+
+	    foreach ( $sublasses as $class) {
 	        $data['children'][] = array(
 	            'data' => $class->getLabel(),
 	            'attributes' => array(
