@@ -1,8 +1,9 @@
 define([
     'jquery',
-    'taoBackOffice/lib/vis',
-    'css!taoBackOfficeCss/vis'
-], function ($, vis) {
+    'lodash',
+    'taoBackOffice/lib/vis/vis',
+    'css!taoBackOffice/lib/vis/vis'
+], function ($, _, vis) {
     'use strict';
 
     var network = null;
@@ -38,11 +39,6 @@ define([
             options = options || {};
             treeData = treeData || {nodes: [], edges: []};
 
-            // create a network
-            data = {
-                nodes: treeData.nodes ? treeData.nodes : [],
-                edges: treeData.edges ? treeData.edges : []
-            };
 
             settings = {
                 layout: {
@@ -53,23 +49,27 @@ define([
                 nodes: {
                     shape: 'box',
                     "color": {
-                        "border": "#266d9c",
-                        "background": "rgba(255,247,246,1)",
+                        "border": "#222",
+                        "background": "#f2f0ee",
 
                         "highlight": {
-                            "border": "#266d9c",
-                            "background": "rgba(255,247,246,1)"
+                            "border": "#222",
+                            "background": "#f2f0ee"
                         }
                     },
 
                     "font": {
-                        "face": "Franklin Gothic",
-                        "color": "#266d9c"
+                        "face": "'Franklin Gothic', 'Franklin Gothic Medium', 'Source Sans Pro', sans-serif",
+                        "color": "#222"
                     }
 
                 },
                 edges: {
                     smooth: false,
+                    width: 0.2,
+                    color: {
+                        color: "#222"
+                    },
                     arrows: {to: true},
                     "physics": false,
                     "scaling": {
@@ -79,6 +79,12 @@ define([
             };
 
             $.extend(settings, options);
+
+            // create a network
+            data = {
+                nodes: treeData.nodes ? treeData.nodes : [],
+                edges: treeData.edges ? treeData.edges : []
+            };
 
         },
 
