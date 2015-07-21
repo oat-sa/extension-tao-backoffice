@@ -35,7 +35,7 @@ use oat\taoBackOffice\model\tree\TreeService;
  * 
  *
  */
-class Trees extends \tao_actions_SaSModule {
+class Trees extends \tao_actions_CommonModule {
 
     /**
      * @return TreeService
@@ -103,7 +103,7 @@ class Trees extends \tao_actions_SaSModule {
 	        ),
 
 	    );
-		
+
 		$sublasses = $this->getRootClass()->getSubClasses(false);
 
 		if (count( $sublasses )) {
