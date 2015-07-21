@@ -108,7 +108,7 @@ class Trees extends \tao_actions_CommonModule {
 	        $data['children'][] = array(
 	            'data' => $class->getLabel(),
 	            'attributes' => array(
-	                'id' => $class->getUri(),
+	                'id' => \tao_helpers_Uri::encode($class->getUri()),
 	                'class' => 'node-instance',
 	                'data-uri' => $class->getUri()
 	            )
