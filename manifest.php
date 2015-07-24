@@ -26,9 +26,9 @@ return array(
     'license' => 'GPL-2.0',
     'version' => '0.8',
 	'author' => 'Open Assessment Technologies SA',
-	'requires' => array('tao' => '>=2.7.17'),
-	// for compatibility
-	'dependencies' => array('tao'),
+    'requires' => array(
+        'tao' => '>=2.8.0'
+    ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager', array('ext'=>'taoBackOffice')),
@@ -39,11 +39,6 @@ return array(
         )
     ),
     'uninstall' => array(
-    ),
-    'autoload' => array (
-        'psr-4' => array(
-            'oat\\taoBackOffice\\' => dirname(__FILE__).DIRECTORY_SEPARATOR
-        )
     ),
     'routes' => array(
         '/taoBackOffice' => 'oat\\taoBackOffice\\controller'
