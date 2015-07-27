@@ -32,6 +32,7 @@ return array(
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager', array('ext'=>'taoBackOffice')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#PropertyManagerRole', array('controller' => 'oat\taoBackOffice\controller\Lists')),
     ),
     'install' => array(
         'rdf' => array(
