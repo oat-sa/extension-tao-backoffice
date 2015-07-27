@@ -31,81 +31,34 @@ class TreeService extends tao_models_classes_ClassService {
 
     const CLASS_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Tree';
 
-    const PROPERTY_ROOT_NODE = 'http://www.tao.lu/Ontologies/TAO.rdf#TreeRootNode';
-
-    const PROPERTY_PARENT_NODE = 'http://www.tao.lu/Ontologies/TAO.rdf#TreeParent';
+    const PROPERTY_CHILD_OF = 'http://www.tao.lu/Ontologies/TAO.rdf#isChildOf';
     
     public function getRootClass()
     {
         return new core_kernel_classes_Class(self::CLASS_URI);
     }
 
-    /**
-     * @param core_kernel_classes_Class $tree
-     *
-     * @return array
-     */
-    public function getTreeStructure(core_kernel_classes_Class $tree)
-    {
-        return $this->buildTreeStructure($tree, $this->getRootNode($tree));
-    }
-
-    protected function buildTreeStructure(core_kernel_classes_Class $tree, \core_kernel_classes_Resource $node)
-    {
-        $returnValue = array(
-        	'id' => $node->getUri(),
-            'label' => $node->getLabel(),
-            'children' => array()
-        );
-
-        $children = $tree->searchInstances(array(
-        	self::PROPERTY_PARENT_NODE => $node
-        ), array('like' => false));
-
-        foreach ($children as $child) {
-            $returnValue['children'][] = $this->buildTreeStructure($tree, $child);
-        }
-        return $returnValue;
-    }
-
     public function getFlatStructure(core_kernel_classes_Class $tree)
     {
-        return $this->buildFlatStructure($tree, $this->getRootNode($tree));
-    }
-
-    public function buildFlatStructure(core_kernel_classes_Class $tree, \core_kernel_classes_Resource $node){
-
         $returnValue = array(
-            'nodes' => array( array( 'id' => $node->getUri(), 'label' => $node->getLabel() ) ),
-            'edges' => array(),
+            'nodes' => array(),
+            'edges' => array()
         );
-
-        $children = $tree->searchInstances(
-            array(
-                self::PROPERTY_PARENT_NODE => $node
-            ),
-            array( 'like' => false )
-        );
-
-        foreach ($children as $child) {
-            $returnValue['edges'][] = array( 'from' => $node->getUri(), 'to' => $child->getUri() );
-            $returnValue            = array_merge_recursive( $returnValue, $this->buildFlatStructure( $tree, $child ) );
+        
+        $childOf = new \core_kernel_classes_Property(self::PROPERTY_CHILD_OF);
+        foreach ($tree->getInstances() as $node) {
+            $returnValue['nodes'][] = array(
+                'id' => $node->getUri(),
+                'label' => $node->getLabel()
+            );
+            foreach ($node->getPropertyValues($childOf) as $childUri) {
+                $returnValue['edges'][] = array(
+                    'from' => $childUri,
+                    'to' => $node->getUri()
+                );
+            }
         }
-
         return $returnValue;
-    }
-
-
-    /**
-     * @param core_kernel_classes_Class $tree
-     *
-     * @return \core_kernel_classes_Container
-     * @throws \core_kernel_classes_EmptyProperty
-     * @throws \core_kernel_classes_MultiplePropertyValuesException
-     */
-    public function getRootNode(core_kernel_classes_Class $tree)
-    {
-        return $tree->getUniquePropertyValue(new core_kernel_classes_Property(self::PROPERTY_ROOT_NODE));
     }
 
 }
