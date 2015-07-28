@@ -12,12 +12,12 @@ module.exports = function(grunt) {
     /**
      * Remove bundled and bundling files
      */
-    clean.backofficebundle = [out];
+    clean.taobackofficebundle = [out];
 
     /**
      * Compile tao files into a bundle
      */
-    requirejs.backofficebundle = {
+    requirejs.taobackofficebundle = {
         options: {
             baseUrl : '../js',
             dir : out,
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
     /**
      * copy the bundles to the right place
      */
-    copy.backofficebundle = {
+    copy.taobackofficebundle = {
         files: [
             { src: [ out + '/taoBackOffice/controller/routes.js'],  dest: root + '/taoBackOffice/views/js/controllers.min.js' },
             { src: [ out + '/taoBackOffice/controller/routes.js.map'],  dest: root + '/taoBackOffice/views/js/controllers.min.js.map' }
@@ -46,5 +46,5 @@ module.exports = function(grunt) {
     grunt.config('copy', copy);
 
     // bundle task
-    grunt.registerTask('backofficebundle', ['clean:backofficebundle', 'requirejs:backofficebundle', 'copy:backofficebundle']);
+    grunt.registerTask('taobackofficebundle', ['clean:taobackofficebundle', 'requirejs:taobackofficebundle', 'copy:taobackofficebundle']);
 };
