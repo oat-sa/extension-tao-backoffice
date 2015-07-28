@@ -11,9 +11,9 @@ define(['jquery', 'i18n', 'helpers', 'ui/feedback'], function ($, __, helpers, f
 
         start: function () {
 
-            var saveUrl = helpers._url('saveLists', 'Lists', 'tao');
-            var delListUrl = helpers._url('removeList', 'Lists', 'tao');
-            var delEltUrl = helpers._url('removeListElement', 'Lists', 'tao');
+            var saveUrl = helpers._url('saveLists', 'Lists', 'taoBackOffice');
+            var delListUrl = helpers._url('removeList', 'Lists', 'taoBackOffice');
+            var delEltUrl = helpers._url('removeListElement', 'Lists', 'taoBackOffice');
 
             $(".list-edit-btn").click(function () {
                 var $btn = $(this),
@@ -75,7 +75,7 @@ define(['jquery', 'i18n', 'helpers', 'ui/feedback'], function ($, __, helpers, f
                             function (response) {
                                 if (response.saved) {
                                     feedback().success(__('"list saved"'));
-                                    helpers._load(helpers.getMainContainerSelector(), helpers._url('index', 'Lists', 'tao'));
+                                    helpers._load(helpers.getMainContainerSelector(), helpers._url('index', 'Lists', 'taoBackOffice'));
                                 }else{
                                     feedback().error(__('List not saved'));
                                 }

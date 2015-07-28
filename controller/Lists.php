@@ -28,6 +28,8 @@ use tao_models_classes_ListService;
 use tao_actions_form_List;
 use tao_helpers_Uri;
 use core_kernel_classes_Class;
+use core_kernel_classes_Property;
+use tao_helpers_Request;
 
 /**
  * This controller provide the actions to manage the lists of data
