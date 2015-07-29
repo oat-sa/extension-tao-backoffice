@@ -24,7 +24,7 @@ return array(
 	'label' => 'Back Office',
 	'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '0.8',
+    'version' => '0.9',
 	'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'tao' => '>=2.8.0'
@@ -32,6 +32,7 @@ return array(
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager', array('ext'=>'taoBackOffice')),
+        array('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#PropertyManagerRole', array('controller' => 'oat\taoBackOffice\controller\Lists')),
     ),
     'install' => array(
         'rdf' => array(
@@ -42,7 +43,8 @@ return array(
     ),
     'routes' => array(
         '/taoBackOffice' => 'oat\\taoBackOffice\\controller'
-    ),    
+    ),
+    'update' => 'oat\taoBackOffice\model\update\Updater',    
 	'constants' => array(
 	    # views directory
 	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
