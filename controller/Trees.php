@@ -24,6 +24,7 @@
 namespace oat\taoBackOffice\controller;
 
 use core_kernel_classes_Class;
+use Jig\Utils\StringUtils;
 use oat\taoBackOffice\model\tree\TreeService;
 
 /**
@@ -60,7 +61,12 @@ class Trees extends \tao_actions_CommonModule {
 	public function getTree()
 	{
 	    $tree = new core_kernel_classes_Class($this->getRequestParameter('uri'));
-	    $struct = $this->getClassService()->getFlatStructure($tree);
+		$struct = $this->getClassService()->getFlatStructure(
+			$tree,
+			function ( $label ) {
+				return StringUtils::wrapLongWords( $label, 15, "\n" );
+			}
+		);
 		$this->returnJson($struct);
 
 	}

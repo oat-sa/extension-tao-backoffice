@@ -43,7 +43,8 @@ define([
             settings = {
                 layout: {
                     hierarchical: {
-                        sortMethod: 'directed'
+                        sortMethod: 'directed',
+                        "levelSeparation": 200
                     }
                 },
                 nodes: {
@@ -93,6 +94,29 @@ define([
 
             network = new vis.Network(treeContainer, data, settings);
 
+            network.once('initRedraw', function () {
+
+                if (data.nodes.length > 100) {
+                    network.setOptions($.extend(settings, {
+                        physics: {
+                            hierarchicalRepulsion: {
+                                nodeDistance: 200
+                            },
+                            stabilization: {
+                                fit: false
+                            }
+                        }
+                    }));
+
+                    network.fit({
+                        nodes: [data.nodes[0].id, data.nodes[1].id], animation: {
+                            duration: 400,
+                            easingFunction: 'linear'
+                        }
+                    });
+                }
+
+            });
         }
     };
 
