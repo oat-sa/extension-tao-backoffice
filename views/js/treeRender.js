@@ -1,8 +1,8 @@
 define([
     'jquery',
     'lodash',
-    //'taoBackOffice/lib/vis/vis',
-    //'css!taoBackOffice/lib/vis/vis'
+    'taoBackOffice/lib/vis/vis.min',
+    'css!taoBackOffice/lib/vis/vis.min'
 ], function ($, _, vis) {
     'use strict';
 
@@ -91,7 +91,7 @@ define([
         run: function () {
             destroy();
 
-            //network = new vis.Network(treeContainer, data, settings);
+            network = new vis.Network(treeContainer, data, settings);
 
         }
     };
