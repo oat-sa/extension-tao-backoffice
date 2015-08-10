@@ -36,7 +36,7 @@ use oat\taoBackOffice\model\tree\TreeService;
  * 
  *
  */
-class Trees extends \tao_actions_CommonModule {
+class Trees extends \tao_actions_RdfController {
 
     /**
      * @return TreeService
@@ -64,13 +64,17 @@ class Trees extends \tao_actions_CommonModule {
 		$struct = $this->getClassService()->getFlatStructure(
 			$tree,
 			function ( $label ) {
-				return StringUtils::wrapLongWords( $label, 15, "\n" );
+				return StringUtils::wrapLongWords( $label, 30, "\n" );
 			}
 		);
 		$this->returnJson($struct);
 
 	}
 
+	/**
+	 * Renders a tree
+	 * @requiresRight id READ
+	 */
 	public function viewTree(){
 
 		$this->setData('uri', $this->getRequestParameter('id'));
@@ -79,25 +83,18 @@ class Trees extends \tao_actions_CommonModule {
 
 	}
 
-	public function dummy(){
+	/**
+	 * Returns an empty view 
+	 */
+	public function dummy()
+	{
+	}
 
-	}
-	
-	public function delete(){
-	
-	    if(!\tao_helpers_Request::isAjax() || !$this->hasRequestParameter('id')){
-	        throw new Exception("wrong request mode");
-	    }
-	    $clazz = new core_kernel_classes_Class($this->getRequestParameter('id'));
-        $label = $clazz->getLabel();
-        $success = $this->getClassService()->deleteClass($clazz);
-        $msg = $success ? __('%s has been deleted', $label) : __('Unable to delete %s', $label);
-	    return $this->returnJson(array(
-	        'deleted' => $success,
-	        'msg' => $msg
-	    ));
-	}
-	
+	/**
+	 * Populates the Tree of Trees
+	 * 
+	 * @requiresRight classUri READ 
+	 */
 	public function getTreeData()
 	{
 	    $data = array(

@@ -15,12 +15,15 @@
                           rootNode="http://www.tao.lu/Ontologies/TAO.rdf#Tree"
                         />
                 </trees>
-                <actions>
+                <actions allowClassActions="true">
                     <action id="tree-class-select" name="Properties" url="/taoBackOffice/Trees/dummy" group="content" context="class">
                         <icon id="icon-edit"/>
                     </action>
 
                     <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance">
+                        <icon id="icon-edit"/>
+                    </action>
+                    <action id="tree-edit"  name="Edit Tree"  url="/taoBackOffice/Trees/editInstance" group="content" context="instance">
                         <icon id="icon-edit"/>
                     </action>
                     <action id="tree-delete" name="Delete" url="/taoBackOffice/Trees/delete" context="instance" group="tree" binding="removeNode">
