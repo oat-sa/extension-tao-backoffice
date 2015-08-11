@@ -26,6 +26,8 @@ namespace oat\taoBackOffice\controller;
 use core_kernel_classes_Class;
 use Jig\Utils\StringUtils;
 use oat\taoBackOffice\model\tree\TreeService;
+use oat\tao\model\menu\MenuService;
+use oat\tao\model\accessControl\ActionResolver;
 
 /**
  * This controller provide the actions to manage the lists of data
@@ -64,7 +66,7 @@ class Trees extends \tao_actions_RdfController {
 		$struct = $this->getClassService()->getFlatStructure(
 			$tree,
 			function ( $label ) {
-				return StringUtils::wrapLongWords( $label, 30, "\n" );
+				return StringUtils::wrapLongWords( $label, 15, "\n" );
 			}
 		);
 		$this->returnJson($struct);
@@ -77,7 +79,7 @@ class Trees extends \tao_actions_RdfController {
 	 */
 	public function viewTree(){
 
-		$this->setData('uri', $this->getRequestParameter('id'));
+		$this->setData('id', $this->getRequestParameter('id'));
 
 		$this->setView('Trees/viewTree.tpl');
 
@@ -99,6 +101,7 @@ class Trees extends \tao_actions_RdfController {
 	{
 	    $data = array(
 	        'data' => __("Trees"),
+	        'type' => 'class',
 	        'attributes' => array(
 	            'id' => \tao_helpers_Uri::encode($this->getRootClass()->getUri()),
 	            'class' => 'node-class',
@@ -116,6 +119,7 @@ class Trees extends \tao_actions_RdfController {
 	    foreach ( $sublasses as $class) {
 	        $data['children'][] = array(
 	            'data' => $class->getLabel(),
+	            'type' => 'instance',
 	            'attributes' => array(
 	                'id' => \tao_helpers_Uri::encode($class->getUri()),
 	                'class' => 'node-instance',
@@ -123,6 +127,8 @@ class Trees extends \tao_actions_RdfController {
 	            )
 	        );
 	    }
+	    
+	    $data = $this->addPermissions($data);
 	
 	    $this->returnJson($data);
 	}

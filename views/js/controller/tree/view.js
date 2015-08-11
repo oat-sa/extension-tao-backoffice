@@ -16,26 +16,28 @@ define([
 
         //the controller initialization
         start: function () {
+        	
+        	$('.tree-container').each(function(i, obj) {
+        		var $container = $(obj);
+                var uri = $container.data('id');
 
-            var $container = $('#tree-container');
-            var uri = $container.data('uri');
+                $.post(helpers._url('getTree', 'Trees', 'taoBackOffice'), {uri: uri}, function (treeData) {
 
-            $.post(helpers._url('getTree', 'Trees', 'taoBackOffice'), {uri: uri}, function (treeData) {
+                    var $parent = $container.closest('.content-block');
 
-                var $parent = $container.closest('.content-block');
+                    var resizeContainer = function () {
+                        $container.height($parent.height() - $parent.find('.panel').eq(0).outerHeight());
+                        $container.width($parent.width());
+                    };
 
-                var resizeContainer = function () {
-                    $container.height($parent.height() - $parent.find('.panel').eq(0).outerHeight());
-                    $container.width($parent.width());
-                };
+                    $(window).on('resize', resizeContainer);
 
-                $(window).on('resize', resizeContainer);
+                    resizeContainer();
+                    treeRender.init($container[0], treeData);
+                    treeRender.run();
 
-                resizeContainer();
-                treeRender.init($container[0], treeData);
-                treeRender.run();
-
-            });
+                });
+        	});
         }
     };
 
