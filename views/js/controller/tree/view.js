@@ -4,10 +4,23 @@ define([
     'jquery',
     'context',
     'helpers',
-    'taoBackOffice/treeRender'
-], function (binder, uri, $, context, helpers, treeRender) {
+    'taoBackOffice/treeRender',
+    'layout/section'
+], function (binder, uri, $, context, helpers, treeRender, section) {
     'use strict';
 
+    function openResource(uri, name){
+        name = name || uri;
+        var url = helpers._url('editInstance', 'Trees', 'taoBackOffice', {'uri': uri });
+        section.create({
+            id           : 'node-' + encodeURIComponent(uri),
+            name         : name,
+            url          : url,
+            contentBlock : true
+        })
+        .activate(); 
+    }
+    
     /**
      *
      * @type {{start: Function}}
@@ -16,6 +29,11 @@ define([
 
         //the controller initialization
         start: function () {
+        	
+        	$('.browseLink').click(function(e) {
+                e.preventDefault();
+                openResource(this.href, $(this).text());
+            });
         	
         	$('.tree-container').each(function(i, obj) {
         		var $container = $(obj);
