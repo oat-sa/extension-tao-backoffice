@@ -24,7 +24,6 @@
 namespace oat\taoBackOffice\controller;
 
 use core_kernel_classes_Class;
-use Jig\Utils\StringUtils;
 use oat\taoBackOffice\model\tree\TreeService;
 use oat\tao\model\menu\MenuService;
 use oat\tao\model\accessControl\ActionResolver;
@@ -66,7 +65,7 @@ class Trees extends \tao_actions_RdfController {
 		$struct = $this->getClassService()->getFlatStructure(
 			$tree,
 			function ( $label ) {
-				return StringUtils::wrapLongWords( $label, 15, "\n" );
+				return wordwrap($label, 30, "\n");
 			}
 		);
 		$this->returnJson($struct);
