@@ -22,7 +22,6 @@ namespace oat\taoBackOffice\model\menuStructure;
 
 use core_kernel_classes_Class;
 use oat\oatbox\service\ConfigurableService;
-use oat\tao\model\menu\Action;
 use oat\oatbox\AbstractRegistry;
 use oat\tao\model\menu\MenuService;
 
