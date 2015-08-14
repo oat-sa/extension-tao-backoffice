@@ -25,6 +25,8 @@ namespace oat\taoBackOffice\controller;
 
 use core_kernel_classes_Class;
 use oat\taoBackOffice\model\tree\TreeService;
+use oat\tao\model\menu\MenuService;
+use oat\tao\model\accessControl\ActionResolver;
 
 /**
  * This controller provide the actions to manage the lists of data
@@ -35,7 +37,7 @@ use oat\taoBackOffice\model\tree\TreeService;
  * 
  *
  */
-class Trees extends \tao_actions_CommonModule {
+class Trees extends \tao_actions_RdfController {
 
     /**
      * @return TreeService
@@ -70,37 +72,35 @@ class Trees extends \tao_actions_CommonModule {
 
 	}
 
+	/**
+	 * Renders a tree
+	 * @requiresRight id READ
+	 */
 	public function viewTree(){
 
-		$this->setData('uri', $this->getRequestParameter('id'));
+		$this->setData('id', $this->getRequestParameter('id'));
 
 		$this->setView('Trees/viewTree.tpl');
 
 	}
 
-	public function dummy(){
+	/**
+	 * Returns an empty view 
+	 */
+	public function dummy()
+	{
+	}
 
-	}
-	
-	public function delete(){
-	
-	    if(!\tao_helpers_Request::isAjax() || !$this->hasRequestParameter('id')){
-	        throw new Exception("wrong request mode");
-	    }
-	    $clazz = new core_kernel_classes_Class($this->getRequestParameter('id'));
-        $label = $clazz->getLabel();
-        $success = $this->getClassService()->deleteClass($clazz);
-        $msg = $success ? __('%s has been deleted', $label) : __('Unable to delete %s', $label);
-	    return $this->returnJson(array(
-	        'deleted' => $success,
-	        'msg' => $msg
-	    ));
-	}
-	
+	/**
+	 * Populates the Tree of Trees
+	 * 
+	 * @requiresRight classUri READ 
+	 */
 	public function getTreeData()
 	{
 	    $data = array(
 	        'data' => __("Trees"),
+	        'type' => 'class',
 	        'attributes' => array(
 	            'id' => \tao_helpers_Uri::encode($this->getRootClass()->getUri()),
 	            'class' => 'node-class',
@@ -118,6 +118,7 @@ class Trees extends \tao_actions_CommonModule {
 	    foreach ( $sublasses as $class) {
 	        $data['children'][] = array(
 	            'data' => $class->getLabel(),
+	            'type' => 'instance',
 	            'attributes' => array(
 	                'id' => \tao_helpers_Uri::encode($class->getUri()),
 	                'class' => 'node-instance',
@@ -125,6 +126,8 @@ class Trees extends \tao_actions_CommonModule {
 	            )
 	        );
 	    }
+	    
+	    $data = $this->addPermissions($data);
 	
 	    $this->returnJson($data);
 	}
