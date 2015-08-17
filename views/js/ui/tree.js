@@ -132,6 +132,29 @@ define([
                 network.on('blurNode', function() {
                     container.style.cursor = 'default';
                 });
+
+                //TODO test that part
+                if (data.nodes.length > 100) {
+                    network.once('initRedraw', function () {
+                        network.setOptions(_.merge({}, options, {
+                            physics: {
+                                hierarchicalRepulsion: {
+                                    nodeDistance: 200
+                                },
+                                stabilization: {
+                                    fit: false
+                                }
+                            }
+                        }));
+
+                        network.fit({
+                            nodes: [data.nodes[0].id, data.nodes[1].id], animation: {
+                                duration: 400,
+                                easingFunction: 'linear'
+                            }
+                        });
+                    });
+                }
                 return this;
             },
 
