@@ -32,8 +32,7 @@ define([
                 $(window).on('resize', resizeContainer);
 
                 resizeContainer();
-                treeRender.init($container[0], treeData);
-                treeRender.run();
+                treeRender.run($container[0], treeData);
 
             });
         }

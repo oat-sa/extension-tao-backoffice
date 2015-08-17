@@ -67,4 +67,22 @@ class TreeService extends tao_models_classes_ClassService {
         return $returnValue;
     }
 
+
+    /**
+     * get all the tree classes
+     *
+     * @return array
+     */
+    public function getTrees()
+    {
+        $returnValue = array();
+
+        foreach($this->getRootClass()->getSubClasses(false) as $tree){
+            $returnValue[] = $tree;
+        }
+
+        return $returnValue;
+    }
+
+
 }
