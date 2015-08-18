@@ -1,8 +1,8 @@
 define([
     'jquery',
     'lodash',
-    //'taoBackOffice/lib/vis/vis',
-    //'css!taoBackOffice/lib/vis/vis'
+    'taoBackOffice/lib/vis/vis.min',
+    'css!taoBackOffice/lib/vis/vis.min'
 ], function ($, _, vis) {
     'use strict';
 
@@ -43,7 +43,8 @@ define([
             settings = {
                 layout: {
                     hierarchical: {
-                        sortMethod: 'directed'
+                        sortMethod: 'directed',
+                        "levelSeparation": 200
                     }
                 },
                 nodes: {
@@ -91,8 +92,31 @@ define([
         run: function () {
             destroy();
 
-            //network = new vis.Network(treeContainer, data, settings);
+            network = new vis.Network(treeContainer, data, settings);
 
+            network.once('initRedraw', function () {
+
+                if (data.nodes.length > 100) {
+                    network.setOptions($.extend(settings, {
+                        physics: {
+                            hierarchicalRepulsion: {
+                                nodeDistance: 200
+                            },
+                            stabilization: {
+                                fit: false
+                            }
+                        }
+                    }));
+
+                    network.fit({
+                        nodes: [data.nodes[0].id, data.nodes[1].id], animation: {
+                            duration: 400,
+                            easingFunction: 'linear'
+                        }
+                    });
+                }
+
+            });
         }
     };
 

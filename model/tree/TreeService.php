@@ -38,7 +38,13 @@ class TreeService extends tao_models_classes_ClassService {
         return new core_kernel_classes_Class(self::CLASS_URI);
     }
 
-    public function getFlatStructure(core_kernel_classes_Class $tree)
+    /**
+     * @param core_kernel_classes_Class $tree
+     * @param callable|null $labelProcessor
+     *
+     * @return array
+     */
+    public function getFlatStructure(core_kernel_classes_Class $tree, $labelProcessor = null)
     {
         $returnValue = array(
             'nodes' => array(),
@@ -49,7 +55,7 @@ class TreeService extends tao_models_classes_ClassService {
         foreach ($tree->getInstances() as $node) {
             $returnValue['nodes'][] = array(
                 'id' => $node->getUri(),
-                'label' => $node->getLabel()
+                'label' => is_callable( $labelProcessor ) ? $labelProcessor( $node->getLabel() ) : $node->getLabel(),
             );
             foreach ($node->getPropertyValues($childOf) as $childUri) {
                 $returnValue['edges'][] = array(

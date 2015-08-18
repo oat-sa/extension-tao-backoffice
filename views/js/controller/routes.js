@@ -9,7 +9,7 @@ define(function () {
         },
         'Trees': {
             'actions': {
-                'viewTree': 'controller/main/view'
+                'viewTree': 'controller/tree/view'
             }
         }
     };
