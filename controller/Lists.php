@@ -111,7 +111,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function getListsData(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new \Exception("wrong request mode");
 		}
 		$data = array();
 		foreach($this->service->getLists() as $listClass){
@@ -131,7 +131,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function getListElements(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new \Exception("wrong request mode");
 		}
 		$data = array();
 		if($this->hasRequestParameter('listUri')){
@@ -152,7 +152,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function saveLists(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new \Exception("wrong request mode");
 		}
 		$saved = false;
 
@@ -212,7 +212,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function create(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new \Exception("wrong request mode");
 		}
 
 		$response = array();
@@ -248,7 +248,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function rename(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new \Exception("wrong request mode");
 		}
 
 		$data = array('renamed'	=> false);
@@ -284,7 +284,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function removeList(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new \Exception("wrong request mode");
 		}
 		$deleted = false;
 
@@ -302,7 +302,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function removeListElement(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new \Exception("wrong request mode");
 		}
 		$deleted = false;
 
