@@ -21,6 +21,8 @@
 namespace oat\taoBackOffice\model\update;
 
 use oat\tao\scripts\update\OntologyUpdater;
+use oat\taoBackOffice\model\entryPoint\BackOfficeEntrypoint;
+use oat\tao\model\entryPoint\EntryPointService;
 /**
  * Class TreeService
  */
@@ -37,6 +39,17 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
         if ($currentVersion == '0.9') {
         	 $currentVersion = '0.10';
+        }
+        if ($currentVersion == '0.10') {
+            $entryPointService = $this->getServiceManager()->get(EntryPointService::SERVICE_ID);
+            
+            // add backoffice
+            $entryPoint = new BackOfficeEntrypoint();
+            $entryPointService->overrideEntryPoint($entryPoint->getId(), $entryPoint);
+            
+            $this->getServiceManager()->register(EntryPointService::SERVICE_ID, $entryPointService);
+            
+            $currentVersion = '0.11';
         }
         
         return $currentVersion;
