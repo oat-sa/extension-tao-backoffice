@@ -25,7 +25,7 @@ use oat\oatbox\PhpSerializable;
 use oat\oatbox\Configurable;
 use oat\tao\model\entryPoint\Entrypoint;
 
-class BackOfficeEntrypoint extends Configurable implements Entrypoint
+class BackOfficeEntryPoint extends Configurable implements Entrypoint
 {
 
     public function getId() {

@@ -19,13 +19,13 @@
  * 
  */
 use oat\oatbox\service\ServiceManager;
-use oat\taoBackOffice\model\entryPoint\BackOfficeEntrypoint;
+use oat\taoBackOffice\model\entryPoint\BackOfficeEntryPoint;
 use oat\tao\model\entryPoint\EntryPointService;
 
 $serviceManager = ServiceManager::getServiceManager();
 $entryPointService = $serviceManager->get(EntryPointService::SERVICE_ID);
 
 // add backoffice
-$entryPointService->addEntryPoint(new BackOfficeEntrypoint(), EntryPointService::OPTION_POSTLOGIN);
+$entryPointService->addEntryPoint(new BackOfficeEntryPoint(), EntryPointService::OPTION_POSTLOGIN);
 
 $serviceManager->register(EntryPointService::SERVICE_ID, $entryPointService);
