@@ -47,8 +47,8 @@ class Updater extends \common_ext_ExtensionUpdater {
             // replace old backoffice
             $newEntryPoint = new BackOfficeEntryPoint();
             foreach ($entryPointService->getEntryPoints() as $entryPoint) {
-                if ($entryPoint->getId() == $newEntryPoint->getId() && $entryPoint instanceof OldEntryPoint) {
-                    $entryPointService->overrideEntryPoint($entryPoint->getId(), $entryPoint);
+                if ($entryPoint instanceof OldEntryPoint) {
+                    $entryPointService->overrideEntryPoint($entryPoint->getId(), $newEntryPoint);
                 }
             }
             
