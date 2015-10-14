@@ -24,7 +24,7 @@ return array(
 	'label' => 'Back Office',
 	'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '0.10',
+    'version' => '0.11',
 	'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'tao' => '>=2.8.0'
@@ -37,6 +37,9 @@ return array(
     'install' => array(
         'rdf' => array(
             __DIR__.DIRECTORY_SEPARATOR.'model'.DIRECTORY_SEPARATOR.'ontology'.DIRECTORY_SEPARATOR.'structures.rdf'
+        ),
+        'php' => array(
+            dirname(__FILE__).'/scripts/install/registerEntryPoint.php'
         )
     ),
     'uninstall' => array(
