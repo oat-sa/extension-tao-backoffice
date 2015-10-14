@@ -23,6 +23,7 @@
 
 namespace oat\taoBackOffice\controller;
 
+use Exception;
 use \tao_helpers_Scriptloader;
 use \tao_models_classes_ListService;
 use \tao_actions_form_List;
@@ -107,7 +108,6 @@ class Lists extends \tao_actions_CommonModule {
 
 	/**
 	 * get the JSON data to populate the tree widget
-	 * @return void
 	 */
 	public function getListsData(){
 		if(!tao_helpers_Request::isAjax()){
@@ -115,7 +115,7 @@ class Lists extends \tao_actions_CommonModule {
 		}
 		$data = array();
 		foreach($this->service->getLists() as $listClass){
-			array_push($data, $this->service->toTree($listClass, array('subclasses' => false)));
+			array_push($data, $this->service->toTree($listClass));
 		}
 		echo json_encode(array(
 			'data' 		=> __('Lists'),
