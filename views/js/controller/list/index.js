@@ -1,4 +1,4 @@
-define(['jquery', 'i18n', 'helpers', 'ui/feedback'], function ($, __, helpers, feedback) {
+define(['jquery', 'i18n', 'helpers', 'ui/feedback', 'layout/section'], function ($, __, helpers, feedback, section) {
     'use strict';
 
     function _addSquareBtn(title, icon, $listToolBar) {
@@ -74,8 +74,8 @@ define(['jquery', 'i18n', 'helpers', 'ui/feedback'], function ($, __, helpers, f
                             $(this).closest('form').serializeArray(),
                             function (response) {
                                 if (response.saved) {
-                                    feedback().success(__('"list saved"'));
-                                    helpers._load(helpers.getMainContainerSelector(), helpers._url('index', 'Lists', 'taoBackOffice'));
+                                    feedback().success(__('List saved'));
+                                    section.get('taoBo_list').loadContentBlock(helpers._url('index', 'Lists', 'taoBackOffice'));
                                 }else{
                                     feedback().error(__('List not saved'));
                                 }
@@ -88,33 +88,39 @@ define(['jquery', 'i18n', 'helpers', 'ui/feedback'], function ($, __, helpers, f
                     $listNewBtn.click(function () {
                         var level = $(this).closest('form').find('ol').children().length + 1;
                         $(this).closest('form').find('ol').append(
-                            "<li id='list-element_" + level + "'>" +
-                            "<span class='icon-grip' ></span>" +
-                            "<input type='text' name='list-element_" + level + "_' />" +
-                            "<span class='icon-add list-element-delete-btn' ></span>" +
+                            "<li id='list-element_" + level + "'>\n" +
+                            "<span class='icon-grip' ></span>\n" +
+                            "<input type='text' name='list-element_" + level + "_' />\n" +
+                            "<span class='icon-checkbox-crossed list-element-delete-btn' ></span>\n" +
                             "</li>");
                         return false;
                     });
                 }
 
-                $(".list-element-delete-btn").click(function () {
+                $listContainer.on('click', '.list-element-delete-btn', function () {
                     var $btn = $(this),
                         uri = $btn.data('uri');
+
                     if (confirm(__("Please confirm you want to delete this list element."))) {
                         var element = $(this).parent();
                         uri = element.find('input:text').attr('name').replace(/^list\-element\_([1-9]*)\_/, '');
-                        $.postJson(
-                            delEltUrl,
-                            {uri: uri},
-                            function (response) {
-                                if (response.deleted) {
-                                    element.remove();
-                                    feedback().success(__('Element deleted'));
-                                }else{
-                                    feedback().error(__('Element not deleted'));
+                        if (uri) {
+                            $.postJson(
+                                delEltUrl,
+                                {uri: uri},
+                                function (response) {
+                                    if (response.deleted) {
+                                        element.remove();
+                                        feedback().success(__('Element deleted'));
+                                    }else{
+                                        feedback().error(__('Element not deleted'));
+                                    }
                                 }
-                            }
-                        );
+                            );
+                        } else {
+                            element.remove();
+                            feedback().success(__('Element deleted'));
+                        }
                     }
                 });
             });
