@@ -1,4 +1,4 @@
-define(['jquery', 'i18n', 'helpers', 'ui/feedback', 'layout/section'], function ($, __, helpers, feedback, section) {
+define(['jquery', 'i18n', 'helpers', 'ui/feedback', 'layout/section', 'css!taoBackOfficeCss/list'], function ($, __, helpers, feedback, section) {
     'use strict';
 
     function _addSquareBtn(title, icon, $listToolBar) {
@@ -44,7 +44,7 @@ define(['jquery', 'i18n', 'helpers', 'ui/feedback', 'layout/section'], function 
                     var elementList = $listContainer.find('ol');
                     elementList.addClass('sortable-list');
                     elementList.find('li').prepend('<span class="icon-grip" ></span>');
-                    elementList.find('li').append('<span class="icon-checkbox-crossed list-element-delete-btn" style="cursor:pointer;" ></span>');
+                    elementList.find('li').append('<span class="icon-checkbox-crossed list-element-delete-btn"></span>');
 
                     elementList.sortable({
                         axis: 'y',
@@ -99,18 +99,19 @@ define(['jquery', 'i18n', 'helpers', 'ui/feedback', 'layout/section'], function 
 
                 $listContainer.on('click', '.list-element-delete-btn', function () {
                     var $btn = $(this),
-                        uri = $btn.data('uri');
+                        uri = $btn.data('uri'),
+                        $element = $(this).parent(),
+                        $input = $element.find('input:text');
 
-                    if (confirm(__("Please confirm you want to delete this list element."))) {
-                        var element = $(this).parent();
-                        uri = element.find('input:text').attr('name').replace(/^list\-element\_([1-9]*)\_/, '');
+                    if ($input.val() === '' || confirm(__("Please confirm you want to delete this list element."))) {
+                        uri = $input.attr('name').replace(/^list\-element\_([1-9]*)\_/, '');
                         if (uri) {
                             $.postJson(
                                 delEltUrl,
                                 {uri: uri},
                                 function (response) {
                                     if (response.deleted) {
-                                        element.remove();
+                                        $element.remove();
                                         feedback().success(__('Element deleted'));
                                     }else{
                                         feedback().error(__('Element not deleted'));
@@ -118,7 +119,7 @@ define(['jquery', 'i18n', 'helpers', 'ui/feedback', 'layout/section'], function 
                                 }
                             );
                         } else {
-                            element.remove();
+                            $element.remove();
                             feedback().success(__('Element deleted'));
                         }
                     }
