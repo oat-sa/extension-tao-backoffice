@@ -29,7 +29,7 @@ module.exports = function(grunt) {
             modules : [{
                 name: 'taoBackOffice/controller/routes',
                 include : ext.getExtensionsControllers(['taoBackOffice']),
-                exclude : ['mathJax', 'taoBackOffice/lib/vis/vis.min'].concat(libs)
+                exclude : ['mathJax', 'taoBackOffice/lib/vis/vis'].concat(libs)
             }]
         }
     };
