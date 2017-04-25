@@ -24,10 +24,10 @@ return array(
 	'label' => 'Back Office',
 	'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '0.12.1',
+    'version' => '1.0.0',
 	'author' => 'Open Assessment Technologies SA',
     'requires' => array(
-        'tao' => '>=2.8.0'
+        'tao' => '>=9.0.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',
     'acl' => array(
@@ -47,16 +47,13 @@ return array(
     'routes' => array(
         '/taoBackOffice' => 'oat\\taoBackOffice\\controller'
     ),
-    'update' => 'oat\taoBackOffice\model\update\Updater',    
+    'update' => 'oat\taoBackOffice\scripts\update\Updater',
 	'constants' => array(
 	    # views directory
 	    "DIR_VIEWS" => dirname(__FILE__).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR,
 	    
 		#BASE URL (usually the domain root)
 		'BASE_URL' => ROOT_URL.'taoBackOffice/',
-	    
-	    #BASE WWW required by JS
-	    'BASE_WWW' => ROOT_URL.'taoBackOffice/views/'
 	),
     'extra' => array(
         'structures' => dirname(__FILE__).DIRECTORY_SEPARATOR.'controller'.DIRECTORY_SEPARATOR.'structures.xml',

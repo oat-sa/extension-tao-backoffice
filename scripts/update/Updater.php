@@ -18,7 +18,7 @@
  *
  *
  */
-namespace oat\taoBackOffice\model\update;
+namespace oat\taoBackOffice\scripts\update;
 
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBackOffice\model\entryPoint\BackOfficeEntryPoint;
@@ -58,6 +58,6 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
         
         $this->setVersion($currentVersion);
-        $this->skip($currentVersion, '0.12.0');
+        $this->skip($currentVersion, '1.0.0');
     }
 }
