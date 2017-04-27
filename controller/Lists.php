@@ -24,6 +24,7 @@
 namespace oat\taoBackOffice\controller;
 
 use Exception;
+use oat\tao\helpers\Template;
 use \tao_helpers_Scriptloader;
 use \tao_models_classes_ListService;
 use \tao_actions_form_List;
@@ -51,7 +52,7 @@ class Lists extends \tao_actions_CommonModule {
 
 		parent::__construct();
 		//add List stylesheet
-		tao_helpers_Scriptloader::addCssFile(TAOBASE_WWW . 'css/lists.css');
+		tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
 
 		$this->service = tao_models_classes_ListService::singleton();
 		$this->defaultData();
