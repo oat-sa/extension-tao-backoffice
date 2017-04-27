@@ -30,9 +30,9 @@ use oat\tao\model\entryPoint\EntryPointService;
 class Updater extends \common_ext_ExtensionUpdater {
 
     public function update($initialVersion) {
-        
+
         $currentVersion = $initialVersion;
-        
+
         // ontology
         if ($currentVersion == '0.8') {
             OntologyUpdater::syncModels();
@@ -43,7 +43,7 @@ class Updater extends \common_ext_ExtensionUpdater {
         }
         if ($currentVersion == '0.10') {
             $entryPointService = $this->getServiceManager()->get(EntryPointService::SERVICE_ID);
-            
+
             // replace old backoffice
             $newEntryPoint = new BackOfficeEntryPoint();
             foreach ($entryPointService->getEntryPoints() as $entryPoint) {
@@ -51,13 +51,13 @@ class Updater extends \common_ext_ExtensionUpdater {
                     $entryPointService->overrideEntryPoint($entryPoint->getId(), $newEntryPoint);
                 }
             }
-            
+
             $this->getServiceManager()->register(EntryPointService::SERVICE_ID, $entryPointService);
-            
+
             $currentVersion = '0.11';
         }
-        
+
         $this->setVersion($currentVersion);
-        $this->skip($currentVersion, '1.0.0');
+        $this->skip($currentVersion, '1.0.1');
     }
 }
