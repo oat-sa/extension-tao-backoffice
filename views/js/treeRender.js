@@ -1,8 +1,8 @@
 define([
     'jquery',
     'lodash',
-    'taoBackOffice/lib/vis/vis.min',
-    'css!taoBackOffice/lib/vis/vis.min'
+    'taoBackOffice/lib/vis/vis',
+    'css!taoBackOffice/lib/vis/vis'
 ], function ($, _, vis) {
     'use strict';
 
