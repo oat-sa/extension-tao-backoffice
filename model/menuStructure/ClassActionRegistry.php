@@ -83,6 +83,16 @@ class ClassActionRegistry extends AbstractRegistry {
         MenuService::flushCache();
     }
     
+    public function unregisterAction(core_kernel_classes_Class $class, Action $action)
+    {
+        $actions = $this->isRegistered($class->getUri())
+            ? $this->get($class->getUri())
+            : array();
+        unset($actions[$action->getId()]);
+        $this->set($class->getUri(), $actions);
+        MenuService::flushCache();
+    }
+
     private function getRelevantClasses(core_kernel_classes_Class $class)
     {
         $toDo = array($class->getUri() => $class);
