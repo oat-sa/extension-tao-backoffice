@@ -99,7 +99,7 @@ class Lists extends \tao_actions_CommonModule {
 				'label'		=> $listClass->getLabel(),
 				// The Language list should not be editable.
 				// @todo Make two different kind of lists: system list that are not editable and usual list.
-				'editable'	=> $listClass->isSubClassOf(new core_kernel_classes_Class(TaoOntology::LIST_CLASS)) && $listClass->getUri() !== TaoOntology::CLASS_LANGUAGES,
+				'editable'	=> $listClass->isSubClassOf(new core_kernel_classes_Class(TaoOntology::LIST_CLASS_URI)) && $listClass->getUri() !== TaoOntology::LANGUAGES_CLASS_URI,
 				'elements'	=> $elements
 			);
 		}
@@ -166,7 +166,7 @@ class Lists extends \tao_actions_CommonModule {
 				$listClass->setLabel($_POST['label']);
 
 				$setLevel = false;
-				$levelProperty = new core_kernel_classes_Property(TaoOntology::LIST_CLASS);
+				$levelProperty = new core_kernel_classes_Property(TaoOntology::LIST_CLASS_URI);
 				foreach($listClass->getProperties(true) as $property){
 					if($property->getUri() == $levelProperty->getUri()){
 						$setLevel = true;
