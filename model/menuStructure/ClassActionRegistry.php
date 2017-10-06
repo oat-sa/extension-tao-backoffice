@@ -25,6 +25,8 @@ use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\AbstractRegistry;
 use oat\tao\model\menu\MenuService;
+use oat\tao\model\TaoOntology;
+use tao_models_classes_GenerisService;
 
 /**
  * Class TreeService
@@ -101,7 +103,7 @@ class ClassActionRegistry extends AbstractRegistry {
         while (!empty($toDo)) {
             $current = array_pop($toDo);
             $classes[$current->getUri()] = $current;
-            if (!in_array($current->getUri(), array(TAO_OBJECT_CLASS, GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ))) {
+            if (!in_array($current->getUri(), array(TaoOntology::OBJECT_CLASS_URI, tao_models_classes_GenerisService::PROPERTY_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ))) {
                 foreach ($current->getParentClasses(false) as $parent) {
                     if (!in_array($parent->getUri(), array_keys($classes))) {
                         $toDo[$parent->getUri()] = $parent;
