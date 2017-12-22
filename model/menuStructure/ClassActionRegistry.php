@@ -21,6 +21,7 @@
 namespace oat\taoBackOffice\model\menuStructure;
 
 use core_kernel_classes_Class;
+use oat\generis\model\GenerisRdf;
 use oat\generis\model\OntologyRdfs;
 use oat\oatbox\service\ConfigurableService;
 use oat\oatbox\AbstractRegistry;
@@ -103,7 +104,7 @@ class ClassActionRegistry extends AbstractRegistry {
         while (!empty($toDo)) {
             $current = array_pop($toDo);
             $classes[$current->getUri()] = $current;
-            if (!in_array($current->getUri(), array(TaoOntology::OBJECT_CLASS_URI, tao_models_classes_GenerisService::PROPERTY_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ))) {
+            if (!in_array($current->getUri(), array(TaoOntology::OBJECT_CLASS_URI, GenerisRdf::CLASS_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ))) {
                 foreach ($current->getParentClasses(false) as $parent) {
                     if (!in_array($parent->getUri(), array_keys($classes))) {
                         $toDo[$parent->getUri()] = $parent;
