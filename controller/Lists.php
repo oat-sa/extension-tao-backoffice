@@ -25,6 +25,7 @@ namespace oat\taoBackOffice\controller;
 
 use Exception;
 use oat\tao\helpers\Template;
+use oat\tao\model\TaoOntology;
 use \tao_helpers_Scriptloader;
 use \tao_models_classes_ListService;
 use \tao_actions_form_List;
@@ -98,7 +99,7 @@ class Lists extends \tao_actions_CommonModule {
 				'label'		=> $listClass->getLabel(),
 				// The Language list should not be editable.
 				// @todo Make two different kind of lists: system list that are not editable and usual list.
-				'editable'	=> $listClass->isSubClassOf(new core_kernel_classes_Class(TAO_LIST_CLASS)) && $listClass->getUri() !== CLASS_LANGUAGES,
+				'editable'	=> $listClass->isSubClassOf(new core_kernel_classes_Class(TaoOntology::LIST_CLASS_URI)) && $listClass->getUri() !== TaoOntology::LANGUAGES_CLASS_URI,
 				'elements'	=> $elements
 			);
 		}
@@ -165,7 +166,7 @@ class Lists extends \tao_actions_CommonModule {
 				$listClass->setLabel($_POST['label']);
 
 				$setLevel = false;
-				$levelProperty = new core_kernel_classes_Property(TAO_LIST_LEVEL_PROP);
+				$levelProperty = new core_kernel_classes_Property(TaoOntology::LIST_CLASS_URI);
 				foreach($listClass->getProperties(true) as $property){
 					if($property->getUri() == $levelProperty->getUri()){
 						$setLevel = true;
