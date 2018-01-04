@@ -8,10 +8,10 @@
                 <trees>
                     <tree name="Trees"
                         className="Trees"
-                         type="jstree"
                           selectClass="tree-class-select"
                           dataUrl="/taoBackOffice/Trees/getTreeData"
                           selectInstance="tree-view"
+                          rootNode="http://www.tao.lu/Ontologies/TAO.rdf#Tree"
                         />
                 </trees>
                 <actions allowClassActions="true">
