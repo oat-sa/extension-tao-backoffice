@@ -21,11 +21,11 @@
 
 return array(
     'name' => 'taoBackOffice',
-	'label' => 'Back Office',
-	'description' => 'Base for back-office extensions',
+    'label' => 'Back Office',
+    'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '1.2.0',
-	'author' => 'Open Assessment Technologies SA',
+    'version' => '1.3.0',
+    'author' => 'Open Assessment Technologies SA',
     'requires' => array(
         'tao' => '>=12.21.4',
         'generis' => '>=5.10.0'

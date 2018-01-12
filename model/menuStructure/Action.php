@@ -25,42 +25,42 @@ use oat\tao\model\menu\Icon;
  * Action interface
  */
 interface Action {
-    
+
     /**
      * context of actions that apply to all resources
      * @var string
      */
     const CONTEXT_RESOURCE = 'resource';
-    
+
     /**
-     * context of actions that only apply to classes 
+     * context of actions that only apply to classes
      * @var string
      */
     const CONTEXT_CLASS = 'class';
-    
+
     /**
      * context of actions that only apply to instances
      * @var string
      */
     const CONTEXT_INSTANCE = 'instance';
-    
+
     /**
      * Default js binding of actions
      * @var string
      */
     const BINDING_DEFAULT = 'load';
-    
+
     /**
      * Default group to add the action to
      * @var string
      */
     const GROUP_DEFAULT = 'tree';
-    
+
     /**
      * @return string Identifier of action
      */
     public function getId();
-    
+
     /**
      * @return string Label of the action
      */
@@ -70,12 +70,12 @@ interface Action {
      * @return string fully qualified URL of the action
      */
     public function getUrl();
-    
+
     /**
      * @return string Java script bindings of action
      */
     public function getBinding();
-    
+
     /**
      * @return string Context of the action
      */
@@ -85,10 +85,15 @@ interface Action {
      * @return string Group of the action (where to display)
      */
     public function getGroup();
-    
+
     /**
      * @return Icon Icon to be used with action
      */
     public function getIcon();
 
+    /**
+     * Can the action be applied on mulitple resources ?
+     * @return boolean
+     */
+    public function isMultiple();
 }
