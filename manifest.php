@@ -24,10 +24,10 @@ return array(
     'label' => 'Back Office',
     'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '1.3.0',
+    'version' => '1.4.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
-        'tao' => '>=12.21.4',
+        'tao' => '>=15.7.0',
         'generis' => '>=5.10.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',
