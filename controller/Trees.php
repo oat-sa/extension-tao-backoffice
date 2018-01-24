@@ -126,10 +126,16 @@ class Trees extends \tao_actions_RdfController {
 	            )
 	        );
 	    }
-	    
-	    $data = $this->addPermissions($data);
-	
-	    $this->returnJson($data);
+                
+            //retrieve resources permissions
+            $user = \common_Session_SessionManager::getSession()->getUser();
+            $permissions = $this->getResourceService()->getResourcesPermissions($user, $data);
+
+            //expose the tree
+            $this->returnJson([
+                'tree' => $data,
+                'permissions' => $permissions
+            ]);
 	}
 	
 }
