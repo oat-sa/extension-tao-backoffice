@@ -96,4 +96,10 @@ interface Action {
      * @return boolean
      */
     public function isMultiple();
+
+    /**
+     * Get the permissions required by this actio:
+     * @return array
+     */
+    public function getRequiredRights();
 }
