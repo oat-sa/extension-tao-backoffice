@@ -18,18 +18,23 @@
  *
  *
  */
+
 namespace oat\taoBackOffice\scripts\update;
 
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBackOffice\model\entryPoint\BackOfficeEntryPoint;
 use oat\tao\model\entryPoint\BackOfficeEntrypoint as OldEntryPoint;
 use oat\tao\model\entryPoint\EntryPointService;
+use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
+
 /**
  * Class TreeService
  */
-class Updater extends \common_ext_ExtensionUpdater {
+class Updater extends \common_ext_ExtensionUpdater
+{
 
-    public function update($initialVersion) {
+    public function update($initialVersion)
+    {
 
         $currentVersion = $initialVersion;
 
@@ -39,7 +44,7 @@ class Updater extends \common_ext_ExtensionUpdater {
             $currentVersion = '0.9';
         }
         if ($currentVersion == '0.9') {
-        	 $currentVersion = '0.10';
+            $currentVersion = '0.10';
         }
         if ($currentVersion == '0.10') {
             $entryPointService = $this->getServiceManager()->get(EntryPointService::SERVICE_ID);
@@ -59,5 +64,11 @@ class Updater extends \common_ext_ExtensionUpdater {
 
         $this->setVersion($currentVersion);
         $this->skip($currentVersion, '2.0.1');
+
+        if ($this->isVersion('2.0.1')) {
+            $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, new ResourceUrlBuilder());
+
+            $this->setVersion('2.1.0');
+        }
     }
 }
