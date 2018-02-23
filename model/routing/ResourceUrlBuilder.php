@@ -36,9 +36,10 @@ class ResourceUrlBuilder extends ConfigurableService
     /**
      * Builds a full URL to be used by front-end for a resource based on the OPTION_CLASS_EXTENSION_ASSOCIATIONS map
      *
-     * Add your association if it is missing.
+     * Add your url config if it is missing.
      *
      * @param \core_kernel_classes_Resource $resource
+     * @throws \LogicException
      * @return string
      */
     public function buildUrl(\core_kernel_classes_Resource $resource)
@@ -46,35 +47,14 @@ class ResourceUrlBuilder extends ConfigurableService
         if ($resource->isClass()) {
             $resourceClass = $this->getClass($resource);
         } else {
-            $classes = $resource->getTypes();
-            $resourceClass = array_shift($classes);
-            unset($classes);
+            $resourceClass = array_values($resource->getTypes())[0];
         }
 
-        foreach ((array) $this->getOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS) as $classUri => $extensionId) {
+        foreach ((array) $this->getOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS) as $classUri => $urlConf) {
             if ($resourceClass->isSubClassOf($this->getClass($classUri))) {
-                $perspectives = array_filter(MenuService::getAllPerspectives(), function (Perspective $perspective) use ($extensionId){
-                    return $perspective->getExtension() == $extensionId;
-                });
-
-                /** @var Perspective $perspective */
-                $perspective = array_shift($perspectives);
-
-                unset($perspectives);
-
-                $children = $perspective->getChildren();
-
-                /** @var Section $section */
-                $section = array_shift($children);
-
-                unset($children);
-
-                return _url('index', 'Main', 'tao', [
-                    'structure' => $perspective->getId(),
-                    'ext' => $perspective->getExtension(),
-                    'section' => $section->getId(),
+                return _url('index', 'Main', 'tao', array_merge($urlConf, [
                     'uri' => $resource->getUri()
-                ]);
+                ]));
             }
         }
 
@@ -82,39 +62,32 @@ class ResourceUrlBuilder extends ConfigurableService
     }
 
     /**
-     * Adds a new association between a class uri and an extension.
+     * Adds a new url configuration for a class uri.
      *
      * @param string|\core_kernel_classes_Class $classUri
      * @param string $extensionId
      */
-    public function addAssociation($classUri, $extensionId)
+    public function addUrlConfig($classUri, $extensionId)
     {
         $classObj = $this->getClassObject($classUri);
 
         $associations = (array) $this->getOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS);
 
-        $associations[ (string) $classObj->getUri() ] = (string) $extensionId;
+        /** @var Perspective $perspective */
+        $perspective = array_values(array_filter(MenuService::getAllPerspectives(), function (Perspective $perspective) use ($extensionId){
+            return $perspective->getExtension() == $extensionId;
+        }))[0];
+
+        /** @var Section $section */
+        $section = $perspective->getChildren()[0];
+
+        $associations[ (string) $classObj->getUri() ] = [
+            'ext' => (string) $extensionId,
+            'structure' => $perspective->getId(),
+            'section' => $section->getId()
+        ];
 
         $this->setOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS, $associations);
-    }
-
-    /**
-     * Gets the extension id set for a given class uri
-     *
-     * @param string|\core_kernel_classes_Class $classUri
-     * @return string
-     */
-    public function getExtensionForClass($classUri)
-    {
-        $classObj = $this->getClassObject($classUri);
-
-        $associations = (array) $this->getOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS);
-
-        if (array_key_exists($classObj->getUri(), $associations)) {
-            return $associations[$classObj->getUri()];
-        }
-
-        throw new \LogicException('No extension associated with "'. $classObj->getUri() .'"');
     }
 
     /**
