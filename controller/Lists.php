@@ -27,13 +27,13 @@ use Exception;
 use oat\tao\helpers\Template;
 use oat\tao\model\TaoOntology;
 use \tao_helpers_Scriptloader;
-use \tao_models_classes_ListService;
 use \tao_actions_form_List;
 use \tao_helpers_Uri;
 use \core_kernel_classes_Resource;
 use \core_kernel_classes_Class;
 use \core_kernel_classes_Property;
 use \tao_helpers_Request;
+use oat\taoBackOffice\model\lists\ListService;
 
 /**
  * This controller provide the actions to manage the lists of data
@@ -55,7 +55,7 @@ class Lists extends \tao_actions_CommonModule {
 		//add List stylesheet
 		tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
 
-		$this->service = tao_models_classes_ListService::singleton();
+		$this->service = ListService::singleton();
 		$this->defaultData();
 	}
 
@@ -63,7 +63,8 @@ class Lists extends \tao_actions_CommonModule {
 	 * Show the list of users
 	 * @return void
 	 */
-	public function index(){
+	public function index()
+	{
 
 		$myAdderFormContainer = new tao_actions_form_List();
 		$myForm = $myAdderFormContainer->getForm();
@@ -84,28 +85,37 @@ class Lists extends \tao_actions_CommonModule {
 		}
 		$this->setData('form', $myForm->render());
 
-		$lists = array();
-		foreach($this->service->getLists() as $listClass){
-			$elements = array();
-			foreach($this->service->getListElements($listClass) as $index => $listElement){
-				$elements[$index] = array(
-					'uri'		=> tao_helpers_Uri::encode($listElement->getUri()),
-					'label'		=> $listElement->getLabel()
-				);
-				ksort($elements);
-			}
-			$lists[] = array(
-				'uri'		=> tao_helpers_Uri::encode($listClass->getUri()),
-				'label'		=> $listClass->getLabel(),
-				// The Language list should not be editable.
-				// @todo Make two different kind of lists: system list that are not editable and usual list.
-				'editable'	=> $listClass->isSubClassOf(new core_kernel_classes_Class(TaoOntology::LIST_CLASS_URI)) && $listClass->getUri() !== TaoOntology::LANGUAGES_CLASS_URI,
-				'elements'	=> $elements
-			);
-		}
-
-		$this->setData('lists', $lists);
+		$this->setData('lists', $this->getListData());
 		$this->setView('Lists/index.tpl');
+	}
+
+	/**
+	 * Returns all lists with all values for all lists
+	 * @return array
+	 */
+	private function getListData()
+	{
+	    $listService = $this->service;
+	    $lists = array();
+	    foreach($listService->getLists() as $listClass){
+	        $elements = array();
+	        foreach($listService->getListElements($listClass) as $index => $listElement){
+	            $elements[$index] = array(
+	                'uri'		=> tao_helpers_Uri::encode($listElement->getUri()),
+	                'label'		=> $listElement->getLabel()
+	            );
+	            ksort($elements);
+	        }
+	        $lists[] = array(
+	            'uri'		=> tao_helpers_Uri::encode($listClass->getUri()),
+	            'label'		=> $listClass->getLabel(),
+	            // The Language list should not be editable.
+	            // @todo Make two different kind of lists: system list that are not editable and usual list.
+	            'editable'	=> $listClass->isSubClassOf(new core_kernel_classes_Class(TaoOntology::CLASS_URI_LIST)) && $listClass->getUri() !== \tao_models_classes_LanguageService::CLASS_URI_LANGUAGES,
+	            'elements'	=> $elements
+	        );
+	    }
+	    return $lists;
 	}
 
 	/**
