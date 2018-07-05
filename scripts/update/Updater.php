@@ -63,9 +63,10 @@ class Updater extends \common_ext_ExtensionUpdater
         }
 
         $this->setVersion($currentVersion);
-        $this->skip($currentVersion, '2.0.1');
 
-        if ($this->isVersion('2.0.1')) {
+        $this->skip($currentVersion, '2.0.2');
+
+        if ($this->isVersion('2.0.2')) {
             $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, new ResourceUrlBuilder());
 
             $this->setVersion('2.1.0');
