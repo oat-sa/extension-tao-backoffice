@@ -24,19 +24,19 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\menu\MenuService;
 use oat\tao\model\menu\Perspective;
 use oat\tao\model\menu\Section;
+use oat\tao\model\menu\Tree;
 
+/**
+ * @author Gyula Szucs <gyula@taotesting.com>
+ */
 class ResourceUrlBuilder extends ConfigurableService
 {
     use OntologyAwareTrait;
 
     const SERVICE_ID = 'taoBackOffice/resourceUrlBuilder';
 
-    const OPTION_CLASS_EXTENSION_ASSOCIATIONS = 'class_to_extension_associations';
-
     /**
-     * Builds a full URL to be used by front-end for a resource based on the OPTION_CLASS_EXTENSION_ASSOCIATIONS map
-     *
-     * Add your url config if it is missing.
+     * Builds a full URL for a resource
      *
      * @param \core_kernel_classes_Resource $resource
      * @throws \LogicException
@@ -50,64 +50,25 @@ class ResourceUrlBuilder extends ConfigurableService
             $resourceClass = array_values($resource->getTypes())[0];
         }
 
-        foreach ((array) $this->getOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS) as $classUri => $urlConf) {
-            if ($resourceClass->isSubClassOf($this->getClass($classUri))) {
-                return _url('index', 'Main', 'tao', array_merge($urlConf, [
-                    'uri' => $resource->getUri()
-                ]));
+        /** @var Perspective $perspective */
+        /** @var Section $section */
+        /** @var Tree $tree */
+
+        foreach (MenuService::getAllPerspectives() as $perspective) {
+            foreach ($perspective->getChildren() as $section) {
+                foreach ($section->getTrees() as $tree) {
+                    $rootClass = $this->getClass($tree->get('rootNode'));
+                    if ($rootClass->equals($resourceClass) || $resourceClass->isSubClassOf($rootClass)) {
+                        return _url('index', 'Main', 'tao', [
+                            'structure' => $perspective->getId(),
+                            'section' => $section->getId(),
+                            'uri' => $resource->getUri(),
+                        ]);
+                    }
+                }
             }
         }
 
         throw new \LogicException('No url could be built for "'. $resource->getUri() .'"');
-    }
-
-    /**
-     * Adds a new url configuration for a class uri.
-     *
-     * @param string|\core_kernel_classes_Class $classUri
-     * @param string $extensionId
-     */
-    public function addUrlConfig($classUri, $extensionId)
-    {
-        $classObj = $this->getClassObject($classUri);
-
-        $associations = (array) $this->getOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS);
-
-        /** @var Perspective $perspective */
-        $perspective = array_values(array_filter(MenuService::getAllPerspectives(), function (Perspective $perspective) use ($extensionId){
-            return $perspective->getExtension() == $extensionId;
-        }))[0];
-
-        /** @var Section $section */
-        $section = $perspective->getChildren()[0];
-
-        $associations[ (string) $classObj->getUri() ] = [
-            'ext' => (string) $extensionId,
-            'structure' => $perspective->getId(),
-            'section' => $section->getId()
-        ];
-
-        $this->setOption(self::OPTION_CLASS_EXTENSION_ASSOCIATIONS, $associations);
-    }
-
-    /**
-     * @param $classUri
-     * @return \core_kernel_classes_Class
-     */
-    private function getClassObject($classUri)
-    {
-        if (is_string($classUri)) {
-            $classObj = $this->getClass($classUri);
-        } else if ($classUri instanceof \core_kernel_classes_Class) {
-            $classObj = $classUri;
-        } else {
-            throw new \InvalidArgumentException('Either a core_kernel_classes_Class instance or a class uri is accepted.');
-        }
-
-        if (!$classObj->exists()) {
-            throw new \InvalidArgumentException('Class "' . $classObj->getUri() . '" does not exist.');
-        }
-
-        return $classObj;
     }
 }

@@ -41,7 +41,7 @@ class BuildResourceUrl extends ScriptAction
     protected function provideOptions()
     {
         return [
-            'resourceUri' => [
+            'uri' => [
                 'prefix' => 'u',
                 'longPrefix' => 'uri',
                 'required' => true,
@@ -58,14 +58,14 @@ class BuildResourceUrl extends ScriptAction
     protected function run()
     {
         try {
-            $resource = new \core_kernel_classes_Resource($this->getOption('resourceUri'));
+            $resource = new \core_kernel_classes_Resource($this->getOption('uri'));
 
             if ($resource->isClass()) {
                 $resource = new \core_kernel_classes_Class($resource);
             }
 
             if (!$resource->exists()) {
-                throw new \RuntimeException('Resource "'. $this->getOption('resourceUri'). '" not found');
+                throw new \RuntimeException('Resource "'. $this->getOption('uri'). '" not found');
             }
 
             /** @var ResourceUrlBuilder $urlBuilder */
