@@ -35,20 +35,43 @@ class ResourceUrlBuilder extends ConfigurableService
 
     const SERVICE_ID = 'taoBackOffice/resourceUrlBuilder';
 
+    const OPTION_CACHE_SERVICE = 'cache';
+
+    /**
+     * @var \common_cache_Cache
+     */
+    private $cache;
+
+    /**
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        parent::__construct($options);
+
+        if (empty($this->getOption(self::OPTION_CACHE_SERVICE))) {
+            throw new \InvalidArgumentException("Cache Service needs to be set for ". __CLASS__);
+        }
+    }
+
     /**
      * Builds a full URL for a resource
      *
      * @param \core_kernel_classes_Resource $resource
-     * @throws \LogicException
      * @return string
+     * @throws \common_cache_NotFoundException
      */
     public function buildUrl(\core_kernel_classes_Resource $resource)
     {
-        if ($resource->isClass()) {
-            $resourceClass = $this->getClass($resource);
-        } else {
-            $resourceClass = array_values($resource->getTypes())[0];
+        $cacheKey = md5('buildUrl'. $resource->getUri());
+
+        if ($this->getCache()->has($cacheKey)) {
+            return $this->getCache()->get($cacheKey);
         }
+
+        $resourceClass = $resource->isClass()
+            ? $this->getClass($resource)
+            : array_values($resource->getTypes())[0];
 
         /** @var Perspective $perspective */
         /** @var Section $section */
@@ -59,16 +82,32 @@ class ResourceUrlBuilder extends ConfigurableService
                 foreach ($section->getTrees() as $tree) {
                     $rootClass = $this->getClass($tree->get('rootNode'));
                     if ($rootClass->equals($resourceClass) || $resourceClass->isSubClassOf($rootClass)) {
-                        return _url('index', 'Main', 'tao', [
+                        $url = _url('index', 'Main', 'tao', [
                             'structure' => $perspective->getId(),
                             'section' => $section->getId(),
                             'uri' => $resource->getUri(),
                         ]);
+
+                        $this->getCache()->put($url, $cacheKey);
+
+                        return $url;
                     }
                 }
             }
         }
 
         throw new \LogicException('No url could be built for "'. $resource->getUri() .'"');
+    }
+
+    /**
+     * @return \common_cache_Cache
+     */
+    protected function getCache()
+    {
+        if (is_null($this->cache)) {
+            $this->cache = $this->getServiceLocator()->get($this->getOption(self::OPTION_CACHE_SERVICE));
+        }
+
+        return $this->cache;
     }
 }
