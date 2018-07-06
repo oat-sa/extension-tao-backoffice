@@ -69,34 +69,48 @@ class ResourceUrlBuilder extends ConfigurableService
             return $this->getCache()->get($cacheKey);
         }
 
-        $resourceClass = $resource->isClass()
-            ? $this->getClass($resource)
-            : array_values($resource->getTypes())[0];
-
         /** @var Perspective $perspective */
         /** @var Section $section */
-        /** @var Tree $tree */
 
         foreach (MenuService::getAllPerspectives() as $perspective) {
             foreach ($perspective->getChildren() as $section) {
-                foreach ($section->getTrees() as $tree) {
-                    $rootClass = $this->getClass($tree->get('rootNode'));
-                    if ($rootClass->equals($resourceClass) || $resourceClass->isSubClassOf($rootClass)) {
-                        $url = _url('index', 'Main', 'tao', [
-                            'structure' => $perspective->getId(),
-                            'section' => $section->getId(),
-                            'uri' => $resource->getUri(),
-                        ]);
+                if ($this->isSectionApplicable($resource, $section)) {
+                    $url = _url('index', 'Main', 'tao', [
+                        'structure' => $perspective->getId(),
+                        'section' => $section->getId(),
+                        'uri' => $resource->getUri(),
+                    ]);
 
-                        $this->getCache()->put($url, $cacheKey);
+                    $this->getCache()->put($url, $cacheKey);
 
-                        return $url;
-                    }
+                    return $url;
                 }
             }
         }
 
         throw new \LogicException('No url could be built for "'. $resource->getUri() .'"');
+    }
+
+    /**
+     * @param \core_kernel_classes_Resource $resource
+     * @param Section                       $section
+     * @return bool
+     */
+    private function isSectionApplicable(\core_kernel_classes_Resource $resource, Section $section)
+    {
+        $resourceClass = $resource->isClass()
+            ? $this->getClass($resource)
+            : array_values($resource->getTypes())[0];
+
+        /** @var Tree $tree */
+        foreach ($section->getTrees() as $tree) {
+            $rootClass = $this->getClass($tree->get('rootNode'));
+            if ($rootClass->equals($resourceClass) || $resourceClass->isSubClassOf($rootClass)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
