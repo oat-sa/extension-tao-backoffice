@@ -67,9 +67,7 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip($currentVersion, '2.0.2');
 
         if ($this->isVersion('2.0.2')) {
-            $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, new ResourceUrlBuilder([
-                ResourceUrlBuilder::OPTION_CACHE_SERVICE => \common_cache_Cache::SERVICE_ID
-            ]));
+            $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, new ResourceUrlBuilder());
 
             $this->setVersion('2.1.0');
         }

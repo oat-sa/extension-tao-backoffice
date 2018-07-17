@@ -18,6 +18,4 @@
  *
  */
 
-return new \oat\taoBackOffice\model\routing\ResourceUrlBuilder([
-    \oat\taoBackOffice\model\routing\ResourceUrlBuilder::OPTION_CACHE_SERVICE => \common_cache_Cache::SERVICE_ID
-]);
+return new \oat\taoBackOffice\model\routing\ResourceUrlBuilder();
