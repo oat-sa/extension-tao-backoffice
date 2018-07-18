@@ -46,9 +46,13 @@ class ResourceUrlBuilder extends ConfigurableService
         /** @var Perspective $perspective */
         /** @var Section $section */
 
+        $resourceClass = $resource->isClass()
+            ? $this->getClass($resource)
+            : array_values($resource->getTypes())[0];
+
         foreach (MenuService::getAllPerspectives() as $perspective) {
             foreach ($perspective->getChildren() as $section) {
-                if ($this->isSectionApplicable($resource, $section)) {
+                if ($this->isSectionApplicable($resourceClass, $section)) {
                     $url = _url('index', 'Main', 'tao', [
                         'structure' => $perspective->getId(),
                         'section' => $section->getId(),
@@ -64,16 +68,12 @@ class ResourceUrlBuilder extends ConfigurableService
     }
 
     /**
-     * @param \core_kernel_classes_Resource $resource
-     * @param Section                       $section
+     * @param \core_kernel_classes_Class $resourceClass
+     * @param Section                    $section
      * @return bool
      */
-    private function isSectionApplicable(\core_kernel_classes_Resource $resource, Section $section)
+    private function isSectionApplicable(\core_kernel_classes_Class $resourceClass, Section $section)
     {
-        $resourceClass = $resource->isClass()
-            ? $this->getClass($resource)
-            : array_values($resource->getTypes())[0];
-
         /** @var Tree $tree */
         foreach ($section->getTrees() as $tree) {
             $rootClass = $this->getClass($tree->get('rootNode'));
