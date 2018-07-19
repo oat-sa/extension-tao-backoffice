@@ -24,7 +24,6 @@ use oat\oatbox\service\ConfigurableService;
 use oat\tao\model\menu\MenuService;
 use oat\tao\model\menu\Perspective;
 use oat\tao\model\menu\Section;
-use oat\tao\model\menu\Tree;
 
 /**
  * @author Gyula Szucs <gyula@taotesting.com>
@@ -53,18 +52,27 @@ class ResourceUrlBuilder extends ConfigurableService
         foreach (MenuService::getAllPerspectives() as $perspective) {
             foreach ($perspective->getChildren() as $section) {
                 if ($this->isSectionApplicable($resourceClass, $section)) {
-                    $url = _url('index', 'Main', 'tao', [
-                        'structure' => $perspective->getId(),
-                        'section' => $section->getId(),
-                        'uri' => $resource->getUri(),
-                    ]);
-
-                    return $url;
+                    return $this->getBackofficeUrl($perspective, $section, $resource);
                 }
             }
         }
 
         throw new \LogicException('No url could be built for "'. $resource->getUri() .'"');
+    }
+
+    /**
+     * Generates the actual URL based on perspective and section
+     * @param Perspective $perspective
+     * @param Section $section
+     * @param \core_kernel_classes_Resource $resource
+     */
+    private function getBackofficeUrl(Perspective $perspective, Section $section, \core_kernel_classes_Resource $resource)
+    {
+        return _url('index', 'Main', 'tao', [
+            'structure' => $perspective->getId(),
+            'section' => $section->getId(),
+            'uri' => $resource->getUri(),
+        ]);
     }
 
     /**
