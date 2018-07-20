@@ -26,6 +26,10 @@ use oat\taoBackOffice\model\entryPoint\BackOfficeEntryPoint;
 use oat\tao\model\entryPoint\BackOfficeEntrypoint as OldEntryPoint;
 use oat\tao\model\entryPoint\EntryPointService;
 use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
+use oat\tao\model\accessControl\func\AclProxy;
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\tao\model\user\TaoRoles;
+use oat\taoBackOffice\controller\Redirector;
 
 /**
  * Class TreeService
@@ -70,6 +74,10 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, new ResourceUrlBuilder());
 
             $this->setVersion('2.1.0');
+        }
+        if ($this->isVersion('2.1.0')) {
+            AclProxy::applyRule(new AccessRule('grant', TaoRoles::BACK_OFFICE, Redirector::class.'@redirectTaskToInstance'));
+            $this->setVersion('2.1.1');
         }
     }
 }
