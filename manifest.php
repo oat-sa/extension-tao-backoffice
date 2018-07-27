@@ -1,4 +1,7 @@
 <?php
+use oat\taoBackOffice\controller\Redirector;
+use oat\tao\model\user\TaoRoles;
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,16 +27,17 @@ return array(
     'label' => 'Back Office',
     'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '2.0.2',
+    'version' => '2.1.1',
     'author' => 'Open Assessment Technologies SA',
     'requires' => array(
-        'tao' => '>=12.21.4',
+        'tao' => '>=19.17.0',
         'generis' => '>=5.10.0'
     ),
 	'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',
     'acl' => array(
         array('grant', 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager', array('ext'=>'taoBackOffice')),
         array('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#PropertyManagerRole', array('controller' => 'oat\taoBackOffice\controller\Lists')),
+        array('grant', TaoRoles::BACK_OFFICE, Redirector::class.'@redirectTaskToInstance'),
     ),
     'install' => array(
         'rdf' => array(
