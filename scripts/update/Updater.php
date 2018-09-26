@@ -79,5 +79,7 @@ class Updater extends \common_ext_ExtensionUpdater
             AclProxy::applyRule(new AccessRule('grant', TaoRoles::BACK_OFFICE, Redirector::class.'@redirectTaskToInstance'));
             $this->setVersion('2.1.1');
         }
+
+        $this->skip('2.1.1', '2.1.2');
     }
 }
