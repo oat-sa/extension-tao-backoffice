@@ -23,14 +23,11 @@
 module.exports = function(grunt) {
     'use strict';
 
-    var root = grunt.option('root');
     grunt.config.merge({
         bundle : {
             taobackoffice : {
                 options : {
                     extension : 'taoBackOffice',
-                    extensionPath : root + '/taoBackOffice/views/js',
-                    outputDir : 'loader',
                     bundles : [{
                         name : 'taoBackOffice',
                         default : true
