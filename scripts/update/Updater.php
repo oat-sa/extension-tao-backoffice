@@ -80,6 +80,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.1.1');
         }
 
-        $this->skip('2.1.1', '2.1.3');
+        $this->skip('2.1.1', '3.0.0');
     }
 }
