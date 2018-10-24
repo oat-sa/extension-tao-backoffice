@@ -1,53 +1,43 @@
+/**
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; under version 2
+ * of the License (non-upgradable).
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * Copyright (c) 2015-2018 (original work) Open Assessment Technologies SA;
+ */
+
+/**
+ * Configure the extension bundles
+ * @author Bertrand Chevrier <bertrand@taotesting.com>
+ */
 module.exports = function(grunt) {
+    'use strict';
 
-    var requirejs   = grunt.config('requirejs') || {};
-    var clean       = grunt.config('clean') || {};
-    var copy        = grunt.config('copy') || {};
-
-    var root        = grunt.option('root');
-    var libs        = grunt.option('mainlibs');
-    var ext         = require(root + '/tao/views/build/tasks/helpers/extensions')(grunt, root);
-    var out         = 'output';
-
-    /**
-     * Remove bundled and bundling files
-     */
-    clean.taobackofficebundle = [out];
-
-    /**
-     * Compile tao files into a bundle
-     */
-    requirejs.taobackofficebundle = {
-        options: {
-            baseUrl : '../js',
-            dir : out,
-            mainConfigFile : './config/requirejs.build.js',
-            paths : {
-                'taoBackOffice' : root + '/taoBackOffice/views/js',
-                'taoBackOfficeCss' : root + '/taoBackOffice/views/css'
-            },
-            modules : [{
-                name: 'taoBackOffice/controller/routes',
-                include : ext.getExtensionsControllers(['taoBackOffice']),
-                exclude : ['mathJax', 'taoBackOffice/lib/vis/vis'].concat(libs)
-            }]
+    grunt.config.merge({
+        bundle : {
+            taobackoffice : {
+                options : {
+                    extension : 'taoBackOffice',
+                    outputDir : 'loader',
+                    bundles : [{
+                        name : 'taoBackOffice',
+                        default : true
+                    }]
+                }
+            }
         }
-    };
-
-    /**
-     * copy the bundles to the right place
-     */
-    copy.taobackofficebundle = {
-        files: [
-            { src: [ out + '/taoBackOffice/controller/routes.js'],  dest: root + '/taoBackOffice/views/js/controllers.min.js' },
-            { src: [ out + '/taoBackOffice/controller/routes.js.map'],  dest: root + '/taoBackOffice/views/js/controllers.min.js.map' }
-        ]
-    };
-
-    grunt.config('clean', clean);
-    grunt.config('requirejs', requirejs);
-    grunt.config('copy', copy);
+    });
 
     // bundle task
-    grunt.registerTask('taobackofficebundle', ['clean:taobackofficebundle', 'requirejs:taobackofficebundle', 'copy:taobackofficebundle']);
+    grunt.registerTask('taobackofficebundle', ['bundle:taobackoffice']);
 };
