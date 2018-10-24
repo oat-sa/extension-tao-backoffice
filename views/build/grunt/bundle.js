@@ -28,6 +28,7 @@ module.exports = function(grunt) {
             taobackoffice : {
                 options : {
                     extension : 'taoBackOffice',
+                    outputDir : 'loader',
                     bundles : [{
                         name : 'taoBackOffice',
                         default : true
