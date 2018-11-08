@@ -31,7 +31,8 @@ module.exports = function(grunt) {
                     outputDir : 'loader',
                     bundles : [{
                         name : 'taoBackOffice',
-                        default : true
+                        default : true,
+                        exclude: ['taoBackOffice/lib/vis/vis', 'css!taoBackOffice/lib/vis/vis']
                     }]
                 }
             }
