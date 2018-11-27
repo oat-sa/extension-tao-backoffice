@@ -142,7 +142,8 @@ class Lists extends \tao_actions_CommonModule {
 
 	/**
 	 * get the elements in JSON of the list in parameter
-	 * @return void
+     * @throws common_exception_BadRequest
+     * @return void
 	 */
 	public function getListElements(){
 		if(!tao_helpers_Request::isAjax()){
@@ -163,6 +164,8 @@ class Lists extends \tao_actions_CommonModule {
 
 	/**
 	 * Save a list and it's elements
+     *
+     * @throws common_exception_BadRequest
 	 * @return void
 	 */
 	public function saveLists(){
@@ -223,6 +226,7 @@ class Lists extends \tao_actions_CommonModule {
 
 	/**
 	 * Create a list or a list element
+     * @throws common_exception_BadRequest
 	 * @return void
 	 */
 	public function create(){
@@ -259,6 +263,7 @@ class Lists extends \tao_actions_CommonModule {
 	/**
 	 * Rename a list node: change the label of a resource
 	 * Render the json response with the renamed status
+     * @throws common_exception_BadRequest
 	 * @return void
 	 */
 	public function rename(){
@@ -295,6 +300,7 @@ class Lists extends \tao_actions_CommonModule {
 
 	/**
 	 * Removee the list in parameter
+     * @throws common_exception_BadRequest
 	 * @return void
 	 */
 	public function removeList(){
@@ -313,6 +319,7 @@ class Lists extends \tao_actions_CommonModule {
 
 	/**
 	 * Remove the list element in parameter
+     * @throws common_exception_BadRequest
 	 * @return void
 	 */
 	public function removeListElement(){
