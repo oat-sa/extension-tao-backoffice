@@ -23,7 +23,7 @@
 
 namespace oat\taoBackOffice\controller;
 
-use Exception;
+use common_exception_BadRequest;
 use oat\tao\helpers\Template;
 use oat\tao\model\TaoOntology;
 use \tao_helpers_Scriptloader;
@@ -120,10 +120,13 @@ class Lists extends \tao_actions_CommonModule {
 
 	/**
 	 * get the JSON data to populate the tree widget
+     *
+     * @throws \common_exception_Error
+     * @throws common_exception_BadRequest
 	 */
 	public function getListsData(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$data = array();
 		foreach($this->service->getLists() as $listClass){
@@ -143,7 +146,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function getListElements(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$data = array();
 		if($this->hasRequestParameter('listUri')){
@@ -164,7 +167,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function saveLists(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$saved = false;
 
@@ -224,7 +227,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function create(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new common_exception_BadRequest('wrong request mode');
 		}
 
 		$response = array();
@@ -260,7 +263,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function rename(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new common_exception_BadRequest('wrong request mode');
 		}
 
 		$data = array('renamed'	=> false);
@@ -296,7 +299,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function removeList(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$deleted = false;
 
@@ -314,7 +317,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	public function removeListElement(){
 		if(!tao_helpers_Request::isAjax()){
-			throw new Exception("wrong request mode");
+			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$deleted = false;
 
