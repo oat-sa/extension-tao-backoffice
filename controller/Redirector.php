@@ -57,7 +57,7 @@ class Redirector extends \tao_actions_CommonModule
         $resource = $this->getResource($uri);
 
         if($resource->exists()){
-            $this->returnJson([
+            return $this->returnJson([
                 'success' => true,
                 'data'    => $urlBuilder->buildUrl($resource)
             ]);
