@@ -21,10 +21,6 @@
 
 namespace oat\taoBackOffice\scripts\update;
 
-use oat\tao\scripts\update\OntologyUpdater;
-use oat\taoBackOffice\model\entryPoint\BackOfficeEntryPoint;
-use oat\tao\model\entryPoint\BackOfficeEntrypoint as OldEntryPoint;
-use oat\tao\model\entryPoint\EntryPointService;
 use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
 use oat\tao\model\accessControl\func\AclProxy;
 use oat\tao\model\accessControl\func\AccessRule;
@@ -40,35 +36,10 @@ class Updater extends \common_ext_ExtensionUpdater
     public function update($initialVersion)
     {
 
-        $currentVersion = $initialVersion;
-
-        // ontology
-        if ($currentVersion == '0.8') {
-            OntologyUpdater::syncModels();
-            $currentVersion = '0.9';
+        if ($this->isBetween('0.0', '0.10')) {
+            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
         }
-        if ($currentVersion == '0.9') {
-            $currentVersion = '0.10';
-        }
-        if ($currentVersion == '0.10') {
-            $entryPointService = $this->getServiceManager()->get(EntryPointService::SERVICE_ID);
-
-            // replace old backoffice
-            $newEntryPoint = new BackOfficeEntryPoint();
-            foreach ($entryPointService->getEntryPoints() as $entryPoint) {
-                if ($entryPoint instanceof OldEntryPoint) {
-                    $entryPointService->overrideEntryPoint($entryPoint->getId(), $newEntryPoint);
-                }
-            }
-
-            $this->getServiceManager()->register(EntryPointService::SERVICE_ID, $entryPointService);
-
-            $currentVersion = '0.11';
-        }
-
-        $this->setVersion($currentVersion);
-
-        $this->skip($currentVersion, '2.0.2');
+        $this->skip('0.11', '2.0.2');
 
         if ($this->isVersion('2.0.2')) {
             $this->getServiceManager()->register(ResourceUrlBuilder::SERVICE_ID, new ResourceUrlBuilder());
@@ -80,6 +51,6 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.1.1');
         }
 
-        $this->skip('2.1.1', '3.1.0');
+        $this->skip('2.1.1', '3.2.0');
     }
 }
