@@ -43,21 +43,7 @@ use oat\taoBackOffice\model\lists\ListService;
 class Lists extends \tao_actions_CommonModule
 {
     use OntologyAwareTrait;
-
-	/**
-	 * Constructor performs initializations actions
-	 * @return void
-	 */
-	public function __construct(){
-
-		parent::__construct();
-		//add List stylesheet
-
-
-		$this->service = ListService::singleton();
-
-	}
-
+    
 	/**
 	 * Show the list of users
 	 * @return void
