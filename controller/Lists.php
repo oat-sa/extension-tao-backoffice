@@ -1,38 +1,35 @@
 <?php
-/**  
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013 (update and modification) Open Assessment Technologies SA;
- * 
+ *               2013-2018 (update and modification) Open Assessment Technologies SA;
+ *
  */
 
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
+use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
 use oat\tao\model\TaoOntology;
 use \tao_helpers_Scriptloader;
 use \tao_actions_form_List;
 use \tao_helpers_Uri;
-use \core_kernel_classes_Resource;
-use \core_kernel_classes_Class;
-use \core_kernel_classes_Property;
-use \tao_helpers_Request;
 use oat\taoBackOffice\model\lists\ListService;
 
 /**
@@ -43,28 +40,18 @@ use oat\taoBackOffice\model\lists\ListService;
  * @package taoBackOffice
  *
  */
-class Lists extends \tao_actions_CommonModule {
-
-	/**
-	 * Constructor performs initializations actions
-	 * @return void
-	 */
-	public function __construct(){
-
-		parent::__construct();
-		//add List stylesheet
-		tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
-
-		$this->service = ListService::singleton();
-		$this->defaultData();
-	}
-
+class Lists extends \tao_actions_CommonModule
+{
+    use OntologyAwareTrait;
+    
 	/**
 	 * Show the list of users
 	 * @return void
 	 */
 	public function index()
 	{
+        tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
+        $this->defaultData();
 
 		$myAdderFormContainer = new tao_actions_form_List();
 		$myForm = $myAdderFormContainer->getForm();
@@ -72,16 +59,15 @@ class Lists extends \tao_actions_CommonModule {
 		if($myForm->isSubmited()){
 			if($myForm->isValid()){
 				$values = $myForm->getValues();
-				$newList = $this->service->createList($values['label']);
+				$newList = $this->getListService()->createList($values['label']);
 				$i = 0;
 				while($i < $values['size']){
-					$this->service->createListElement($newList, __('element'). ' '.($i + 1));
+					$this->getListService()->createListElement($newList, __('element'). ' '.($i + 1));
 					$i++;
 				}
 			}
-		}
-		else{
-			$myForm->getElement('label')->setValue(__('List').' '.(count($this->service->getLists()) + 1));
+		} else {
+			$myForm->getElement('label')->setValue(__('List').' '.(count($this->getListService()->getLists()) + 1));
 		}
 		$this->setData('form', $myForm->render());
 
@@ -95,7 +81,7 @@ class Lists extends \tao_actions_CommonModule {
 	 */
 	private function getListData()
 	{
-	    $listService = $this->service;
+	    $listService = $this->getListService();
 	    $lists = array();
 	    foreach($listService->getLists() as $listClass){
 	        $elements = array();
@@ -111,7 +97,7 @@ class Lists extends \tao_actions_CommonModule {
 	            'label'		=> $listClass->getLabel(),
 	            // The Language list should not be editable.
 	            // @todo Make two different kind of lists: system list that are not editable and usual list.
-	            'editable'	=> $listClass->isSubClassOf(new core_kernel_classes_Class(TaoOntology::CLASS_URI_LIST)) && $listClass->getUri() !== \tao_models_classes_LanguageService::CLASS_URI_LANGUAGES,
+	            'editable'	=> $listClass->isSubClassOf($this->getClass(TaoOntology::CLASS_URI_LIST)) && $listClass->getUri() !== \tao_models_classes_LanguageService::CLASS_URI_LANGUAGES,
 	            'elements'	=> $elements
 	        );
 	    }
@@ -124,15 +110,16 @@ class Lists extends \tao_actions_CommonModule {
      * @throws \common_exception_Error
      * @throws common_exception_BadRequest
 	 */
-	public function getListsData(){
-		if(!tao_helpers_Request::isAjax()){
+	public function getListsData()
+    {
+		if(!$this->isXmlHttpRequest()){
 			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$data = array();
-		foreach($this->service->getLists() as $listClass){
-			array_push($data, $this->service->toTree($listClass));
+		foreach($this->getListService()->getLists() as $listClass){
+			array_push($data, $this->getListService()->toTree($listClass));
 		}
-		echo json_encode(array(
+        $this->returnJson(array(
 			'data' 		=> __('Lists'),
 			'attributes' => array('class' => 'node-root'),
 			'children' 	=> $data,
@@ -145,20 +132,21 @@ class Lists extends \tao_actions_CommonModule {
      * @throws common_exception_BadRequest
      * @return void
 	 */
-	public function getListElements(){
-		if(!tao_helpers_Request::isAjax()){
+	public function getListElements()
+    {
+		if(!$this->isXmlHttpRequest()){
 			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$data = array();
 		if($this->hasRequestParameter('listUri')){
-			$list = $this->service->getList(tao_helpers_Uri::decode($this->getRequestParameter('listUri')));
+			$list = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('listUri')));
 			if(!is_null($list)){
-				foreach($this->service->getListELements($list, true) as  $listElement){
+				foreach($this->getListService()->getListELements($list, true) as  $listElement){
 					$data[tao_helpers_Uri::encode($listElement->getUri())] = $listElement->getLabel();
 				}
 			}
 		}
-		echo json_encode($data);
+        $this->returnJson($data);
 	}
 
 
@@ -168,21 +156,22 @@ class Lists extends \tao_actions_CommonModule {
      * @throws common_exception_BadRequest
 	 * @return void
 	 */
-	public function saveLists(){
-		if(!tao_helpers_Request::isAjax()){
+	public function saveLists()
+    {
+		if(!$this->isXmlHttpRequest()){
 			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$saved = false;
 
 		if($this->hasRequestParameter('uri')){
 
-			$listClass = $this->service->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+			$listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
 			if(!is_null($listClass)) {
 			    // use $_POST instead of getRequestParameters to prevent html encoding
 				$listClass->setLabel($_POST['label']);
 
 				$setLevel = false;
-				$levelProperty = new core_kernel_classes_Property(TaoOntology::LIST_CLASS_URI);
+				$levelProperty = $this->getProperty(TaoOntology::CLASS_URI_LIST);
 				foreach($listClass->getProperties(true) as $property){
 					if($property->getUri() == $levelProperty->getUri()){
 						$setLevel = true;
@@ -190,7 +179,7 @@ class Lists extends \tao_actions_CommonModule {
 					}
 				}
 
-				$elements = $this->service->getListElements($listClass);
+				$elements = $this->getListService()->getListElements($listClass);
 				// use $_POST instead of getRequestParameters to prevent html encoding
 				foreach($_POST as $key => $value){
 					if(preg_match("/^list\-element_/", $key)){
@@ -211,7 +200,7 @@ class Lists extends \tao_actions_CommonModule {
 							}
 						}
 						if(!$found){
-							$element = $this->service->createListElement($listClass, $value);
+							$element = $this->getListService()->createListElement($listClass, $value);
 							if($setLevel){
 								$element->setPropertyValue($levelProperty, $level);
 							}
@@ -221,7 +210,7 @@ class Lists extends \tao_actions_CommonModule {
 				$saved = true;
 			}
 		}
-		echo json_encode(array('saved' => $saved));
+        $this->returnJson(array('saved' => $saved));
 	}
 
 	/**
@@ -229,8 +218,9 @@ class Lists extends \tao_actions_CommonModule {
      * @throws common_exception_BadRequest
 	 * @return void
 	 */
-	public function create(){
-		if(!tao_helpers_Request::isAjax()){
+	public function create()
+    {
+		if(!$this->isXmlHttpRequest()){
 			throw new common_exception_BadRequest('wrong request mode');
 		}
 
@@ -238,7 +228,7 @@ class Lists extends \tao_actions_CommonModule {
 		if($this->getRequestParameter('classUri')){
 
 			if($this->getRequestParameter('type') == 'class' && $this->getRequestParameter('classUri') == 'root'){
-				$listClass = $this->service->createList();
+				$listClass = $this->getListService()->createList();
 				if(!is_null($listClass)){
 					$response['label']	= $listClass->getLabel();
 					$response['uri'] 	= tao_helpers_Uri::encode($listClass->getUri());
@@ -246,9 +236,9 @@ class Lists extends \tao_actions_CommonModule {
 			}
 
 			if($this->getRequestParameter('type') == 'instance'){
-				$listClass = $this->service->getList(tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
+				$listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
 				if(!is_null($listClass)){
-					$listElt = $this->service->createListElement($listClass);
+					$listElt = $this->getListService()->createListElement($listClass);
 					if(!is_null($listElt)){
 						$response['label']	= $listElt->getLabel();
 						$response['uri'] 	= tao_helpers_Uri::encode($listElt->getUri());
@@ -257,7 +247,7 @@ class Lists extends \tao_actions_CommonModule {
 			}
 
 		}
-		echo json_encode($response);
+        $this->returnJson($response);
 	}
 
 	/**
@@ -266,8 +256,9 @@ class Lists extends \tao_actions_CommonModule {
      * @throws common_exception_BadRequest
 	 * @return void
 	 */
-	public function rename(){
-		if(!tao_helpers_Request::isAjax()){
+	public function rename()
+    {
+		if(!$this->isXmlHttpRequest()){
 			throw new common_exception_BadRequest('wrong request mode');
 		}
 
@@ -276,8 +267,8 @@ class Lists extends \tao_actions_CommonModule {
 		if($this->hasRequestParameter('uri') && $this->hasRequestParameter('newName')){
 
 			if($this->hasRequestParameter('classUri')){
-				$listClass = $this->service->getList(tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
-				$listElt = $this->service->getListElement($listClass, tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+				$listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
+				$listElt = $this->getListService()->getListElement($listClass, tao_helpers_Uri::decode($this->getRequestParameter('uri')));
 				if(!is_null($listElt)){
 					$listElt->setLabel($this->getRequestParameter('newName'));
 					if($listElt->getLabel() == $this->getRequestParameter('newName')){
@@ -286,7 +277,7 @@ class Lists extends \tao_actions_CommonModule {
 				}
 			}
 			else{
-				$listClass = $this->service->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+				$listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
 				if(!is_null($listClass)){
 					$listClass->setLabel($this->getRequestParameter('newName'));
 					if($listClass->getLabel() == $this->getRequestParameter('newName')){
@@ -295,7 +286,7 @@ class Lists extends \tao_actions_CommonModule {
 				}
 			}
 		}
-		echo json_encode($data);
+        $this->returnJson($data);
 	}
 
 	/**
@@ -303,18 +294,19 @@ class Lists extends \tao_actions_CommonModule {
      * @throws common_exception_BadRequest
 	 * @return void
 	 */
-	public function removeList(){
-		if(!tao_helpers_Request::isAjax()){
+	public function removeList()
+    {
+		if(!$this->isXmlHttpRequest()){
 			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$deleted = false;
 
 		if($this->hasRequestParameter('uri')){
-			$deleted = $this->service->removeList(
-				$this->service->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')))
+			$deleted = $this->getListService()->removeList(
+				$this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')))
 			);
 		}
-		echo json_encode(array('deleted' => $deleted));
+        $this->returnJson(array('deleted' => $deleted));
 	}
 
 	/**
@@ -322,18 +314,26 @@ class Lists extends \tao_actions_CommonModule {
      * @throws common_exception_BadRequest
 	 * @return void
 	 */
-	public function removeListElement(){
-		if(!tao_helpers_Request::isAjax()){
+	public function removeListElement()
+    {
+		if(!$this->isXmlHttpRequest()){
 			throw new common_exception_BadRequest('wrong request mode');
 		}
 		$deleted = false;
 
 		if($this->hasRequestParameter('uri')){
-			$deleted = $this->service->removeListElement(
-				new core_kernel_classes_Resource(tao_helpers_Uri::decode($this->getRequestParameter('uri')))
+			$deleted = $this->getListService()->removeListElement(
+				$this->getResource(tao_helpers_Uri::decode($this->getRequestParameter('uri')))
 			);
 		}
-		echo json_encode(array('deleted' => $deleted));
+		$this->returnJson(array('deleted' => $deleted));
 	}
 
+    /**
+     * @return ListService
+     */
+	protected function getListService()
+    {
+        return ListService::singleton();
+    }
 }

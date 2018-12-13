@@ -1,32 +1,30 @@
 <?php
-/**  
+/**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; under version 2
  * of the License (non-upgradable).
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2015 (update and modification) Open Assessment Technologies SA;
- * 
+ *               2015-2018 (update and modification) Open Assessment Technologies SA;
+ *
  */
 
 namespace oat\taoBackOffice\controller;
 
 use core_kernel_classes_Class;
 use oat\taoBackOffice\model\tree\TreeService;
-use oat\tao\model\menu\MenuService;
-use oat\tao\model\accessControl\ActionResolver;
 
 /**
  * This controller provide the actions to manage the lists of data
@@ -34,10 +32,11 @@ use oat\tao\model\accessControl\ActionResolver;
  * @author CRP Henri Tudor - TAO Team - {@link http://www.tao.lu}
  * @license GPLv2  http://www.opensource.org/licenses/gpl-2.0.php
  * @package taoBackOffice
- * 
+ *
  *
  */
-class Trees extends \tao_actions_RdfController {
+class Trees extends \tao_actions_RdfController
+{
 
     /**
      * @return TreeService
@@ -46,9 +45,9 @@ class Trees extends \tao_actions_RdfController {
 	{
 	    return TreeService::singleton();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return \core_kernel_classes_Class
 	 */
 	protected function getRootClass()
@@ -61,7 +60,7 @@ class Trees extends \tao_actions_RdfController {
 	 */
 	public function getTree()
 	{
-	    $tree = new core_kernel_classes_Class($this->getRequestParameter('uri'));
+	    $tree = $this->getClass($this->getRequestParameter('uri'));
 		$struct = $this->getClassService()->getFlatStructure(
 			$tree,
 			function ( $label ) {
@@ -85,7 +84,7 @@ class Trees extends \tao_actions_RdfController {
 	}
 
 	/**
-	 * Returns an empty view 
+	 * Returns an empty view
 	 */
 	public function dummy()
 	{
@@ -93,8 +92,8 @@ class Trees extends \tao_actions_RdfController {
 
 	/**
 	 * Populates the Tree of Trees
-	 * 
-	 * @requiresRight classUri READ 
+	 *
+	 * @requiresRight classUri READ
 	 */
 	public function getTreeData()
 	{
@@ -126,16 +125,16 @@ class Trees extends \tao_actions_RdfController {
 	            )
 	        );
 	    }
-                
-            //retrieve resources permissions
-            $user = \common_Session_SessionManager::getSession()->getUser();
-            $permissions = $this->getResourceService()->getResourcesPermissions($user, $data);
 
-            //expose the tree
-            $this->returnJson([
-                'tree' => $data,
-                'permissions' => $permissions
-            ]);
+        //retrieve resources permissions
+        $user = $this->getSession()->getUser();
+        $permissions = $this->getResourceService()->getResourcesPermissions($user, $data);
+
+        //expose the tree
+        $this->returnJson([
+            'tree' => $data,
+            'permissions' => $permissions
+        ]);
 	}
-	
+
 }
