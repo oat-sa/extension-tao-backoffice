@@ -46,7 +46,7 @@ class Redirector extends \tao_actions_CommonModule
 
         $entity = $taskLogService->getByIdAndUser(
             $this->getRequestParameter(self::PARAMETER_TASK_ID),
-            \common_session_SessionManager::getSession()->getUserUri(),
+            $this->getSession()->getUserUri(),
             true // in Sync mode, task is archived straightaway
         );
 
