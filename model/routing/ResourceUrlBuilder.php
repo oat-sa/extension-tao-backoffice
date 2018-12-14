@@ -42,6 +42,10 @@ class ResourceUrlBuilder extends ConfigurableService
      */
     public function buildUrl(\core_kernel_classes_Resource $resource)
     {
+        if (!$resource->exists()) {
+            throw new \InvalidArgumentException('The requested resource does not exist or has been deleted');
+        }
+
         /** @var Perspective $perspective */
         /** @var Section $section */
 

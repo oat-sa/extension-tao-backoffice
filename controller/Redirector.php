@@ -46,7 +46,7 @@ class Redirector extends \tao_actions_CommonModule
 
         $entity = $taskLogService->getByIdAndUser(
             $this->getRequestParameter(self::PARAMETER_TASK_ID),
-            \common_session_SessionManager::getSession()->getUserUri(),
+            $this->getSession()->getUserUri(),
             true // in Sync mode, task is archived straightaway
         );
 
@@ -54,7 +54,20 @@ class Redirector extends \tao_actions_CommonModule
 
         /** @var ResourceUrlBuilder $urlBuilder */
         $urlBuilder = $this->getServiceLocator()->get(ResourceUrlBuilder::SERVICE_ID);
+        $resource = $this->getResource($uri);
 
-        return $this->redirect($urlBuilder->buildUrl($this->getResource($uri)));
+        if($resource->exists()){
+            return $this->returnJson([
+                'success' => true,
+                'data'    => $urlBuilder->buildUrl($resource)
+            ]);
+        }
+
+        return $this->returnJson([
+            'success' => false,
+            'errorCode' => 202,
+            'errorMessage' => __('The requested resource does not exist or has been deleted')
+        ], 202);
     }
+
 }
