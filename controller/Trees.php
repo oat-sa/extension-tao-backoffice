@@ -41,7 +41,7 @@ class Trees extends \tao_actions_RdfController
     /**
      * @return TreeService
      */
-	public function getClassService()
+	protected function getClassService()
 	{
 	    return TreeService::singleton();
 	}
