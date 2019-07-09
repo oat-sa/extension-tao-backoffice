@@ -113,7 +113,7 @@ define([
                     const $input   = $element.find('input:text');
 
                     if ($input.val() === '' || window.confirm(__('Please confirm you want to delete this list element.'))) {
-                        let eltUri = $input.attr('name').replace(/^list\-element\_([1-9]*)\_/, '');
+                        let eltUri = $input.attr('name').replace(/^list\-element\_([0-9]*)\_/, '');
                         if (eltUri) {
                             $.postJson(
                                 delEltUrl,
