@@ -25,9 +25,9 @@ define([
 ], function ($, __, urlUtil, feedback, section) {
     'use strict';
 
-    function _addSquareBtn(title, icon, $listToolBar) {
+    function _addSquareBtn(title, icon, $listToolBar, position='lft') {
         const $btn = $('<button>', {
-            'class': `btn-info small lft icon-${icon}`,
+            'class': `btn-info small ${position} icon-${icon}`,
             title: __(title) }
         );
         $listToolBar.append($btn);
@@ -57,6 +57,8 @@ define([
                 let $listSaveBtn;
                 let $listNewBtn;
 
+                $btn.addClass('hidden');
+
                 if (!$listForm.length) {
 
                     $listForm = $('<form>');
@@ -76,7 +78,7 @@ define([
                     elementList.addClass('sortable-list');
                     elementList.find('li').append(`<span class='icon-checkbox-crossed list-element-delete-btn'></span>`);
 
-                    $listSaveBtn = _addSquareBtn(__('Save element'), 'save', $listToolBar);
+                    $listSaveBtn = _addSquareBtn(__('Save list'), 'save', $listToolBar, 'rgt');
                     $listSaveBtn.on('click', function () {
                         $.postJson(
                             saveUrl,
