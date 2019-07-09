@@ -20,9 +20,10 @@ define([
     'i18n',
     'util/url',
     'ui/feedback',
+    'ui/dialog/confirm',
     'layout/section',
     'css!taoBackOfficeCss/list'
-], function ($, __, urlUtil, feedback, section) {
+], function ($, __, urlUtil, feedback, dialogConfirm, section) {
     'use strict';
 
     function _addSquareBtn(title, icon, $listToolBar, position='lft') {
@@ -111,48 +112,67 @@ define([
                 $listContainer.on('click', '.list-element-delete-btn', function () {
                     const $element = $(this).parent();
                     const $input   = $element.find('input:text');
+                    const eltUri   = $input.attr('name').replace(/^list-element_([0-9]*)_/, '');
 
-                    if ($input.val() === '' || window.confirm(__('Please confirm you want to delete this list element.'))) {
-                        let eltUri = $input.attr('name').replace(/^list\-element\_([0-9]*)\_/, '');
-                        if (eltUri) {
-                            $.postJson(
-                                delEltUrl,
-                                { uri : eltUri },
-                                response => {
-                                    if (response.deleted) {
-                                        $element.remove();
-                                        feedback().success(__('Element deleted'));
-                                    }else{
-                                        feedback().error(__('Element not deleted'));
-                                    }
+                    const deleteLocalElement = () => {
+                        $element.remove();
+                        feedback().success(__('Element deleted'));
+                    };
+
+                    const deleteServerAndLocalElement = () => {
+                        $.postJson(
+                            delEltUrl,
+                            { uri : eltUri },
+                            response => {
+                                if (response.deleted) {
+                                    deleteLocalElement();
+                                } else {
+                                    feedback().error(__('Element not deleted'));
                                 }
-                            );
+                            }
+                        );
+                    };
+
+                    const deleteElement = () => {
+                        if (eltUri) {
+                            deleteServerAndLocalElement();
                         } else {
-                            $element.remove();
-                            feedback().success(__('Element deleted'));
+                            deleteLocalElement();
                         }
+                    };
+
+                    if ($input.val() === '') {
+                        deleteElement();
+                    } else {
+                        dialogConfirm(
+                            __('Please confirm you want to delete this list element.'),
+                            deleteElement
+                        );
                     }
                 });
             });
 
             $('.list-delete-btn').click(function () {
-                if (window.confirm(__('Please confirm you want to delete this list. This operation cannot be undone.'))) {
-                    const $btn  = $(this);
-                    const uri   = $btn.data('uri');
-                    const $list = $btn.parents('.data-container');
-                    $.postJson(
-                        delListUrl,
-                        { uri },
-                        response => {
-                            if (response.deleted) {
-                                feedback().success(__('List deleted'));
-                                $list.remove();
-                            } else {
-                                feedback().error(__('List not deleted'));
+                const $btn  = $(this);
+                dialogConfirm(
+                    __('Please confirm you want to delete this list. This operation cannot be undone.'),
+                    function accept() {
+                        const uri   = $btn.data('uri');
+                        const $list = $btn.parents('.data-container');
+                        $.postJson(
+                            delListUrl,
+                            { uri },
+                            response => {
+                                if (response.deleted) {
+                                    feedback().success(__('List deleted'));
+                                    $list.remove();
+                                } else {
+                                    feedback().error(__('List not deleted'));
+                                }
                             }
-                        }
-                    );
-                }
+                        );
+                    }
+                );
             });
         }
     };
