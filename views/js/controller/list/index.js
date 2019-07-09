@@ -26,7 +26,7 @@ define([
 ], function ($, __, urlUtil, feedback, dialogConfirm, section) {
     'use strict';
 
-    function _addSquareBtn(title, icon, $listToolBar, position='lft') {
+    function addSquareBtn(title, icon, $listToolBar, position='lft') {
         const $btn = $('<button>', {
             'class': `btn-info small ${position} icon-${icon}`,
             title: __(title) }
@@ -51,7 +51,6 @@ define([
                 let uri = $btn.data('uri');
                 const $listContainer = $(`#list-data_${uri}`);
 
-                // form must be on the inside rather than on the outside as it has been in 2.6
                 let $listForm       = $listContainer.find('form');
                 const $listTitleBar = $listContainer.find('.container-title h6');
                 const $listToolBar  = $listContainer.find('.data-container-footer');
@@ -79,7 +78,7 @@ define([
                     elementList.addClass('sortable-list');
                     elementList.find('li').append(`<span class='icon-checkbox-crossed list-element-delete-btn'></span>`);
 
-                    $listSaveBtn = _addSquareBtn(__('Save list'), 'save', $listToolBar, 'rgt');
+                    $listSaveBtn = addSquareBtn(__('Save list'), 'save', $listToolBar, 'rgt');
                     $listSaveBtn.on('click', function () {
                         $.postJson(
                             saveUrl,
@@ -96,7 +95,7 @@ define([
                         return false;
                     });
 
-                    $listNewBtn = _addSquareBtn('New element', 'add', $listToolBar);
+                    $listNewBtn = addSquareBtn('New element', 'add', $listToolBar);
                     $listNewBtn.click(function () {
                         var level = $(this).closest('form').find('ol').children().length + 1;
                         $(this).closest('form')
