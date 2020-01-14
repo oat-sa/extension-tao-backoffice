@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoBackOffice\model\tree;
 
 use tao_helpers_Uri;
@@ -37,7 +39,7 @@ class TreeService extends tao_models_classes_ClassService
 
     public function getRootClass()
     {
-        return new core_kernel_classes_Class( self::CLASS_URI );
+        return new core_kernel_classes_Class(self::CLASS_URI);
     }
 
     /**
@@ -48,24 +50,24 @@ class TreeService extends tao_models_classes_ClassService
      *
      * @return array
      */
-    public function getFlatStructure( core_kernel_classes_Class $tree, $labelProcessor = null )
+    public function getFlatStructure(core_kernel_classes_Class $tree, $labelProcessor = null)
     {
-        $returnValue = array(
-            'nodes' => array(),
-            'edges' => array()
-        );
+        $returnValue = [
+            'nodes' => [],
+            'edges' => []
+        ];
 
-        $childOf = new \core_kernel_classes_Property( self::PROPERTY_CHILD_OF );
+        $childOf = new \core_kernel_classes_Property(self::PROPERTY_CHILD_OF);
         foreach ($tree->getInstances() as $node) {
-            $returnValue['nodes'][] = array(
+            $returnValue['nodes'][] = [
                 'id'    => $node->getUri(),
-                'label' => is_callable( $labelProcessor ) ? $labelProcessor( $node->getLabel() ) : $node->getLabel(),
-            );
-            foreach ($node->getPropertyValues( $childOf ) as $childUri) {
-                $returnValue['edges'][] = array(
+                'label' => is_callable($labelProcessor) ? $labelProcessor($node->getLabel()) : $node->getLabel(),
+            ];
+            foreach ($node->getPropertyValues($childOf) as $childUri) {
+                $returnValue['edges'][] = [
                     'from' => $childUri,
                     'to'   => $node->getUri()
-                );
+                ];
             }
         }
 
@@ -79,32 +81,31 @@ class TreeService extends tao_models_classes_ClassService
      *
      * @return array
      */
-    public function getNestedStructure( array $nodes )
+    public function getNestedStructure(array $nodes)
     {
-        $childOf = new \core_kernel_classes_Property( self::PROPERTY_CHILD_OF );
-        $tmpTree = array();
+        $childOf = new \core_kernel_classes_Property(self::PROPERTY_CHILD_OF);
+        $tmpTree = [];
 
         foreach ($nodes as $node) {
-            $nodeData = array(
+            $nodeData = [
                 'data'       => $node->getLabel(),
                 'parent'     => 0,
-                'attributes' => array(
-                    'id'    => tao_helpers_Uri::encode( $node->getUri() ),
+                'attributes' => [
+                    'id'    => tao_helpers_Uri::encode($node->getUri()),
                     'class' => 'node-instance',
-                )
-            );
+                ]
+            ];
 
-            foreach ($node->getPropertyValues( $childOf ) as $childUri) {
-                $nodeData['parent'] = tao_helpers_Uri::encode( $childUri );
+            foreach ($node->getPropertyValues($childOf) as $childUri) {
+                $nodeData['parent'] = tao_helpers_Uri::encode($childUri);
             }
 
-            if (isset( $nodeData['parent'] )) {
+            if (isset($nodeData['parent'])) {
                 $tmpTree[$nodeData['parent']][] = $nodeData;
             }
-
         }
 
-        $tree = self::createTree( $tmpTree, array_shift( $tmpTree ) );
+        $tree = self::createTree($tmpTree, array_shift($tmpTree));
 
         return $tree;
     }
@@ -116,9 +117,9 @@ class TreeService extends tao_models_classes_ClassService
      */
     public function getTrees()
     {
-        $returnValue = array();
+        $returnValue = [];
 
-        foreach ($this->getRootClass()->getSubClasses( false ) as $tree) {
+        foreach ($this->getRootClass()->getSubClasses(false) as $tree) {
             $returnValue[] = $tree;
         }
 
@@ -131,12 +132,12 @@ class TreeService extends tao_models_classes_ClassService
      *
      * @return array
      */
-    protected static function createTree( $list, $parent )
+    protected static function createTree($list, $parent)
     {
-        $tree = array();
+        $tree = [];
         foreach ($parent as $k => $node) {
-            if (isset( $list[$node['attributes']['id']] )) {
-                $node['children'] = self::createTree( $list, $list[$node['attributes']['id']] );
+            if (isset($list[$node['attributes']['id']])) {
+                $node['children'] = self::createTree($list, $list[$node['attributes']['id']]);
                 $node['state']    = 'open';
             }
             $tree[] = $node;
@@ -144,5 +145,4 @@ class TreeService extends tao_models_classes_ClassService
 
         return $tree;
     }
-
 }

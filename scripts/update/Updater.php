@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -76,7 +77,7 @@ class Updater extends \common_ext_ExtensionUpdater
             $this->setVersion('2.1.0');
         }
         if ($this->isVersion('2.1.0')) {
-            AclProxy::applyRule(new AccessRule('grant', TaoRoles::BACK_OFFICE, Redirector::class.'@redirectTaskToInstance'));
+            AclProxy::applyRule(new AccessRule('grant', TaoRoles::BACK_OFFICE, Redirector::class . '@redirectTaskToInstance'));
             $this->setVersion('2.1.1');
         }
 
