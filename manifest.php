@@ -28,7 +28,7 @@ return [
     'label' => 'Back Office',
     'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '4.1.1',
+    'version' => '4.1.2',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'tao' => '>=22.5.0',
@@ -45,7 +45,7 @@ return [
             __DIR__ . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'structures.rdf'
         ],
         'php' => [
-            dirname(__FILE__) . '/scripts/install/registerEntryPoint.php'
+            __DIR__ . '/scripts/install/registerEntryPoint.php'
         ]
     ],
     'uninstall' => [
@@ -56,12 +56,12 @@ return [
     'update' => 'oat\taoBackOffice\scripts\update\Updater',
     'constants' => [
         # views directory
-        "DIR_VIEWS" => dirname(__FILE__) . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
+        "DIR_VIEWS" => __DIR__ . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR,
 
         #BASE URL (usually the domain root)
         'BASE_URL' => ROOT_URL . 'taoBackOffice/',
     ],
     'extra' => [
-        'structures' => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
+        'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
     ]
 ];
