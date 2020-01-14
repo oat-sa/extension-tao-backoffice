@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,6 +17,7 @@
  *
  * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
  */
+
 namespace oat\taoBackOffice\scripts;
 
 use common_report_Report as Report;
@@ -27,7 +29,6 @@ use oat\tao\model\entryPoint\EntryPointService;
 use oat\tao\model\user\TaoRoles;
 use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
 use oat\taoDeliveryRdf\model\guest\GuestAccess;
-
 
 /**
  * Run example:
@@ -65,14 +66,13 @@ class BuildResourceUrl extends ScriptAction
             }
 
             if (!$resource->exists()) {
-                throw new \RuntimeException('Resource "'. $this->getOption('uri'). '" not found');
+                throw new \RuntimeException('Resource "' . $this->getOption('uri') . '" not found');
             }
 
             /** @var ResourceUrlBuilder $urlBuilder */
             $urlBuilder = $this->getServiceLocator()->get(ResourceUrlBuilder::SERVICE_ID);
 
-            $report = Report::createSuccess('URL: '. $urlBuilder->buildUrl($resource));
-
+            $report = Report::createSuccess('URL: ' . $urlBuilder->buildUrl($resource));
         } catch (\Exception $e) {
             $report = Report::createFailure($e->getMessage());
         }

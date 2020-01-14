@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -41,90 +42,89 @@ class Trees extends \tao_actions_RdfController
     /**
      * @return TreeService
      */
-	protected function getClassService()
-	{
-	    return TreeService::singleton();
-	}
+    protected function getClassService()
+    {
+        return TreeService::singleton();
+    }
 
-	/**
-	 *
-	 * @return \core_kernel_classes_Class
-	 */
-	protected function getRootClass()
-	{
-	    return $this->getClassService()->getRootClass();
-	}
+    /**
+     *
+     * @return \core_kernel_classes_Class
+     */
+    protected function getRootClass()
+    {
+        return $this->getClassService()->getRootClass();
+    }
 
-	/**
-	 * Visualises the tree
-	 */
-	public function getTree()
-	{
-	    $tree = $this->getClass($this->getRequestParameter('uri'));
-		$struct = $this->getClassService()->getFlatStructure(
-			$tree,
-			function ( $label ) {
-				return wordwrap($label, 30, "\n");
-			}
-		);
-		$this->returnJson($struct);
+    /**
+     * Visualises the tree
+     */
+    public function getTree()
+    {
+        $tree = $this->getClass($this->getRequestParameter('uri'));
+        $struct = $this->getClassService()->getFlatStructure(
+            $tree,
+            function ($label) {
+                return wordwrap($label, 30, "\n");
+            }
+        );
+        $this->returnJson($struct);
+    }
 
-	}
+    /**
+     * Renders a tree
+     * @requiresRight id READ
+     */
+    public function viewTree()
+    {
 
-	/**
-	 * Renders a tree
-	 * @requiresRight id READ
-	 */
-	public function viewTree(){
+        $this->setData('id', $this->getRequestParameter('id'));
 
-		$this->setData('id', $this->getRequestParameter('id'));
+        $this->setView('Trees/viewTree.tpl');
+    }
 
-		$this->setView('Trees/viewTree.tpl');
+    /**
+     * Returns an empty view
+     */
+    public function dummy()
+    {
+    }
 
-	}
+    /**
+     * Populates the Tree of Trees
+     *
+     * @requiresRight classUri READ
+     */
+    public function getTreeData()
+    {
+        $data = [
+            'data' => __("Trees"),
+            'type' => 'class',
+            'attributes' => [
+                'id' => \tao_helpers_Uri::encode($this->getRootClass()->getUri()),
+                'class' => 'node-class',
+                'data-uri' => $this->getRootClass()->getUri()
+            ],
 
-	/**
-	 * Returns an empty view
-	 */
-	public function dummy()
-	{
-	}
+        ];
 
-	/**
-	 * Populates the Tree of Trees
-	 *
-	 * @requiresRight classUri READ
-	 */
-	public function getTreeData()
-	{
-	    $data = array(
-	        'data' => __("Trees"),
-	        'type' => 'class',
-	        'attributes' => array(
-	            'id' => \tao_helpers_Uri::encode($this->getRootClass()->getUri()),
-	            'class' => 'node-class',
-	            'data-uri' => $this->getRootClass()->getUri()
-	        ),
+        $sublasses = $this->getRootClass()->getSubClasses(false);
 
-	    );
+        if (count($sublasses)) {
+            $data['children'] = [];
+        }
 
-		$sublasses = $this->getRootClass()->getSubClasses(false);
-
-		if (count( $sublasses )) {
-			$data['children'] = array();
-		}
-
-	    foreach ( $sublasses as $class) {
-	        $data['children'][] = array(
-	            'data' => $class->getLabel(),
-	            'type' => 'instance',
-	            'attributes' => array(
-	                'id' => \tao_helpers_Uri::encode($class->getUri()),
-	                'class' => 'node-instance',
-	                'data-uri' => $class->getUri()
-	            )
-	        );
-	    }
+        foreach ($sublasses as $class) {
+            $data['children'][] = [
+                'data' => $class->getLabel(),
+                'type' => 'instance',
+                'attributes' => [
+                    'id' => \tao_helpers_Uri::encode($class->getUri()),
+                    'class' => 'node-instance',
+                    'data-uri' => $class->getUri()
+                ]
+            ];
+        }
 
         //retrieve resources permissions
         $user = $this->getSession()->getUser();
@@ -135,6 +135,5 @@ class Trees extends \tao_actions_RdfController
             'tree' => $data,
             'permissions' => $permissions
         ]);
-	}
-
+    }
 }

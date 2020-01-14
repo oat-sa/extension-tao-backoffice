@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,24 +29,28 @@ use oat\tao\model\entryPoint\Entrypoint;
 class BackOfficeEntryPoint extends Configurable implements Entrypoint
 {
 
-    public function getId() {
+    public function getId()
+    {
         return 'backoffice';
     }
     
-    public function getTitle() {
+    public function getTitle()
+    {
         return __('Test Developers and Administrators');
     }
     
-    public function getLabel() {
+    public function getLabel()
+    {
         return __('TAO Back Office');
     }
     
-    public function getDescription() {
+    public function getDescription()
+    {
         return __('Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows.');
     }
     
-    public function getUrl() {
+    public function getUrl()
+    {
         return _url("index", "Main", "tao");
     }
-
 }

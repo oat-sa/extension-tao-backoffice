@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -61,7 +62,7 @@ class ResourceUrlBuilder extends ConfigurableService
             }
         }
 
-        throw new \LogicException('No url could be built for "'. $resource->getUri() .'"');
+        throw new \LogicException('No url could be built for "' . $resource->getUri() . '"');
     }
 
     /**
