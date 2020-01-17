@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +19,7 @@
  *
  *
  */
+
 namespace oat\taoBackOffice\model\menuStructure;
 
 use core_kernel_classes_Class;
@@ -32,7 +34,8 @@ use tao_models_classes_GenerisService;
 /**
  * Class TreeService
  */
-class ClassActionRegistry extends AbstractRegistry {
+class ClassActionRegistry extends AbstractRegistry
+{
     
     const CLASS_PREFIX = 'class_';
     
@@ -56,24 +59,24 @@ class ClassActionRegistry extends AbstractRegistry {
 
     /**
      * Returns all the actions associated with this class and its parents
-     * 
+     *
      * @param core_kernel_classes_Class $class
      * @return array an array of Action
      */
     public function getClassActions(core_kernel_classes_Class $class)
     {
-        $actions = array();
+        $actions = [];
         foreach ($this->getRelevantClasses($class) as $rClass) {
             if ($this->isRegistered($rClass->getUri())) {
                 $actions = array_merge($actions, $this->get($rClass->getUri()));
             }
-        } 
+        }
         return $actions;
     }
     
     /**
      * Register an action with a class
-     * 
+     *
      * @param core_kernel_classes_Class $class
      * @param Action $action
      */
@@ -81,7 +84,7 @@ class ClassActionRegistry extends AbstractRegistry {
     {
         $actions = $this->isRegistered($class->getUri())
             ? $this->get($class->getUri())
-            : array();
+            : [];
         $actions[$action->getId()] = $action;
         $this->set($class->getUri(), $actions);
         MenuService::flushCache();
@@ -91,7 +94,7 @@ class ClassActionRegistry extends AbstractRegistry {
     {
         $actions = $this->isRegistered($class->getUri())
             ? $this->get($class->getUri())
-            : array();
+            : [];
         unset($actions[$action->getId()]);
         $this->set($class->getUri(), $actions);
         MenuService::flushCache();
@@ -99,12 +102,12 @@ class ClassActionRegistry extends AbstractRegistry {
 
     private function getRelevantClasses(core_kernel_classes_Class $class)
     {
-        $toDo = array($class->getUri() => $class);
-        $classes = array();
+        $toDo = [$class->getUri() => $class];
+        $classes = [];
         while (!empty($toDo)) {
             $current = array_pop($toDo);
             $classes[$current->getUri()] = $current;
-            if (!in_array($current->getUri(), array(TaoOntology::OBJECT_CLASS_URI, GenerisRdf::CLASS_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ))) {
+            if (!in_array($current->getUri(), [TaoOntology::OBJECT_CLASS_URI, GenerisRdf::CLASS_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ])) {
                 foreach ($current->getParentClasses(false) as $parent) {
                     if (!in_array($parent->getUri(), array_keys($classes))) {
                         $toDo[$parent->getUri()] = $parent;

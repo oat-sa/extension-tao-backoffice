@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -56,7 +57,7 @@ class Redirector extends \tao_actions_CommonModule
         $urlBuilder = $this->getServiceLocator()->get(ResourceUrlBuilder::SERVICE_ID);
         $resource = $this->getResource($uri);
 
-        if($resource->exists()){
+        if ($resource->exists()) {
             return $this->returnJson([
                 'success' => true,
                 'data'    => $urlBuilder->buildUrl($resource)
@@ -69,5 +70,4 @@ class Redirector extends \tao_actions_CommonModule
             'errorMessage' => __('The requested resource does not exist or has been deleted')
         ], 202);
     }
-
 }
