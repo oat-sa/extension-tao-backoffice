@@ -4,9 +4,9 @@ msgstr ""
 "PO-Revision-Date: 2020-03-27T11:23:11\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: nl-NL\n"
+"Language: fr-FR\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: nl-NL\n"
+"targetLanguage: fr-FR\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -14,95 +14,95 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Create a list"
-msgstr "Maak een lijst"
+msgstr "Créer une liste"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr "Maak lijsten. beheer items en toetsbank, organiseer cohorten en pakketten, bereid rapporten voor en zet workflows op."
+msgstr "Créer des items, gérer des banques d'items et de tests, organiser des groupes et des passations, préparer des rapports, paramétrer des flux de travail."
 
 #, tao-public
 msgid "Delete"
-msgstr "Verwijderen"
+msgstr "Supprimer"
 
 msgid "Delete this list"
-msgstr "Verwijder deze lijst"
+msgstr "Supprimer cette liste"
 
 msgid "Edit this list"
-msgstr "Pas deze lijst aan"
+msgstr "Éditer cette liste"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr "Pas boom aan"
+msgstr "Éditer l'arborescence"
 
 msgid "element"
-msgstr "element"
+msgstr "élément"
 
 msgid "Element deleted"
-msgstr "Element verwijderd"
+msgstr "Élément supprimé"
 
 msgid "Element not deleted"
-msgstr "Element niet verwijderd"
+msgstr "Élément non supprimé"
 
 #, tao-public
 msgid "Export"
-msgstr "Exporteer"
+msgstr "Exporter"
 
 #, tao-public
 msgid "Import"
-msgstr "Importeer"
+msgstr "Importer"
 
 msgid "List"
-msgstr "Lijst"
+msgstr "Liste"
 
 msgid "List deleted"
-msgstr "Lijst verwijderd"
+msgstr "Liste supprimée"
 
 msgid "List not deleted"
-msgstr "Lijst niet verwijderd"
+msgstr "Liste non supprimée"
 
 msgid "List not saved"
-msgstr "Lijst niet opgeslagen"
+msgstr "Liste non enregistrée"
 
 msgid "List saved"
-msgstr "Lijst opgeslagen"
+msgstr "Liste enregistrée"
 
 #, tao-public
 msgid "Lists"
-msgstr "Lijsten"
+msgstr "Listes"
 
 msgid "Please confirm you want to delete this list element."
-msgstr "Bevestig a.u.b. dat u dit lijstelement wilt verwijderen."
+msgstr "Veuillez confirmer que vous souhaitez retirer cet élément de la liste."
 
 msgid "Please confirm you want to delete this list. This operation cannot be undone."
-msgstr "Bevestig a.u.b. dat u deze lijst wilt verwijderen. Deze actie kan niet ongedaan worden gemaakt."
+msgstr "Veuillez confirmer que vous souhaitez supprimer cette liste. Cette opération est irréversible."
 
 #, tao-public
 msgid "Properties"
-msgstr "Eigenschappen"
+msgstr "Propriétés"
 
 msgid "Save list"
 msgstr ""
 
 #, tao-public
 msgid "Settings"
-msgstr "Instellingen"
+msgstr "Paramètres"
 
 msgid "TAO Back Office"
-msgstr "TAO Back Office"
+msgstr "Back office TAO"
 
 msgid "Test Developers and Administrators"
-msgstr "Toets-ontwikkelaars en beheerders"
+msgstr "Développeurs et administrateurs de test"
 
 msgid "The requested resource does not exist or has been deleted"
-msgstr "De gevraagde resource bestaat niet of is verwijderd"
+msgstr "La ressource demandée n'existe pas ou a été supprimée."
 
 #, tao-public
 msgid "Trees"
-msgstr "Bomen"
+msgstr "Arborescences"
 
 msgid "View tree"
-msgstr "Bekijk boomstructuur"
+msgstr "Aperçu de l'arborescence"
 
 #, tao-public
 msgid "View Tree"
-msgstr "Bekijk boomstructuur"
+msgstr "Aperçu de l'arborescence"
 
