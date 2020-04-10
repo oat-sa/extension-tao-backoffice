@@ -21,14 +21,8 @@
 namespace oat\taoBackOffice\scripts;
 
 use common_report_Report as Report;
-use oat\oatbox\extension\AbstractAction;
 use oat\oatbox\extension\script\ScriptAction;
-use oat\tao\model\accessControl\func\AccessRule;
-use oat\tao\model\accessControl\func\AclProxy;
-use oat\tao\model\entryPoint\EntryPointService;
-use oat\tao\model\user\TaoRoles;
 use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
-use oat\taoDeliveryRdf\model\guest\GuestAccess;
 
 /**
  * Run example:
