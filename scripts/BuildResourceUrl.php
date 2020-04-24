@@ -22,7 +22,7 @@ namespace oat\taoBackOffice\scripts;
 
 use common_report_Report as Report;
 use oat\oatbox\extension\script\ScriptAction;
-use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
+use oat\tao\model\routing\ResourceUrlBuilder;
 
 /**
  * Run example:
