@@ -25,7 +25,7 @@ return [
     'label' => 'Back Office',
     'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '4.3.1',
+    'version' => '4.4.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'tao' => '>=22.5.0',
@@ -41,7 +41,8 @@ return [
             __DIR__ . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'structures.rdf'
         ],
         'php' => [
-            __DIR__ . '/scripts/install/registerEntryPoint.php'
+            __DIR__ . '/scripts/install/registerEntryPoint.php',
+            \oat\taoBackOffice\scripts\install\RegisterServices::class,
         ]
     ],
     'uninstall' => [

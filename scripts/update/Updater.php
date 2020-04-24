@@ -25,6 +25,7 @@ namespace oat\taoBackOffice\scripts\update;
 use oat\tao\scripts\update\OntologyUpdater;
 use oat\taoBackOffice\model\entryPoint\BackOfficeEntryPoint;
 use oat\tao\model\entryPoint\EntryPointService;
+use oat\taoBackOffice\model\menuStructure\MenuService;
 
 /**
  * Class TreeService
@@ -50,5 +51,9 @@ class Updater extends \common_ext_ExtensionUpdater
 
         $this->skip($currentVersion, '4.3.1');
 
+        if ($this->isVersion('4.3.1')) {
+            $this->getServiceManager()->register(MenuService::SERVICE_ID, new MenuService([]));
+            $this->setVersion('4.4.0');
+        }
     }
 }
