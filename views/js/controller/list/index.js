@@ -32,7 +32,23 @@ define([
             title: __(title) }
         );
         $listToolBar.append($btn);
+
         return $btn;
+    }
+
+    function transformListElement($element) {
+        return createListElement($element.attr('id'), $element.text());
+    }
+
+    function createNewListElement(elementId) {
+        return createListElement(`list-element_${elementId}_`)
+    }
+
+    function createListElement(name, value = '') {
+        return $(`<div class='list-element'>
+            <input type='text' name='${name}' value='${value}' />
+            <span class='icon-checkbox-crossed list-element-delete-btn'>
+        </div>`);
     }
 
     return {
@@ -56,9 +72,9 @@ define([
                 const $listToolBar  = $listContainer.find('.data-container-footer').empty();
                 let $listSaveBtn;
                 let $listNewBtn;
-                let nextElementId;
 
                 if (!$listForm.length) {
+                    let nextElementId;
 
                     $listForm = $('<form>');
                     $listContainer.wrapInner($listForm);
@@ -67,18 +83,10 @@ define([
                     const $labelEdit = $(`<input type='text' name='label' value=''/>`).val($listTitleBar.text());
                     $listTitleBar.closest('.container-title').html($labelEdit);
 
-                    if ($listContainer.find('.list-element').length) {
-                        $listContainer.find('.list-element').replaceWith(function () {
-                            return $(`<input type='text' name='${$(this).attr('id')}' value='' />`).val($(this).text());
-                        });
-                    }
-
-                    nextElementId = $listContainer.find('ol')
-                        .addClass('sortable-list')
-                        .find('li')
-                        .addClass('list-element')
-                        .append(`<span class='icon-checkbox-crossed list-element-delete-btn'></span>`)
-                        .wrapInner(`<div class='sortable-list__element'>`)
+                    nextElementId = $listContainer.find('.list-element')
+                        .replaceWith(function () {
+                            return transformListElement($(this));
+                        })
                         .length;
 
                     $listSaveBtn = addSquareBtn(__('Save list'), 'save', $listToolBar);
@@ -102,21 +110,15 @@ define([
                     $listNewBtn.click(function () {
                         const $list = $(this).closest('form').find('ol');
 
-                        $list
-                            .append(`<li class='list-element'>
-                                <div class='sortable-list__element'>
-                                    <input type='text' name='list-element_${nextElementId++}_' />
-                                    <span class='icon-checkbox-crossed list-element-delete-btn'>
-                                </div>
-                            </li>`);
-                        $list.closest('.container-content').scrollTop($list.height());
+                        $list.append($('<li>').append(createNewListElement(nextElementId++)))
+                            .closest('.container-content').scrollTop($list.height());
 
                         return false;
                     });
                 }
 
                 $listContainer.on('click', '.list-element-delete-btn', function () {
-                    const $element = $(this).closest('.list-element');
+                    const $element = $(this).closest('li');
                     const $input   = $element.find('input:text');
                     const eltUri   = $input.attr('name').replace(/^list-element_([0-9]*)_/, '');
 

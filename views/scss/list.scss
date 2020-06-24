@@ -5,28 +5,24 @@
     form {
       background-color: $canvas;
 
+      .list-element {
+        display: flex;
+        align-items: center;
+
+        &-delete-btn {
+          font-size: 2em;
+          cursor: pointer;
+          margin-left: 4px;
+        }
+
+        input {
+          width: 100%;
+        }
+      }
+
       .data-container-footer {
         border-top: 0 !important;
       }
-    }
-  }
-
-  .list-element {
-    &-delete-btn {
-      font-size: 2em;
-      cursor: pointer;
-      margin-left: 4px;
-    }
-
-    input {
-      width: 100%;
-    }
-  }
-
-  .sortable-list {
-    &__element {
-      display: flex;
-      align-items: center;
     }
   }
 }
