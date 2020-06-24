@@ -1,8 +1,32 @@
 @import "inc/bootstrap";
 
-.list-container{
-  .list-element-delete-btn{
-    cursor:pointer;
+.list-container {
+  .section-container .content-block .data-container-wrapper & {
+    form {
+      background-color: $canvas;
+
+      .data-container-footer {
+        border-top: 0 !important;
+      }
+    }
+  }
+
+  .list-element {
+    &-delete-btn {
+      font-size: 2em;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
+  .sortable-list {
+    &__element {
+      display: flex;
+      align-items: center;
+    }
   }
 }
-

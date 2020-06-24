@@ -64,7 +64,7 @@ define([
                     $listContainer.find('form').append(`<input type='hidden' name='uri' value='${uri}' />`);
 
                     const $labelEdit = $(`<input type='text' name='label' value=''/>`).val($listTitleBar.text());
-                    $listTitleBar.html($labelEdit);
+                    $listTitleBar.closest('.container-title').html($labelEdit);
 
                     if ($listContainer.find('.list-element').length) {
                         $listContainer.find('.list-element').replaceWith(function () {
@@ -74,7 +74,10 @@ define([
 
                     const elementList = $listContainer.find('ol');
                     elementList.addClass('sortable-list');
-                    elementList.find('li').append(`<span class='icon-checkbox-crossed list-element-delete-btn'></span>`);
+                    elementList.find('li')
+                        .addClass('list-element')
+                        .append(`<span class='icon-checkbox-crossed list-element-delete-btn'></span>`)
+                        .wrapInner(`<div class='sortable-list__element'>`);
 
                     $listSaveBtn = addSquareBtn(__('Save list'), 'save', $listToolBar);
                     $listSaveBtn.on('click', function () {
@@ -112,7 +115,7 @@ define([
                 }
 
                 $listContainer.on('click', '.list-element-delete-btn', function () {
-                    const $element = $(this).parent();
+                    const $element = $(this).closest('.list-element');
                     const $input   = $element.find('input:text');
                     const eltUri   = $input.attr('name').replace(/^list-element_([0-9]*)_/, '');
 
