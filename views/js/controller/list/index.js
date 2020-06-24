@@ -97,13 +97,18 @@ define([
 
                     $listNewBtn = addSquareBtn('New element', 'add', $listToolBar);
                     $listNewBtn.click(function () {
-                        var level = $(this).closest('form').find('ol').children().length + 1;
-                        $(this).closest('form')
-                            .find('ol')
-                            .append(`<li id='list-element_${level}'>
-                                <input type='text' name='list-element_${level}_' />
-                                <span class='icon-checkbox-crossed list-element-delete-btn' ></span>
+                        const $list = $(this).closest('form').find('ol');
+                        const level = $list.children().length + 1;
+
+                        $list
+                            .append(`<li id='list-element_${level}' class='list-element'>
+                                <div class='sortable-list__element'>
+                                    <input type='text' name='list-element_${level}_' />
+                                    <span class='icon-checkbox-crossed list-element-delete-btn' ></span>
+                                </div>
                             </li>`);
+                        $list.closest('.container-content').scrollTop($list.height());
+
                         return false;
                     });
                 }
