@@ -56,6 +56,7 @@ define([
                 const $listToolBar  = $listContainer.find('.data-container-footer').empty();
                 let $listSaveBtn;
                 let $listNewBtn;
+                let nextElementId;
 
                 if (!$listForm.length) {
 
@@ -72,12 +73,13 @@ define([
                         });
                     }
 
-                    const elementList = $listContainer.find('ol');
-                    elementList.addClass('sortable-list');
-                    elementList.find('li')
+                    nextElementId = $listContainer.find('ol')
+                        .addClass('sortable-list')
+                        .find('li')
                         .addClass('list-element')
                         .append(`<span class='icon-checkbox-crossed list-element-delete-btn'></span>`)
-                        .wrapInner(`<div class='sortable-list__element'>`);
+                        .wrapInner(`<div class='sortable-list__element'>`)
+                        .length;
 
                     $listSaveBtn = addSquareBtn(__('Save list'), 'save', $listToolBar);
                     $listSaveBtn.on('click', function () {
@@ -99,13 +101,12 @@ define([
                     $listNewBtn = addSquareBtn('New element', 'add', $listToolBar);
                     $listNewBtn.click(function () {
                         const $list = $(this).closest('form').find('ol');
-                        const level = $list.children().length + 1;
 
                         $list
-                            .append(`<li id='list-element_${level}' class='list-element'>
+                            .append(`<li class='list-element'>
                                 <div class='sortable-list__element'>
-                                    <input type='text' name='list-element_${level}_' />
-                                    <span class='icon-checkbox-crossed list-element-delete-btn' ></span>
+                                    <input type='text' name='list-element_${nextElementId++}_' />
+                                    <span class='icon-checkbox-crossed list-element-delete-btn'>
                                 </div>
                             </li>`);
                         $list.closest('.container-content').scrollTop($list.height());
