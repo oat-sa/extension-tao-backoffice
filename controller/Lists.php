@@ -25,8 +25,12 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
+use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
+use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
+use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
+use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\TaoOntology;
 use tao_actions_CommonModule;
 use \tao_helpers_Scriptloader;
@@ -156,10 +160,13 @@ class Lists extends tao_actions_CommonModule
     /**
      * Save a list and it's elements
      *
-     * @throws common_exception_BadRequest
+     * @param ValueCollectionService $valueCollectionService
+     *
      * @return void
+     *
+     * @throws common_exception_BadRequest
      */
-    public function saveLists()
+    public function saveLists(ValueCollectionService $valueCollectionService): void
     {
         if (!$this->isXmlHttpRequest()) {
             throw new common_exception_BadRequest('wrong request mode');
@@ -188,7 +195,12 @@ class Lists extends tao_actions_CommonModule
             unset($payload['label']);
         }
 
-        $elements = $this->getListService()->getListElements($listClass);
+        $elements = $valueCollectionService->findAll(
+            new ValueCollectionSearchInput(
+                (new ValueCollectionSearchRequest())
+                    ->setValueCollectionUri($listClass->getUri())
+            )
+        );
 
         foreach ($payload as $key => $value) {
             if (preg_match('/^list-element_/', $key)) {
@@ -199,7 +211,7 @@ class Lists extends tao_actions_CommonModule
                 foreach ($elements as $element) {
                     if ($element->getUri() === $uri) {
                         $found = true;
-                        $element->setLabel($value);
+                        (new core_kernel_classes_Resource($element->getUri()))->setLabel($value);
                         break;
                     }
                 }
