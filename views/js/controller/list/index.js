@@ -18,13 +18,37 @@
 define([
     'jquery',
     'i18n',
+    'uri',
     'util/url',
     'ui/feedback',
     'ui/dialog/confirm',
     'layout/section',
     'css!taoBackOfficeCss/list'
-], function ($, __, urlUtil, feedback, dialogConfirm, section) {
+], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section) {
     'use strict';
+
+    function findListContainer(uri) {
+        return $(`#list-data_${uri}`);
+    }
+
+    function clearUri(value) {
+        return value.replace(/^list-element_[0-9]+_/, '');
+    }
+
+    function createEditUriCheckbox(id) {
+        const $checkbox = $('<input>')
+            .attr('type', 'checkbox')
+            .attr('id', id)
+            .change(handleEditCheckboxStateChange);
+
+        const $label = $('<label>')
+            .attr('for', id)
+            .text(__('Edit URI'));
+
+        return $('<span>')
+            .addClass('lft edit-uri')
+            .append($checkbox, $label);
+    }
 
     function addSquareBtn(title, icon, $listToolBar, position='rgt') {
         const $btn = $('<button>', {
@@ -46,9 +70,21 @@ define([
 
     function createListElement(name, value = '') {
         return $(`<div class='list-element'>
-            <input type='text' name='${name}' value='${value}' />
-            <span class='icon-checkbox-crossed list-element-delete-btn'>
+            <div class='list-element'>
+                <div class='list-element__input-container'>
+                    <input type='text' name='${name}' value='${value}' />
+                    <div class='list-element__input-container__uri'>
+                        <label for='uri_${name}' class='title'>URI</label>
+                        <input id='uri_${name}' type='text' name='uri_${name}' value='${Uri.decode(clearUri(name))}'>
+                    </div>
+                </div>
+                <span class='icon-checkbox-crossed list-element-delete-btn'>
+            </div>
         </div>`);
+    }
+
+    function handleEditCheckboxStateChange() {
+        findListContainer($(this).attr('id')).toggleClass('with-uri');
     }
 
     return {
@@ -63,9 +99,8 @@ define([
             const delEltUrl  = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
 
             $('.list-edit-btn').click(function () {
-                const $btn = $(this);
-                let uri = $btn.data('uri');
-                const $listContainer = $(`#list-data_${uri}`);
+                const uri = $(this).data('uri');
+                const $listContainer = findListContainer(uri);
 
                 let $listForm       = $listContainer.find('form');
                 const $listTitleBar = $listContainer.find('.container-title h6');
@@ -115,12 +150,16 @@ define([
 
                         return false;
                     });
+
+                    $listToolBar.append(createEditUriCheckbox(uri));
+
+                    $listToolBar.append();
                 }
 
                 $listContainer.on('click', '.list-element-delete-btn', function () {
                     const $element = $(this).closest('li');
                     const $input   = $element.find('input:text');
-                    const eltUri   = $input.attr('name').replace(/^list-element_([0-9]*)_/, '');
+                    const eltUri   = clearUri($input.attr('name'));
 
                     const deleteLocalElement = () => {
                         $element.remove();

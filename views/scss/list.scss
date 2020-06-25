@@ -1,27 +1,74 @@
 @import "inc/bootstrap";
 
 .list-container {
-  .section-container .content-block .data-container-wrapper & {
-    form {
-      background-color: $canvas;
+  .container-content {
+    .list-element {
+      display: flex;
+      width: 100%;
 
-      .list-element {
-        display: flex;
-        align-items: center;
+      &-delete-btn {
+        font-size: 2em;
+        cursor: pointer;
+        margin-left: 4px;
+      }
 
-        &-delete-btn {
-          font-size: 2em;
-          cursor: pointer;
-          margin-left: 4px;
-        }
+      &__input-container {
+        flex: 1;
 
-        input {
-          width: 100%;
+        &__uri {
+          display: none;
+          align-items: center;
+          margin-top: 2px;
+          margin-bottom: 10px;
+          background: whiten($uiHeaderBg, .3);
         }
       }
 
+      .title {
+        color: $textColor;
+        border: 1px #ccc solid;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+        margin: 0;
+        padding: 3px;
+
+        ~ input {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          border-left: none;
+        }
+      }
+
+      input {
+        width: 100%;
+      }
+    }
+  }
+
+  .edit-uri {
+    display: flex;
+    color: initial;
+    font-family: $regularFont;
+  }
+
+  form {
+    .section-container .content-block .data-container-wrapper & {
+      background-color: $canvas;
+
       .data-container-footer {
         border-top: 0 !important;
+      }
+    }
+  }
+}
+
+.container-content {
+  .list-element {
+    &__input-container {
+      &__uri {
+        .with-uri & {
+          display: flex;
+        }
       }
     }
   }
