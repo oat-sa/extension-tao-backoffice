@@ -25,7 +25,6 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
-use core_kernel_classes_Resource;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
@@ -211,18 +210,20 @@ class Lists extends tao_actions_CommonModule
                 foreach ($elements as $element) {
                     if ($element->getUri() === $uri) {
                         $found = true;
-                        (new core_kernel_classes_Resource($element->getUri()))->setLabel($value);
+                        // TODO Update URI here as well
+                        $element->setLabel($value);
                         break;
                     }
                 }
 
+                // TODO Add new elements to the collection and persist via the repository
                 if (!$found) {
                     $this->getListService()->createListElement($listClass, $value);
                 }
             }
         }
 
-        $this->returnJson(['saved' => true]);
+        $this->returnJson(['saved' => $valueCollectionService->persist($elements)]);
     }
 
     /**
