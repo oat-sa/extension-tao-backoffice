@@ -208,13 +208,18 @@ class Lists extends tao_actions_CommonModule
                 $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
                 $uri        = tao_helpers_Uri::decode($encodedUri);
 
+                $newUriValue = trim($payload["uri_$key"] ?? '');
+
                 $element = $elements->extractValueByUri($uri);
 
-                // TODO Update URI here as well
                 if (null === $element) {
-                    $elements->addValue(new Value(null, '', $value));
+                    $elements->addValue(new Value(null, $newUriValue, $value));
                 } else {
                     $element->setLabel($value);
+
+                    if ($newUriValue) {
+                        $element->setUri($newUriValue);
+                    }
                 }
 
             }
@@ -223,7 +228,7 @@ class Lists extends tao_actions_CommonModule
         try {
             $this->returnJson(['saved' => $valueCollectionService->persist($elements)]);
         } catch (ValueConflictException $exception) {
-            $this->returnJson(['saved' => false, 'errors' => [__('The list should contain unique values')]]);
+            $this->returnJson(['saved' => false, 'errors' => [__('The list should contain unique URIs')]]);
         }
     }
 
