@@ -65,7 +65,7 @@ define([
     }
 
     function createNewListElement(elementId) {
-        return createListElement(`list-element_${elementId}_`)
+        return createListElement(`list-element_${elementId}_`);
     }
 
     function createListElement(name, value = '') {
