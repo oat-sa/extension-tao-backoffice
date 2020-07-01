@@ -27,6 +27,7 @@ namespace oat\taoBackOffice\controller;
 use common_exception_BadRequest;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
+use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
@@ -206,20 +207,15 @@ class Lists extends tao_actions_CommonModule
                 $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
                 $uri        = tao_helpers_Uri::decode($encodedUri);
 
-                $found = false;
-                foreach ($elements as $element) {
-                    if ($element->getUri() === $uri) {
-                        $found = true;
-                        // TODO Update URI here as well
-                        $element->setLabel($value);
-                        break;
-                    }
+                $element = $elements->extractValueByUri($uri);
+
+                // TODO Update URI here as well
+                if (null === $element) {
+                    $elements->addValue(new Value(null, '', $value));
+                } else {
+                    $element->setLabel($value);
                 }
 
-                // TODO Add new elements to the collection and persist via the repository
-                if (!$found) {
-                    $this->getListService()->createListElement($listClass, $value);
-                }
             }
         }
 
