@@ -133,8 +133,15 @@ define([
                                 if (response.saved) {
                                     feedback().success(__('List saved'));
                                     section.get('taoBo_list').loadContentBlock(urlUtil.route('index', 'Lists', 'taoBackOffice'));
-                                }else{
-                                    feedback().error(__('List not saved'));
+                                } else {
+                                    const errors = (response.errors || []).length
+                                        ? `<ul><li>${response.errors.join('</li><li>')}</li></ul>`
+                                        : '';
+
+                                    feedback().error(
+                                        `${__('List not saved')}${errors}`,
+                                        {encodeHtml: false}
+                                    );
                                 }
                             }
                         );

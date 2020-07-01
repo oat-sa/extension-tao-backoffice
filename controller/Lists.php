@@ -31,6 +31,7 @@ use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\TaoOntology;
 use tao_actions_CommonModule;
 use \tao_helpers_Scriptloader;
@@ -219,7 +220,11 @@ class Lists extends tao_actions_CommonModule
             }
         }
 
-        $this->returnJson(['saved' => $valueCollectionService->persist($elements)]);
+        try {
+            $this->returnJson(['saved' => $valueCollectionService->persist($elements)]);
+        } catch (ValueConflictException $exception) {
+            $this->returnJson(['saved' => false, 'errors' => [__('The list should contain unique values')]]);
+        }
     }
 
     /**
