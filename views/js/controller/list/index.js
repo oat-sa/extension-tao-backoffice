@@ -18,21 +18,73 @@
 define([
     'jquery',
     'i18n',
+    'uri',
     'util/url',
     'ui/feedback',
     'ui/dialog/confirm',
     'layout/section',
     'css!taoBackOfficeCss/list'
-], function ($, __, urlUtil, feedback, dialogConfirm, section) {
+], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section) {
     'use strict';
 
-    function addSquareBtn(title, icon, $listToolBar, position='lft') {
+    function findListContainer(uri) {
+        return $(`#list-data_${uri}`);
+    }
+
+    function clearUri(value) {
+        return value.replace(/^list-element_[0-9]+_/, '');
+    }
+
+    function createEditUriCheckbox(id) {
+        const $checkbox = $('<input>')
+            .attr('type', 'checkbox')
+            .attr('id', id)
+            .change(handleEditCheckboxStateChange);
+
+        const $label = $('<label>')
+            .attr('for', id)
+            .text(__('Edit URI'));
+
+        return $('<span>')
+            .addClass('lft edit-uri')
+            .append($checkbox, $label);
+    }
+
+    function addSquareBtn(title, icon, $listToolBar, position='rgt') {
         const $btn = $('<button>', {
             'class': `btn-info small ${position} icon-${icon}`,
             title: __(title) }
         );
         $listToolBar.append($btn);
+
         return $btn;
+    }
+
+    function transformListElement($element) {
+        return createListElement($element.attr('id'), $element.text());
+    }
+
+    function createNewListElement(elementId) {
+        return createListElement(`list-element_${elementId}_`);
+    }
+
+    function createListElement(name, value = '') {
+        return $(`<div class='list-element'>
+            <div class='list-element'>
+                <div class='list-element__input-container'>
+                    <input type='text' name='${name}' value='${value}' />
+                    <div class='list-element__input-container__uri'>
+                        <label for='uri_${name}' class='title'>URI</label>
+                        <input id='uri_${name}' type='text' name='uri_${name}' value='${Uri.decode(clearUri(name))}'>
+                    </div>
+                </div>
+                <span class='icon-checkbox-crossed list-element-delete-btn'>
+            </div>
+        </div>`);
+    }
+
+    function handleEditCheckboxStateChange() {
+        findListContainer($(this).attr('id')).toggleClass('with-uri');
     }
 
     return {
@@ -47,38 +99,32 @@ define([
             const delEltUrl  = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
 
             $('.list-edit-btn').click(function () {
-                const $btn = $(this);
-                let uri = $btn.data('uri');
-                const $listContainer = $(`#list-data_${uri}`);
+                const uri = $(this).data('uri');
+                const $listContainer = findListContainer(uri);
 
                 let $listForm       = $listContainer.find('form');
                 const $listTitleBar = $listContainer.find('.container-title h6');
-                const $listToolBar  = $listContainer.find('.data-container-footer');
+                const $listToolBar  = $listContainer.find('.data-container-footer').empty();
                 let $listSaveBtn;
                 let $listNewBtn;
 
-                $btn.addClass('hidden');
-
                 if (!$listForm.length) {
+                    let nextElementId;
 
                     $listForm = $('<form>');
                     $listContainer.wrapInner($listForm);
                     $listContainer.find('form').append(`<input type='hidden' name='uri' value='${uri}' />`);
 
                     const $labelEdit = $(`<input type='text' name='label' value=''/>`).val($listTitleBar.text());
-                    $listTitleBar.html($labelEdit);
+                    $listTitleBar.closest('.container-title').html($labelEdit);
 
-                    if ($listContainer.find('.list-element').length) {
-                        $listContainer.find('.list-element').replaceWith(function () {
-                            return $(`<input type='text' name='${$(this).attr('id')}' value='' />`).val($(this).text());
-                        });
-                    }
+                    nextElementId = $listContainer.find('.list-element')
+                        .replaceWith(function () {
+                            return transformListElement($(this));
+                        })
+                        .length;
 
-                    const elementList = $listContainer.find('ol');
-                    elementList.addClass('sortable-list');
-                    elementList.find('li').append(`<span class='icon-checkbox-crossed list-element-delete-btn'></span>`);
-
-                    $listSaveBtn = addSquareBtn(__('Save list'), 'save', $listToolBar, 'rgt');
+                    $listSaveBtn = addSquareBtn(__('Save list'), 'save', $listToolBar);
                     $listSaveBtn.on('click', function () {
                         $.postJson(
                             saveUrl,
@@ -87,8 +133,15 @@ define([
                                 if (response.saved) {
                                     feedback().success(__('List saved'));
                                     section.get('taoBo_list').loadContentBlock(urlUtil.route('index', 'Lists', 'taoBackOffice'));
-                                }else{
-                                    feedback().error(__('List not saved'));
+                                } else {
+                                    const errors = (response.errors || []).length
+                                        ? `<ul><li>${response.errors.join('</li><li>')}</li></ul>`
+                                        : '';
+
+                                    feedback().error(
+                                        `${__('List not saved')}${errors}`,
+                                        {encodeHtml: false}
+                                    );
                                 }
                             }
                         );
@@ -97,21 +150,23 @@ define([
 
                     $listNewBtn = addSquareBtn('New element', 'add', $listToolBar);
                     $listNewBtn.click(function () {
-                        var level = $(this).closest('form').find('ol').children().length + 1;
-                        $(this).closest('form')
-                            .find('ol')
-                            .append(`<li id='list-element_${level}'>
-                                <input type='text' name='list-element_${level}_' />
-                                <span class='icon-checkbox-crossed list-element-delete-btn' ></span>
-                            </li>`);
+                        const $list = $(this).closest('form').find('ol');
+
+                        $list.append($('<li>').append(createNewListElement(nextElementId++)))
+                            .closest('.container-content').scrollTop($list.height());
+
                         return false;
                     });
+
+                    $listToolBar.append(createEditUriCheckbox(uri));
+
+                    $listToolBar.append();
                 }
 
                 $listContainer.on('click', '.list-element-delete-btn', function () {
-                    const $element = $(this).parent();
+                    const $element = $(this).closest('li');
                     const $input   = $element.find('input:text');
-                    const eltUri   = $input.attr('name').replace(/^list-element_([0-9]*)_/, '');
+                    const eltUri   = clearUri($input.attr('name'));
 
                     const deleteLocalElement = () => {
                         $element.remove();
