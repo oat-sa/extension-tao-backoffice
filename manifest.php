@@ -28,10 +28,10 @@ return [
     'label' => 'Back Office',
     'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '4.5.1',
+    'version' => '5.0.0',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
-        'tao' => '>=22.5.0',
+        'tao' => '>=44.10.0',
         'generis' => '>=5.10.0'
     ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',

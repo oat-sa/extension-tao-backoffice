@@ -27,11 +27,18 @@ namespace oat\taoBackOffice\controller;
 use common_exception_BadRequest;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
+use oat\tao\model\Lists\Business\Domain\Value;
+use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
+use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
+use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\TaoOntology;
+use tao_actions_CommonModule;
 use \tao_helpers_Scriptloader;
 use \tao_actions_form_List;
 use \tao_helpers_Uri;
 use oat\taoBackOffice\model\lists\ListService;
+use tao_models_classes_LanguageService;
 
 /**
  * This controller provide the actions to manage the lists of data
@@ -41,10 +48,10 @@ use oat\taoBackOffice\model\lists\ListService;
  * @package taoBackOffice
  *
  */
-class Lists extends \tao_actions_CommonModule
+class Lists extends tao_actions_CommonModule
 {
     use OntologyAwareTrait;
-    
+
     /**
      * Show the list of users
      * @return void
@@ -98,7 +105,7 @@ class Lists extends \tao_actions_CommonModule
                 'label'     => $listClass->getLabel(),
                 // The Language list should not be editable.
                 // @todo Make two different kind of lists: system list that are not editable and usual list.
-                'editable'  => $listClass->isSubClassOf($this->getClass(TaoOntology::CLASS_URI_LIST)) && $listClass->getUri() !== \tao_models_classes_LanguageService::CLASS_URI_LANGUAGES,
+                'editable'  => $listClass->isSubClassOf($this->getClass(TaoOntology::CLASS_URI_LIST)) && $listClass->getUri() !== tao_models_classes_LanguageService::CLASS_URI_LANGUAGES,
                 'elements'  => $elements
             ];
         }
@@ -118,7 +125,7 @@ class Lists extends \tao_actions_CommonModule
         }
         $data = [];
         foreach ($this->getListService()->getLists() as $listClass) {
-            array_push($data, $this->getListService()->toTree($listClass));
+            $data[] = $this->getListService()->toTree($listClass);
         }
         $this->returnJson([
             'data'      => __('Lists'),
@@ -154,63 +161,75 @@ class Lists extends \tao_actions_CommonModule
     /**
      * Save a list and it's elements
      *
-     * @throws common_exception_BadRequest
+     * @param ValueCollectionService $valueCollectionService
+     *
      * @return void
+     *
+     * @throws common_exception_BadRequest
      */
-    public function saveLists()
+    public function saveLists(ValueCollectionService $valueCollectionService): void
     {
         if (!$this->isXmlHttpRequest()) {
             throw new common_exception_BadRequest('wrong request mode');
         }
-        $saved = false;
 
-        if ($this->hasRequestParameter('uri')) {
-            $listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
-            if (!is_null($listClass)) {
-                // use $_POST instead of getRequestParameters to prevent html encoding
-                $listClass->setLabel($_POST['label']);
+        if (!$this->hasRequestParameter('uri')) {
+            $this->returnJson(['saved' => false]);
 
-                $setLevel = false;
-                $levelProperty = $this->getProperty(TaoOntology::CLASS_URI_LIST);
-                foreach ($listClass->getProperties(true) as $property) {
-                    if ($property->getUri() == $levelProperty->getUri()) {
-                        $setLevel = true;
-                        break;
+            return;
+        }
+
+        $listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+        if (null === $listClass) {
+            $this->returnJson(['saved' => false]);
+
+            return;
+        }
+
+        // use $_POST instead of getRequestParameters to prevent html encoding
+        $payload = $_POST;
+
+        unset($payload['uri']);
+
+        if (isset($payload['label'])) {
+            $listClass->setLabel($payload['label']);
+            unset($payload['label']);
+        }
+
+        $elements = $valueCollectionService->findAll(
+            new ValueCollectionSearchInput(
+                (new ValueCollectionSearchRequest())
+                    ->setValueCollectionUri($listClass->getUri())
+            )
+        );
+
+        foreach ($payload as $key => $value) {
+            if (preg_match('/^list-element_/', $key)) {
+                $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
+                $uri        = tao_helpers_Uri::decode($encodedUri);
+
+                $newUriValue = trim($payload["uri_$key"] ?? '');
+
+                $element = $elements->extractValueByUri($uri);
+
+                if (null === $element) {
+                    $elements->addValue(new Value(null, $newUriValue, $value));
+                } else {
+                    $element->setLabel($value);
+
+                    if ($newUriValue) {
+                        $element->setUri($newUriValue);
                     }
                 }
 
-                $elements = $this->getListService()->getListElements($listClass);
-                // use $_POST instead of getRequestParameters to prevent html encoding
-                foreach ($_POST as $key => $value) {
-                    if (preg_match("/^list\-element_/", $key)) {
-                        $key = str_replace('list-element_', '', $key);
-                        $l = strpos($key, '_');
-                        $level = substr($key, 0, $l);
-                        $uri = tao_helpers_Uri::decode(substr($key, $l + 1));
-
-                        $found = false;
-                        foreach ($elements as $element) {
-                            if ($element->getUri() == $uri && !empty($uri)) {
-                                $found = true;
-                                $element->setLabel($value);
-                                if ($setLevel) {
-                                    $element->editPropertyValues($levelProperty, $level);
-                                }
-                                break;
-                            }
-                        }
-                        if (!$found) {
-                            $element = $this->getListService()->createListElement($listClass, $value);
-                            if ($setLevel) {
-                                $element->setPropertyValue($levelProperty, $level);
-                            }
-                        }
-                    }
-                }
-                $saved = true;
             }
         }
-        $this->returnJson(['saved' => $saved]);
+
+        try {
+            $this->returnJson(['saved' => $valueCollectionService->persist($elements)]);
+        } catch (ValueConflictException $exception) {
+            $this->returnJson(['saved' => false, 'errors' => [__('The list should contain unique URIs')]]);
+        }
     }
 
     /**
@@ -226,7 +245,7 @@ class Lists extends \tao_actions_CommonModule
 
         $response = [];
         if ($this->getRequestParameter('classUri')) {
-            if ($this->getRequestParameter('type') == 'class' && $this->getRequestParameter('classUri') == 'root') {
+            if ($this->getRequestParameter('type') === 'class' && $this->getRequestParameter('classUri') ==='root') {
                 $listClass = $this->getListService()->createList();
                 if (!is_null($listClass)) {
                     $response['label']  = $listClass->getLabel();
@@ -234,7 +253,7 @@ class Lists extends \tao_actions_CommonModule
                 }
             }
 
-            if ($this->getRequestParameter('type') == 'instance') {
+            if ($this->getRequestParameter('type') === 'instance') {
                 $listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('classUri')));
                 if (!is_null($listClass)) {
                     $listElt = $this->getListService()->createListElement($listClass);
