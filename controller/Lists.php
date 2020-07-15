@@ -25,19 +25,24 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
+use common_ext_ExtensionException as ExtensionException;
+use core_kernel_persistence_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
+use oat\tao\model\Lists\Business\Service\RemoteSourcedListService;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\TaoOntology;
-use tao_actions_CommonModule;
-use \tao_helpers_Scriptloader;
-use \tao_actions_form_List;
-use \tao_helpers_Uri;
 use oat\taoBackOffice\model\lists\ListService;
+use RuntimeException;
+use tao_actions_CommonModule;
+use tao_actions_form_List;
+use tao_actions_form_RemoteList;
+use tao_helpers_Scriptloader;
+use tao_helpers_Uri;
 use tao_models_classes_LanguageService;
 
 /**
@@ -84,14 +89,63 @@ class Lists extends tao_actions_CommonModule
     }
 
     /**
-     * Returns all lists with all values for all lists
-     * @return array
+     * @param RemoteSourcedListService $remoteSourcedListService
+     *
+     * @throws ExtensionException
+     * @throws core_kernel_persistence_Exception
      */
-    private function getListData()
+    public function remote(RemoteSourcedListService $remoteSourcedListService): void
+    {
+        tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
+
+        $this->defaultData();
+
+        $remoteListFormFactory = new tao_actions_form_RemoteList();
+        $remoteListForm = $remoteListFormFactory->getForm();
+
+        if ($remoteListForm === null) {
+            throw new RuntimeException('Impossible to create remote sourced list form');
+        }
+
+        if ($remoteListForm->isSubmited()) {
+            if ($remoteListForm->isValid()) {
+                $values = $remoteListForm->getValues();
+
+                $newList = $remoteSourcedListService->createList(
+                    $values[tao_actions_form_RemoteList::FIELD_NAME],
+                    $values[tao_actions_form_RemoteList::FIELD_SOURCE_URL],
+                    $values[tao_actions_form_RemoteList::FIELD_ITEM_LABEL_PATH],
+                    $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH]
+                );
+
+                $remoteSourcedListService->sync($newList);
+            }
+        } else {
+            $newListLabel = __('List') . ' ' . (count($this->getListService()->getLists()) + 1);
+            $remoteListForm->getElement(tao_actions_form_RemoteList::FIELD_NAME)->setValue($newListLabel);
+        }
+        $this->setData('form', $remoteListForm->render());
+        $this->setData('lists', $this->getListData(true));
+        $this->setView('RemoteLists/index.tpl');
+    }
+
+    /**
+     * Returns all lists with all values for all lists
+     *
+     * @param bool $showRemoteLists
+     *
+     * @return array
+     * @throws core_kernel_persistence_Exception
+     */
+    private function getListData(bool $showRemoteLists = false): array
     {
         $listService = $this->getListService();
         $lists = [];
         foreach ($listService->getLists() as $listClass) {
+            if ($listService->isRemote($listClass) !== $showRemoteLists) {
+                continue;
+            }
+
             $elements = [];
             foreach ($listService->getListElements($listClass) as $index => $listElement) {
                 $elements[$index] = [
