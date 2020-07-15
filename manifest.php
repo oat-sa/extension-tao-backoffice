@@ -28,7 +28,7 @@ return [
     'label' => 'Back Office',
     'description' => 'Base for back-office extensions',
     'license' => 'GPL-2.0',
-    'version' => '5.0.0',
+    'version' => '5.0.1',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
         'tao' => '>=44.10.0',
