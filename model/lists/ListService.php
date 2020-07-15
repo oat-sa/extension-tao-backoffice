@@ -28,6 +28,7 @@ use oat\generis\model\kernel\uri\UriProvider;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
+use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\TaoOntology;
@@ -79,8 +80,13 @@ class ListService extends \tao_models_classes_ListService
 
     public function removeList(RdfClass $listClass)
     {
-        //parent::removeList($listClass);
-        throw new \Exception(__METHOD__ . ' is not implemented');
+        if ($this->isRemote($listClass)) {
+            $this->getValueService()->delete(
+                new ValueCollectionDeleteInput($listClass->getUri())
+            );
+        }
+
+        parent::removeList($listClass);
     }
 
     public function createListElement(RdfClass $listClass, $label = '')
