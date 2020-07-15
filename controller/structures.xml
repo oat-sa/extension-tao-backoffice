@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE structures SYSTEM "../doc/structures.dtd">
 <structures>
-	<structure id="settings" name="Settings" level="8" group="settings">
-		<sections>
-			<section id="taoBo_list" name="Lists" url="/taoBackOffice/Lists/index" />
+    <structure id="settings" name="Settings" level="8" group="settings">
+        <sections>
+            <section id="taoBo_list" name="Lists" url="/taoBackOffice/Lists/index" />
             <section id="taoBo_remotelist" name="RemoteLists" url="/taoBackOffice/Lists/remote" />
-			<section id="taoBo_tree" name="Trees" url="/taoBackOffice/Trees/viewTree">
+            <section id="taoBo_tree" name="Trees" url="/taoBackOffice/Trees/viewTree">
                 <trees>
                     <tree name="Trees"
                         className="Trees"
@@ -36,7 +36,7 @@
                         <icon id="icon-export"/>
                     </action>
                 </actions>
-			</section>
-		</sections>
-	</structure>
+            </section>
+        </sections>
+    </structure>
 </structures>
