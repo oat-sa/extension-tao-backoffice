@@ -26,9 +26,12 @@ namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
 use common_ext_ExtensionException as ExtensionException;
+use core_kernel_classes_Class as RdfClass;
+use core_kernel_classes_Property as RdfProperty;
 use core_kernel_persistence_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
+use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
@@ -111,7 +114,7 @@ class Lists extends tao_actions_CommonModule
             if ($remoteListForm->isValid()) {
                 $values = $remoteListForm->getValues();
 
-                $newList = $remoteSourcedListService->createList(
+                $newList = $this->createList(
                     $values[tao_actions_form_RemoteList::FIELD_NAME],
                     $values[tao_actions_form_RemoteList::FIELD_SOURCE_URL],
                     $values[tao_actions_form_RemoteList::FIELD_ITEM_LABEL_PATH],
@@ -127,6 +130,26 @@ class Lists extends tao_actions_CommonModule
         $this->setData('form', $remoteListForm->render());
         $this->setData('lists', $this->getListData(true));
         $this->setView('RemoteLists/index.tpl');
+    }
+
+    private function createList(string $label, string $source, string $labelPath, string $uriPath): RdfClass
+    {
+        $class = $this->getListService()->createList($label);
+
+        $propertyType = new RdfProperty(CollectionType::TYPE_PROPERTY);
+        $propertyRemote = new RdfProperty((string)CollectionType::remote());
+        $class->setPropertyValue($propertyType, $propertyRemote);
+
+        $propertySource = new RdfProperty(RemoteSourcedListService::PROPERTY_SOURCE_URI);
+        $class->setPropertyValue($propertySource, $source);
+
+        $propertySource = new RdfProperty(RemoteSourcedListService::PROPERTY_ITEM_LABEL_PATH);
+        $class->setPropertyValue($propertySource, $labelPath);
+
+        $propertySource = new RdfProperty(RemoteSourcedListService::PROPERTY_ITEM_URI_PATH);
+        $class->setPropertyValue($propertySource, $uriPath);
+
+        return $class;
     }
 
     /**
