@@ -382,22 +382,29 @@ class Lists extends tao_actions_CommonModule
     }
 
     /**
-     * Removee the list in parameter
-     * @throws common_exception_BadRequest
+     * Remove the list in parameter
+     *
+     * @param string|null $uri
+     *
      * @return void
+     * @throws common_exception_BadRequest
      */
-    public function removeList()
+    public function removeList(?string $uri = null): void
     {
         if (!$this->isXmlHttpRequest()) {
             throw new common_exception_BadRequest('wrong request mode');
         }
+
         $deleted = false;
 
-        if ($this->hasRequestParameter('uri')) {
+        if (null !== $uri) {
+            $decodedUri = tao_helpers_Uri::decode($uri);
+
             $deleted = $this->getListService()->removeList(
-                $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')))
+                $this->getListService()->getList($decodedUri)
             );
         }
+
         $this->returnJson(['deleted' => $deleted]);
     }
 

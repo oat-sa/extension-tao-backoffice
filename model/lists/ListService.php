@@ -32,11 +32,13 @@ use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\TaoOntology;
+use tao_models_classes_LanguageService;
+use tao_models_classes_ListService;
 
 /**
  * Class ListService
  */
-class ListService extends \tao_models_classes_ListService
+class ListService extends tao_models_classes_ListService
 {
     /**
      * Whenever or not a list is editable
@@ -50,7 +52,7 @@ class ListService extends \tao_models_classes_ListService
     public function isEditable(RdfClass $listClass)
     {
         return $listClass->isSubClassOf($this->getClass(TaoOntology::CLASS_URI_LIST))
-            && $listClass->getUri() !== \tao_models_classes_LanguageService::CLASS_URI_LANGUAGES;
+            && $listClass->getUri() !== tao_models_classes_LanguageService::CLASS_URI_LANGUAGES;
     }
 
     public function getListElement(RdfClass $listClass, $uri)
@@ -78,15 +80,19 @@ class ListService extends \tao_models_classes_ListService
         return $result->getIterator();
     }
 
+    /**
+     * @param RdfClass $listClass
+     *
+     * @return bool
+     */
     public function removeList(RdfClass $listClass)
     {
-        if ($this->isRemote($listClass)) {
-            $this->getValueService()->delete(
-                new ValueCollectionDeleteInput($listClass->getUri())
-            );
-        }
+        $this->getValueService()->delete(
+            new ValueCollectionDeleteInput($listClass->getUri())
+        );
 
-        parent::removeList($listClass);
+
+        return $listClass->delete();
     }
 
     public function createListElement(RdfClass $listClass, $label = '')
@@ -119,7 +125,9 @@ class ListService extends \tao_models_classes_ListService
      */
     public function isRemote(RdfClass $listClass): bool
     {
-        $type = $listClass->getOnePropertyValue($listClass->getProperty('http://www.tao.lu/Ontologies/TAO.rdf#ListType'));
+        $type = $listClass->getOnePropertyValue(
+            $listClass->getProperty('http://www.tao.lu/Ontologies/TAO.rdf#ListType')
+        );
 
         return $type && ($type->getUri() === 'http://www.tao.lu/Ontologies/TAO.rdf#ListRemote');
     }
