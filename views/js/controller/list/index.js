@@ -96,6 +96,7 @@ define([
 
             const saveUrl    = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
             const delListUrl = urlUtil.route('removeList', 'Lists', 'taoBackOffice');
+            const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
             const delEltUrl  = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
 
             $('.list-edit-btn').click(function () {
@@ -225,6 +226,23 @@ define([
                                 }
                             }
                         );
+                    }
+                );
+            });
+
+            $('.list-reload-btn').click(function () {
+                const uri = $(this).data('uri');
+
+                $.postJson(
+                    reloadListUrl,
+                    { uri },
+                    response => {
+                        if (response.saved) {
+                            feedback().success(__('List reloaded'));
+                            section.get('taoBo_list').loadContentBlock(urlUtil.route('index', 'Lists', 'taoBackOffice'));
+                        } else {
+                            feedback().error(__('List failed to be reloaded'));
+                        }
                     }
                 );
             });
