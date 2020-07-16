@@ -239,7 +239,7 @@ define([
                     response => {
                         if (response.saved) {
                             feedback().success(__('List reloaded'));
-                            section.get('taoBo_list').loadContentBlock(urlUtil.route('index', 'Lists', 'taoBackOffice'));
+                            section.get('taoBo_remotelist').loadContentBlock(urlUtil.route('remote', 'Lists', 'taoBackOffice'));
                         } else {
                             feedback().error(__('List failed to be reloaded'));
                         }
