@@ -60,6 +60,8 @@ class Lists extends tao_actions_CommonModule
 {
     use OntologyAwareTrait;
 
+    private const REMOTE_LIST_PREVIEW_LIMIT = 20;
+
     /**
      * Show the list of users
      * @return void
@@ -121,7 +123,13 @@ class Lists extends tao_actions_CommonModule
                     $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH]
                 );
 
-                $remoteSourcedListService->sync($newList);
+                try {
+                    $remoteSourcedListService->sync($newList);
+                } catch (RuntimeException $exception) {
+                    $this->removeList(tao_helpers_Uri::encode($newList->getUri()));
+
+                    throw $exception;
+                }
             }
         } else {
             $newListLabel = __('List') . ' ' . (count($this->getListService()->getLists()) + 1);
@@ -170,7 +178,13 @@ class Lists extends tao_actions_CommonModule
             }
 
             $elements = [];
-            foreach ($listService->getListElements($listClass) as $index => $listElement) {
+            foreach (
+                $listService->getListElements(
+                    $listClass,
+                    true,
+                    $showRemoteLists ? self::REMOTE_LIST_PREVIEW_LIMIT : null
+                ) as $index => $listElement
+            ) {
                 $elements[$index] = [
                     'uri'       => tao_helpers_Uri::encode($listElement->getUri()),
                     'label'     => $listElement->getLabel()

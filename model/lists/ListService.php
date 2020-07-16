@@ -72,6 +72,7 @@ class ListService extends tao_models_classes_ListService
     {
         $request = new ValueCollectionSearchRequest();
         $request->setValueCollectionUri($listClass->getUri());
+        $request->setLimit($limit);
 
         $result = $this->getValueService()->findAll(
             new ValueCollectionSearchInput($request)
