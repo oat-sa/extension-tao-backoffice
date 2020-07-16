@@ -30,6 +30,7 @@ use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
+use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\TaoOntology;
 use tao_models_classes_LanguageService;
@@ -129,9 +130,9 @@ class ListService extends tao_models_classes_ListService
     public function isRemote(RdfClass $listClass): bool
     {
         $type = $listClass->getOnePropertyValue(
-            $listClass->getProperty('http://www.tao.lu/Ontologies/TAO.rdf#ListType')
+            $listClass->getProperty(RemoteSourcedListOntology::PROPERTY_LIST_TYPE)
         );
 
-        return $type && ($type->getUri() === 'http://www.tao.lu/Ontologies/TAO.rdf#ListRemote');
+        return $type && ($type->getUri() === RemoteSourcedListOntology::LIST_TYPE_REMOTE);
     }
 }
