@@ -146,6 +146,37 @@ class Lists extends tao_actions_CommonModule
         $this->setView('RemoteLists/index.tpl');
     }
 
+    /**
+     * @param ValueCollectionService $valueCollectionService
+     * @param RemoteSource           $remoteSource
+     *
+     * @throws common_exception_BadRequest
+     */
+    public function reloadRemoteList(ValueCollectionService $valueCollectionService, RemoteSource $remoteSource): void
+    {
+        if (!$this->isXmlHttpRequest()) {
+            throw new common_exception_BadRequest('wrong request mode');
+        }
+
+        $saved = false;
+
+        $uri = $_POST['uri'] ?? null;
+
+        if (null !== $uri) {
+            $decodedUri = tao_helpers_Uri::decode($uri);
+
+            $this->sync(
+                $valueCollectionService,
+                $remoteSource,
+                $this->getListService()->getList($decodedUri)
+            );
+
+            $saved = true;
+        }
+
+        $this->returnJson(['saved' => $saved]);
+    }
+
     private function createList(string $label, string $source, string $labelPath, string $uriPath): RdfClass
     {
         $class = $this->getListService()->createList($label);
