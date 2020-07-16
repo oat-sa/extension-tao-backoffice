@@ -33,9 +33,11 @@ use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\Value;
+use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
-use oat\tao\model\Lists\Business\Service\RemoteSourcedListService;
+use oat\tao\model\Lists\Business\Service\RemoteSource;
+use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\TaoOntology;
@@ -92,13 +94,16 @@ class Lists extends tao_actions_CommonModule
     }
 
     /**
-     * @param RemoteSourcedListService $remoteSourcedListService
+     * @param ValueCollectionService $valueCollectionService
+     * @param RemoteSource           $remoteSource
      *
      * @throws ExtensionException
      * @throws core_kernel_persistence_Exception
      */
-    public function remote(RemoteSourcedListService $remoteSourcedListService): void
-    {
+    public function remote(
+        ValueCollectionService $valueCollectionService,
+        RemoteSource $remoteSource
+    ): void {
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
 
         $this->defaultData();
@@ -121,7 +126,7 @@ class Lists extends tao_actions_CommonModule
                     $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH]
                 );
 
-                $remoteSourcedListService->sync($newList);
+                $this->sync($valueCollectionService, $remoteSource, $newList);
             }
         } else {
             $newListLabel = __('List') . ' ' . (count($this->getListService()->getLists()) + 1);
@@ -140,16 +145,50 @@ class Lists extends tao_actions_CommonModule
         $propertyRemote = new RdfProperty((string)CollectionType::remote());
         $class->setPropertyValue($propertyType, $propertyRemote);
 
-        $propertySource = new RdfProperty(RemoteSourcedListService::PROPERTY_SOURCE_URI);
+        $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI);
         $class->setPropertyValue($propertySource, $source);
 
-        $propertySource = new RdfProperty(RemoteSourcedListService::PROPERTY_ITEM_LABEL_PATH);
+        $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH);
         $class->setPropertyValue($propertySource, $labelPath);
 
-        $propertySource = new RdfProperty(RemoteSourcedListService::PROPERTY_ITEM_URI_PATH);
+        $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH);
         $class->setPropertyValue($propertySource, $uriPath);
 
         return $class;
+    }
+
+    /**
+     * @param ValueCollectionService $valueCollectionService
+     * @param RemoteSource           $remoteSource
+     * @param RdfClass               $collectionClass
+     *
+     * @throws core_kernel_persistence_Exception
+     */
+    public function sync(
+        ValueCollectionService $valueCollectionService,
+        RemoteSource $remoteSource,
+        RdfClass $collectionClass
+    ): void {
+        $sourceUrl = (string)$collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
+        );
+        $uriPath   = (string)$collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
+        );
+        $labelPath = (string)$collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
+        );
+
+        $collection = new ValueCollection(
+            $collectionClass->getUri(),
+            ...iterator_to_array($remoteSource->fetch($sourceUrl, $uriPath, $labelPath, 'jsonpath'))
+        );
+
+        $result = $valueCollectionService->persist($collection);
+
+        if (!$result) {
+            throw new RuntimeException('Sync was not successful');
+        }
     }
 
     /**
