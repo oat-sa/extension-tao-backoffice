@@ -231,6 +231,14 @@ class Lists extends tao_actions_CommonModule
                 ];
                 ksort($elements);
             }
+
+            if ($showRemoteLists && count($elements) === self::REMOTE_LIST_PREVIEW_LIMIT) {
+                $elements[] = [
+                    'uri' => '',
+                    'label' => '...',
+                ];
+            }
+
             $lists[] = [
                 'uri'       => tao_helpers_Uri::encode($listClass->getUri()),
                 'label'     => $listClass->getLabel(),
@@ -280,8 +288,18 @@ class Lists extends tao_actions_CommonModule
         if ($this->hasRequestParameter('listUri')) {
             $list = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('listUri')));
             if (!is_null($list)) {
-                foreach ($this->getListService()->getListELements($list, true) as $listElement) {
+                $isRemote = $this->getListService()->isRemote($list);
+
+                $limit    = $isRemote
+                    ? self::REMOTE_LIST_PREVIEW_LIMIT
+                    : 0;
+
+                foreach ($this->getListService()->getListELements($list, true, $limit) as $listElement) {
                     $data[tao_helpers_Uri::encode($listElement->getUri())] = $listElement->getLabel();
+                }
+
+                if ($isRemote && count($data) === self::REMOTE_LIST_PREVIEW_LIMIT) {
+                    $data[''] = '...';
                 }
             }
         }
