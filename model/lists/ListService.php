@@ -59,14 +59,15 @@ class ListService extends tao_models_classes_ListService
     public function getListElement(RdfClass $listClass, $uri)
     {
         $request = new ValueCollectionSearchRequest();
-        $request->setValueCollectionUri($listClass->getUri())//->setObject()
-        ;
+        $request->setValueCollectionUri($listClass->getUri())->setUris($uri);
 
         $result = $this->getValueService()->findAll(
             new ValueCollectionSearchInput($request)
         );
 
-        return iterator_to_array($result->getIterator())[0];
+        return $result->count() === 0
+            ? null
+            : iterator_to_array($result->getIterator())[0];
     }
 
     public function getListElements(RdfClass $listClass, $sort = true, $limit = 0)
