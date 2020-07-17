@@ -132,14 +132,18 @@ class Lists extends tao_actions_CommonModule
                     $this->sync($valueCollectionService, $remoteSource, $newList);
                 }
                 catch (ValueConflictException $exception) {
-                    return $this->returnError(
+                    $this->returnError(
                         $exception->getMessage() . __(' Probably given list was already imported.')
                     );
+
+                    return;
                 }
                 catch (RuntimeException $exception) {
                     throw $exception;
                 } finally {
-                    $this->removeList(tao_helpers_Uri::encode($newList->getUri()));
+                    if (isset($exception)) {
+                        $this->removeList(tao_helpers_Uri::encode($newList->getUri()));
+                    }
                 }
             }
         } else {
