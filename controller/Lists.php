@@ -105,7 +105,7 @@ class Lists extends tao_actions_CommonModule
     public function remote(
         ValueCollectionService $valueCollectionService,
         RemoteSource $remoteSource
-    ): void {
+    ) {
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
 
         $this->defaultData();
@@ -130,12 +130,17 @@ class Lists extends tao_actions_CommonModule
 
                 try {
                     $this->sync($valueCollectionService, $remoteSource, $newList);
-                } catch (RuntimeException $exception) {
-                    $this->removeList(tao_helpers_Uri::encode($newList->getUri()));
-
-                    throw $exception;
                 }
-
+                catch (ValueConflictException $exception) {
+                    return $this->returnError(
+                        $exception->getMessage() . __(' Probably given list was already imported.')
+                    );
+                }
+                catch (RuntimeException $exception) {
+                    throw $exception;
+                } finally {
+                    $this->removeList(tao_helpers_Uri::encode($newList->getUri()));
+                }
             }
         } else {
             $newListLabel = __('List') . ' ' . (count($this->getListService()->getLists()) + 1);
