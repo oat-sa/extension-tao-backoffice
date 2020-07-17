@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint125\n"
-"PO-Revision-Date: 2020-03-27T11:23:11\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-17T10:40:53\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -13,8 +13,14 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid " Probably given list was already imported."
+msgstr ""
+
 msgid "Create a list"
 msgstr "Créer une liste"
+
+msgid "Create a remote list"
+msgstr ""
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
 msgstr "Créer des items, gérer des banques d'items et de tests, organiser des groupes et des passations, préparer des rapports, paramétrer des flux de travail."
@@ -32,6 +38,9 @@ msgstr "Éditer cette liste"
 #, tao-public
 msgid "Edit Tree"
 msgstr "Éditer l'arborescence"
+
+msgid "Edit URI"
+msgstr ""
 
 msgid "element"
 msgstr "élément"
@@ -56,11 +65,17 @@ msgstr "Liste"
 msgid "List deleted"
 msgstr "Liste supprimée"
 
+msgid "List failed to be reloaded"
+msgstr ""
+
 msgid "List not deleted"
 msgstr "Liste non supprimée"
 
 msgid "List not saved"
 msgstr "Liste non enregistrée"
+
+msgid "List reloaded"
+msgstr ""
 
 msgid "List saved"
 msgstr "Liste enregistrée"
@@ -79,6 +94,13 @@ msgstr "Veuillez confirmer que vous souhaitez supprimer cette liste. Cette opér
 msgid "Properties"
 msgstr "Propriétés"
 
+msgid "Reload this list"
+msgstr ""
+
+#, tao-public
+msgid "Remote Lists"
+msgstr ""
+
 msgid "Save list"
 msgstr ""
 
@@ -91,6 +113,9 @@ msgstr "Back office TAO"
 
 msgid "Test Developers and Administrators"
 msgstr "Développeurs et administrateurs de test"
+
+msgid "The list should contain unique URIs"
+msgstr ""
 
 msgid "The requested resource does not exist or has been deleted"
 msgstr "La ressource demandée n'existe pas ou a été supprimée."

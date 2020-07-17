@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint125\n"
-"PO-Revision-Date: 2020-03-27T11:23:11\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-17T10:40:55\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -13,8 +13,14 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid " Probably given list was already imported."
+msgstr ""
+
 msgid "Create a list"
 msgstr "Maak een lijst"
+
+msgid "Create a remote list"
+msgstr ""
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
 msgstr "Maak lijsten. beheer items en toetsbank, organiseer cohorten en pakketten, bereid rapporten voor en zet workflows op."
@@ -32,6 +38,9 @@ msgstr "Pas deze lijst aan"
 #, tao-public
 msgid "Edit Tree"
 msgstr "Pas boom aan"
+
+msgid "Edit URI"
+msgstr ""
 
 msgid "element"
 msgstr "element"
@@ -56,11 +65,17 @@ msgstr "Lijst"
 msgid "List deleted"
 msgstr "Lijst verwijderd"
 
+msgid "List failed to be reloaded"
+msgstr ""
+
 msgid "List not deleted"
 msgstr "Lijst niet verwijderd"
 
 msgid "List not saved"
 msgstr "Lijst niet opgeslagen"
+
+msgid "List reloaded"
+msgstr ""
 
 msgid "List saved"
 msgstr "Lijst opgeslagen"
@@ -79,6 +94,13 @@ msgstr "Bevestig a.u.b. dat u deze lijst wilt verwijderen. Deze actie kan niet o
 msgid "Properties"
 msgstr "Eigenschappen"
 
+msgid "Reload this list"
+msgstr ""
+
+#, tao-public
+msgid "Remote Lists"
+msgstr ""
+
 msgid "Save list"
 msgstr ""
 
@@ -91,6 +113,9 @@ msgstr "TAO Back Office"
 
 msgid "Test Developers and Administrators"
 msgstr "Toets-ontwikkelaars en beheerders"
+
+msgid "The list should contain unique URIs"
+msgstr ""
 
 msgid "The requested resource does not exist or has been deleted"
 msgstr "De gevraagde resource bestaat niet of is verwijderd"

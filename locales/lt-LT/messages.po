@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint125\n"
-"PO-Revision-Date: 2020-03-27T11:23:11\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-17T10:40:54\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt-LT\n"
@@ -13,8 +13,14 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
+msgid " Probably given list was already imported."
+msgstr ""
+
 msgid "Create a list"
 msgstr "Sukurti sąrašą"
+
+msgid "Create a remote list"
+msgstr ""
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
 msgstr "Kurti testų dalis, valdyti dalis ir testų bankus, valdyti testuojamųjų grupes, testų vykdymo paskyras, ruošti ataskaitas, nustaytti darbų sekas."
@@ -32,6 +38,9 @@ msgstr "Redaguoti sąrašą"
 #, tao-public
 msgid "Edit Tree"
 msgstr "Redaguoti Medį"
+
+msgid "Edit URI"
+msgstr ""
 
 msgid "element"
 msgstr "elementas"
@@ -56,11 +65,17 @@ msgstr "Sąrašas"
 msgid "List deleted"
 msgstr "Sąrašas ištrintas"
 
+msgid "List failed to be reloaded"
+msgstr ""
+
 msgid "List not deleted"
 msgstr "Sąrašas neištrintas"
 
 msgid "List not saved"
 msgstr "Sąrašas neišsaugotas"
+
+msgid "List reloaded"
+msgstr ""
 
 msgid "List saved"
 msgstr "Sąrašas išsaugotas"
@@ -79,6 +94,13 @@ msgstr "Prašome patvirtinti sąrašo ištrinymą. Veiksmas negali būti atstaty
 msgid "Properties"
 msgstr "Savybės"
 
+msgid "Reload this list"
+msgstr ""
+
+#, tao-public
+msgid "Remote Lists"
+msgstr ""
+
 msgid "Save list"
 msgstr ""
 
@@ -91,6 +113,9 @@ msgstr "TAO valdymas"
 
 msgid "Test Developers and Administrators"
 msgstr "Testų Kūrėjai ir Administratoriai"
+
+msgid "The list should contain unique URIs"
+msgstr ""
 
 msgid "The requested resource does not exist or has been deleted"
 msgstr "Užprašytas resursas neegzistuoja arba buvo ištrintas"
