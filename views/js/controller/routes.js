@@ -4,7 +4,8 @@ define(function () {
     return {
         'Lists' : {
             'actions' : {
-                'index' : 'controller/list/index'
+                'index' : 'controller/list/index',
+                'remote' : 'controller/list/index'
             }
         },
         'Trees': {
