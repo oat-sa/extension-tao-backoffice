@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint121\n"
-"PO-Revision-Date: 2020-08-03T11:15:29\n"
+"PO-Revision-Date: 2020-08-03T11:15:37\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: lt-LT\n"
+"Language: vi-VN\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: lt-LT\n"
+"targetLanguage: vi-VN\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -14,95 +14,95 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Create a list"
-msgstr "Sukurti sąrašą"
+msgstr "Tạo một danh sách"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr "Kurti testų dalis, valdyti dalis ir testų bankus, valdyti testuojamųjų grupes, testų vykdymo paskyras, ruošti ataskaitas, nustaytti darbų sekas."
+msgstr "Tạo các mục, quản lý mục và ngân hàng thử nghiệm, tổ chức các nhóm và phân phối, lập báo cáo, thiết lập quy trình làm việc."
 
 #, tao-public
 msgid "Delete"
-msgstr "Ištrinti"
+msgstr "Xóa"
 
 msgid "Delete this list"
-msgstr "Ištrinti sąrašą"
+msgstr "Xóa danh sách này"
 
 msgid "Edit this list"
-msgstr "Redaguoti sąrašą"
+msgstr "Sửa danh sách này"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr "Redaguoti Medį"
+msgstr "Sửa cây"
 
 msgid "element"
-msgstr "elementas"
+msgstr "thành phần"
 
 msgid "Element deleted"
-msgstr "Elementas ištrintas"
+msgstr "Đã xóa phần tử"
 
 msgid "Element not deleted"
-msgstr "Elementas neištrintas"
+msgstr "Phần tử không bị xóa"
 
 #, tao-public
 msgid "Export"
-msgstr "Eksportuoti"
+msgstr "Xuất ra"
 
 #, tao-public
 msgid "Import"
-msgstr "Importuoti"
+msgstr "Nhập vào"
 
 msgid "List"
-msgstr "Sąrašas"
+msgstr "Danh sách"
 
 msgid "List deleted"
-msgstr "Sąrašas ištrintas"
+msgstr "Danh sách xóa"
 
 msgid "List not deleted"
-msgstr "Sąrašas neištrintas"
+msgstr "Danh sách không bị xóa"
 
 msgid "List not saved"
-msgstr "Sąrašas neišsaugotas"
+msgstr "Danh sách không được lưu"
 
 msgid "List saved"
-msgstr "Sąrašas išsaugotas"
+msgstr "Danh sách đã lưu"
 
 #, tao-public
 msgid "Lists"
-msgstr "Sąrašai"
+msgstr "Danh sách"
 
 msgid "Please confirm you want to delete this list element."
-msgstr "Patvirtinkite, kad tikrai norite ištrinti šį elementą."
+msgstr "Vui lòng xác nhận bạn muốn xóa phần tử danh sách này."
 
 msgid "Please confirm you want to delete this list. This operation cannot be undone."
-msgstr "Prašome patvirtinti sąrašo ištrinymą. Veiksmas negali būti atstatytas."
+msgstr "Vui lòng xác nhận bạn muốn xóa danh sách này. Thao tác này không thể hoàn tác."
 
 #, tao-public
 msgid "Properties"
-msgstr "Savybės"
+msgstr "Thuộc tính"
 
 msgid "Save list"
 msgstr ""
 
 #, tao-public
 msgid "Settings"
-msgstr "Nustatymai"
+msgstr "Cài đặt"
 
 msgid "TAO Back Office"
-msgstr "TAO valdymas"
+msgstr "Quay lại Office TAO"
 
 msgid "Test Developers and Administrators"
-msgstr "Testų Kūrėjai ir Administratoriai"
+msgstr "Nhà phát triển và quản trị thử nghiệm"
 
 msgid "The requested resource does not exist or has been deleted"
-msgstr "Užprašytas resursas neegzistuoja arba buvo ištrintas"
+msgstr ""
 
 #, tao-public
 msgid "Trees"
-msgstr "Medžiai"
+msgstr "Cây"
 
 msgid "View tree"
-msgstr "Peržiūrėti medį"
+msgstr "Xem cây"
 
 #, tao-public
 msgid "View Tree"
-msgstr "Peržiūrėti Medį"
+msgstr "Xem cây"
 

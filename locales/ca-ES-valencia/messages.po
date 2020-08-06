@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TAO 3.4.0-sprint121\n"
-"PO-Revision-Date: 2020-08-03T11:15:29\n"
+"PO-Revision-Date: 2020-08-03T11:15:22\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
-"Language: lt-LT\n"
+"Language: ca-ES-valencia\n"
 "sourceLanguage: en-US\n"
-"targetLanguage: lt-LT\n"
+"targetLanguage: ca-ES-valencia\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../../\n"
@@ -14,95 +14,95 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid "Create a list"
-msgstr "Sukurti sąrašą"
+msgstr "Crea una llista"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr "Kurti testų dalis, valdyti dalis ir testų bankus, valdyti testuojamųjų grupes, testų vykdymo paskyras, ruošti ataskaitas, nustaytti darbų sekas."
+msgstr "Crea elements, gestiona bancs d'elements i proves, organitza cohorts i lliuraments, prepara informes, defineix els paràmetres del flux de treball."
 
 #, tao-public
 msgid "Delete"
-msgstr "Ištrinti"
+msgstr "Elimina"
 
 msgid "Delete this list"
-msgstr "Ištrinti sąrašą"
+msgstr "Elimina aquesta llista"
 
 msgid "Edit this list"
-msgstr "Redaguoti sąrašą"
+msgstr "Edita aquesta llista"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr "Redaguoti Medį"
+msgstr "Edita l'arbre"
 
 msgid "element"
-msgstr "elementas"
+msgstr "element"
 
 msgid "Element deleted"
-msgstr "Elementas ištrintas"
+msgstr "Element eliminat"
 
 msgid "Element not deleted"
-msgstr "Elementas neištrintas"
+msgstr "Element no eliminat"
 
 #, tao-public
 msgid "Export"
-msgstr "Eksportuoti"
+msgstr "Exporta"
 
 #, tao-public
 msgid "Import"
-msgstr "Importuoti"
+msgstr "Importa"
 
 msgid "List"
-msgstr "Sąrašas"
+msgstr "Llista"
 
 msgid "List deleted"
-msgstr "Sąrašas ištrintas"
+msgstr "Llista eliminada"
 
 msgid "List not deleted"
-msgstr "Sąrašas neištrintas"
+msgstr "Llista no eliminada"
 
 msgid "List not saved"
-msgstr "Sąrašas neišsaugotas"
+msgstr "Llista no guardada"
 
 msgid "List saved"
-msgstr "Sąrašas išsaugotas"
+msgstr "Llista guardada"
 
 #, tao-public
 msgid "Lists"
-msgstr "Sąrašai"
+msgstr "Llistes"
 
 msgid "Please confirm you want to delete this list element."
-msgstr "Patvirtinkite, kad tikrai norite ištrinti šį elementą."
+msgstr "Confirmeu si voleu eliminar aquest element de llista"
 
 msgid "Please confirm you want to delete this list. This operation cannot be undone."
-msgstr "Prašome patvirtinti sąrašo ištrinymą. Veiksmas negali būti atstatytas."
+msgstr "Confirmeu si voleu eliminar aquesta llista. Aquesta operació no es pot desfer."
 
 #, tao-public
 msgid "Properties"
-msgstr "Savybės"
+msgstr "Propietats"
 
 msgid "Save list"
 msgstr ""
 
 #, tao-public
 msgid "Settings"
-msgstr "Nustatymai"
+msgstr "Configuració"
 
 msgid "TAO Back Office"
-msgstr "TAO valdymas"
+msgstr "Gestió interna de TAO"
 
 msgid "Test Developers and Administrators"
-msgstr "Testų Kūrėjai ir Administratoriai"
+msgstr "Desenvolupadors i administradors de la prova "
 
 msgid "The requested resource does not exist or has been deleted"
-msgstr "Užprašytas resursas neegzistuoja arba buvo ištrintas"
+msgstr ""
 
 #, tao-public
 msgid "Trees"
-msgstr "Medžiai"
+msgstr "Arbres"
 
 msgid "View tree"
-msgstr "Peržiūrėti medį"
+msgstr "Vista d'arbre"
 
 #, tao-public
 msgid "View Tree"
-msgstr "Peržiūrėti Medį"
+msgstr "Vista d'arbre"
 
