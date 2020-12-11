@@ -257,15 +257,13 @@ class Lists extends tao_actions_CommonModule
                 continue;
             }
 
-            $dataLang = $this->getSession()->getDataLanguage();
-
             $elements = [];
             foreach (
                 $listService->getListElements(
                     $listClass,
                     true,
                     $showRemoteLists ? self::REMOTE_LIST_PREVIEW_LIMIT : 0,
-                    $dataLang
+                    $this->getSession()->getDataLanguage()
                 ) as $index => $listElement
             ) {
                 $elements[$index] = [
