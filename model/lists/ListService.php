@@ -87,8 +87,12 @@ class ListService extends tao_models_classes_ListService
             new ValueCollectionSearchInput($request)
         );
 
-        //todo: this is a hack for emergency purpose
-        if (!count($result)) {
+        //todo: this is checking if the list is empty for specific language and fixes the system lists
+        if (
+            !count($result)
+            && !($listClass->isSubClassOf($this->getClass(TaoOntology::CLASS_URI_LIST))
+                && $listClass->getUri() !== tao_models_classes_LanguageService::CLASS_URI_LANGUAGES)
+        ) {
             $request->setDataLanguage($this->getDefaultLanguage());
             $result = $this->getValueService()->findAll(
                 new ValueCollectionSearchInput($request)
