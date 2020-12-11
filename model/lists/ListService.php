@@ -25,6 +25,7 @@ namespace oat\taoBackOffice\model\lists;
 use core_kernel_classes_Class as RdfClass;
 use core_kernel_persistence_Exception;
 use oat\generis\model\kernel\uri\UriProvider;
+use oat\oatbox\user\UserLanguageServiceInterface;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
@@ -70,10 +71,14 @@ class ListService extends tao_models_classes_ListService
             : iterator_to_array($result->getIterator())[0];
     }
 
-    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0)
+    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0, $dataLang = null)
     {
         $request = new ValueCollectionSearchRequest();
         $request->setValueCollectionUri($listClass->getUri());
+        if (!empty($dataLang)) {
+            $request->setDataLanguage($dataLang);
+        }
+
         if ($limit) {
             $request->setLimit($limit);
         }
@@ -81,6 +86,14 @@ class ListService extends tao_models_classes_ListService
         $result = $this->getValueService()->findAll(
             new ValueCollectionSearchInput($request)
         );
+
+        //todo: this is a hack for emergency purpose
+        if (!count($result)) {
+            $request->setDataLanguage($this->getDefaultLanguage());
+            $result = $this->getValueService()->findAll(
+                new ValueCollectionSearchInput($request)
+            );
+        }
 
         return $result->getIterator();
     }
@@ -135,5 +148,10 @@ class ListService extends tao_models_classes_ListService
         );
 
         return $type && ($type->getUri() === RemoteSourcedListOntology::LIST_TYPE_REMOTE);
+    }
+
+    private function getDefaultLanguage(): ?string
+    {
+        return $this->getServiceLocator()->get(UserLanguageServiceInterface::SERVICE_ID)->getDefaultLanguage();
     }
 }
