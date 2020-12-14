@@ -71,13 +71,10 @@ class ListService extends tao_models_classes_ListService
             : iterator_to_array($result->getIterator())[0];
     }
 
-    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0, $dataLang = null)
+    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0)
     {
         $request = new ValueCollectionSearchRequest();
         $request->setValueCollectionUri($listClass->getUri());
-        if (!empty($dataLang)) {
-            $request->setDataLanguage($dataLang);
-        }
 
         if ($limit) {
             $request->setLimit($limit);
@@ -86,18 +83,6 @@ class ListService extends tao_models_classes_ListService
         $result = $this->getValueService()->findAll(
             new ValueCollectionSearchInput($request)
         );
-
-        //todo: this is checking if the list is empty for specific language and fixes the system lists
-        if (
-            !count($result)
-            && !($listClass->isSubClassOf($this->getClass(TaoOntology::CLASS_URI_LIST))
-                && $listClass->getUri() !== tao_models_classes_LanguageService::CLASS_URI_LANGUAGES)
-        ) {
-            $request->setDataLanguage($this->getDefaultLanguage());
-            $result = $this->getValueService()->findAll(
-                new ValueCollectionSearchInput($request)
-            );
-        }
 
         return $result->getIterator();
     }
