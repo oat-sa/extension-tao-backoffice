@@ -74,7 +74,6 @@ class ListService extends tao_models_classes_ListService
     {
         $request = new ValueCollectionSearchRequest();
         $request->setValueCollectionUri($listClass->getUri());
-
         if ($limit) {
             $request->setLimit($limit);
         }
