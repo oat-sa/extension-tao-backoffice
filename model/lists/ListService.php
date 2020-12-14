@@ -25,7 +25,6 @@ namespace oat\taoBackOffice\model\lists;
 use core_kernel_classes_Class as RdfClass;
 use core_kernel_persistence_Exception;
 use oat\generis\model\kernel\uri\UriProvider;
-use oat\oatbox\user\UserLanguageServiceInterface;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
@@ -137,10 +136,5 @@ class ListService extends tao_models_classes_ListService
         );
 
         return $type && ($type->getUri() === RemoteSourcedListOntology::LIST_TYPE_REMOTE);
-    }
-
-    private function getDefaultLanguage(): ?string
-    {
-        return $this->getServiceLocator()->get(UserLanguageServiceInterface::SERVICE_ID)->getDefaultLanguage();
     }
 }
