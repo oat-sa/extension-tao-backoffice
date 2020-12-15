@@ -31,7 +31,7 @@ return [
     'version' => '5.1.1',
     'author' => 'Open Assessment Technologies SA',
     'requires' => [
-        'tao' => '>=46.9.0',
+        'tao' => '>=46.8.3',
         'generis' => '>=5.10.0'
     ],
     'managementRole' => 'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',

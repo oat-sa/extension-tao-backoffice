@@ -410,7 +410,6 @@ class Lists extends tao_actions_CommonModule
                         $element->setUri($newUriValue);
                     }
                 }
-
             }
         }
 
