@@ -125,7 +125,8 @@ class Lists extends tao_actions_CommonModule
                     $values[tao_actions_form_RemoteList::FIELD_NAME],
                     $values[tao_actions_form_RemoteList::FIELD_SOURCE_URL],
                     $values[tao_actions_form_RemoteList::FIELD_ITEM_LABEL_PATH],
-                    $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH]
+                    $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH],
+                    $values[tao_actions_form_RemoteList::FIELD_DEPENDENCY_ITEM_URI_PATH]
                 );
 
                 try {
@@ -186,8 +187,13 @@ class Lists extends tao_actions_CommonModule
         $this->returnJson(['saved' => $saved]);
     }
 
-    private function createList(string $label, string $source, string $labelPath, string $uriPath): RdfClass
-    {
+    private function createList(
+        string $label,
+        string $source,
+        string $labelPath,
+        string $uriPath,
+        string $dependencyUriPath
+    ): RdfClass {
         $class = $this->getListService()->createList($label);
 
         $propertyType = new RdfProperty(CollectionType::TYPE_PROPERTY);
@@ -202,6 +208,9 @@ class Lists extends tao_actions_CommonModule
 
         $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH);
         $class->setPropertyValue($propertySource, $uriPath);
+
+        $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH);
+        $class->setPropertyValue($propertySource, $dependencyUriPath);
 
         return $class;
     }
@@ -218,19 +227,24 @@ class Lists extends tao_actions_CommonModule
         RemoteSource $remoteSource,
         RdfClass $collectionClass
     ): void {
-        $sourceUrl = (string)$collectionClass->getOnePropertyValue(
+        $sourceUrl = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
         );
-        $uriPath   = (string)$collectionClass->getOnePropertyValue(
+        $uriPath   = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
         );
-        $labelPath = (string)$collectionClass->getOnePropertyValue(
+        $labelPath = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
+        );
+        $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
         );
 
         $collection = new ValueCollection(
             $collectionClass->getUri(),
-            ...iterator_to_array($remoteSource->fetch($sourceUrl, $uriPath, $labelPath, 'jsonpath'))
+            ...iterator_to_array(
+                $remoteSource->fetch($sourceUrl, $uriPath, $labelPath, $dependencyUriPath, 'jsonpath')
+            )
         );
 
         $result = $valueCollectionService->persist($collection);
