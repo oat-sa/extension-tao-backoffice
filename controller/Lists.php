@@ -34,6 +34,7 @@ use oat\tao\helpers\Template;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
+use oat\tao\model\Lists\Business\Domain\RemoteSourceContext;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\RemoteSource;
@@ -218,19 +219,30 @@ class Lists extends tao_actions_CommonModule
         RemoteSource $remoteSource,
         RdfClass $collectionClass
     ): void {
-        $sourceUrl = (string)$collectionClass->getOnePropertyValue(
+        $sourceUrl = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
         );
-        $uriPath   = (string)$collectionClass->getOnePropertyValue(
+        $uriPath = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
         );
-        $labelPath = (string)$collectionClass->getOnePropertyValue(
+        $labelPath = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
         );
+        $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
+        );
+
+        $context = new RemoteSourceContext([
+            RemoteSourceContext::PARAM_SOURCE_URL => $sourceUrl,
+            RemoteSourceContext::PARAM_URI_PATH => $uriPath,
+            RemoteSourceContext::PARAM_LABEL_PATH => $labelPath,
+            RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH => $dependencyUriPath,
+            RemoteSourceContext::PARAM_PARSER => 'jsonpath',
+        ]);
 
         $collection = new ValueCollection(
             $collectionClass->getUri(),
-            ...iterator_to_array($remoteSource->fetch($sourceUrl, $uriPath, $labelPath, 'jsonpath'))
+            ...iterator_to_array($remoteSource->fetchContext($context))
         );
 
         $result = $valueCollectionService->persist($collection);
