@@ -219,27 +219,7 @@ class Lists extends tao_actions_CommonModule
         RemoteSource $remoteSource,
         RdfClass $collectionClass
     ): void {
-        $sourceUrl = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
-        );
-        $uriPath = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
-        );
-        $labelPath = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
-        );
-        $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
-        );
-
-        $context = new RemoteSourceContext([
-            RemoteSourceContext::PARAM_SOURCE_URL => $sourceUrl,
-            RemoteSourceContext::PARAM_URI_PATH => $uriPath,
-            RemoteSourceContext::PARAM_LABEL_PATH => $labelPath,
-            RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH => $dependencyUriPath,
-            RemoteSourceContext::PARAM_PARSER => 'jsonpath',
-        ]);
-
+        $context = $this->createRemoteSourceContext($collectionClass);
         $collection = new ValueCollection(
             $collectionClass->getUri(),
             ...iterator_to_array($remoteSource->fetchContext($context))
@@ -558,5 +538,29 @@ class Lists extends tao_actions_CommonModule
     protected function getListService()
     {
         return ListService::singleton();
+    }
+
+    private function createRemoteSourceContext(RdfClass $collectionClass): RemoteSourceContext
+    {
+        $sourceUrl = (string) $collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
+        );
+        $uriPath = (string) $collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
+        );
+        $labelPath = (string) $collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
+        );
+        $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
+            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
+        );
+
+        return new RemoteSourceContext([
+            RemoteSourceContext::PARAM_SOURCE_URL => $sourceUrl,
+            RemoteSourceContext::PARAM_URI_PATH => $uriPath,
+            RemoteSourceContext::PARAM_LABEL_PATH => $labelPath,
+            RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH => $dependencyUriPath,
+            RemoteSourceContext::PARAM_PARSER => 'jsonpath',
+        ]);
     }
 }
