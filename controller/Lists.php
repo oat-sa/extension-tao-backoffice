@@ -121,13 +121,7 @@ class Lists extends tao_actions_CommonModule
         if ($remoteListForm->isSubmited()) {
             if ($remoteListForm->isValid()) {
                 $values = $remoteListForm->getValues();
-
-                $newList = $this->createList(
-                    $values[tao_actions_form_RemoteList::FIELD_NAME],
-                    $values[tao_actions_form_RemoteList::FIELD_SOURCE_URL],
-                    $values[tao_actions_form_RemoteList::FIELD_ITEM_LABEL_PATH],
-                    $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH]
-                );
+                $newList = $this->createList($values);
 
                 try {
                     $this->sync($valueCollectionService, $remoteSource, $newList);
@@ -187,22 +181,25 @@ class Lists extends tao_actions_CommonModule
         $this->returnJson(['saved' => $saved]);
     }
 
-    private function createList(string $label, string $source, string $labelPath, string $uriPath): RdfClass
+    private function createList(array $values): RdfClass
     {
-        $class = $this->getListService()->createList($label);
+        $class = $this->getListService()->createList($values[tao_actions_form_RemoteList::FIELD_NAME]);
 
         $propertyType = new RdfProperty(CollectionType::TYPE_PROPERTY);
-        $propertyRemote = new RdfProperty((string)CollectionType::remote());
+        $propertyRemote = new RdfProperty((string) CollectionType::remote());
         $class->setPropertyValue($propertyType, $propertyRemote);
 
         $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI);
-        $class->setPropertyValue($propertySource, $source);
+        $class->setPropertyValue($propertySource, $values[tao_actions_form_RemoteList::FIELD_SOURCE_URL]);
 
         $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH);
-        $class->setPropertyValue($propertySource, $labelPath);
+        $class->setPropertyValue($propertySource, $values[tao_actions_form_RemoteList::FIELD_ITEM_LABEL_PATH]);
 
         $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH);
-        $class->setPropertyValue($propertySource, $uriPath);
+        $class->setPropertyValue($propertySource, $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH]);
+
+        $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH);
+        $class->setPropertyValue($propertySource, $values[tao_actions_form_RemoteList::FIELD_DEPENDENCY_ITEM_URI_PATH]);
 
         return $class;
     }
@@ -222,7 +219,7 @@ class Lists extends tao_actions_CommonModule
         $context = $this->createRemoteSourceContext($collectionClass);
         $collection = new ValueCollection(
             $collectionClass->getUri(),
-            ...iterator_to_array($remoteSource->fetchContext($context))
+            ...iterator_to_array($remoteSource->fetchByContext($context))
         );
 
         $result = $valueCollectionService->persist($collection);
