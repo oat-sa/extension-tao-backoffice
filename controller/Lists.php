@@ -25,6 +25,7 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
 use common_ext_ExtensionException as ExtensionException;
 use core_kernel_classes_Class as RdfClass;
 use core_kernel_classes_Property as RdfProperty;
@@ -34,6 +35,7 @@ use oat\tao\helpers\Template;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\Lists\Business\Domain\RemoteSourceContext;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
@@ -64,6 +66,9 @@ class Lists extends tao_actions_CommonModule
     use OntologyAwareTrait;
 
     private const REMOTE_LIST_PREVIEW_LIMIT = 20;
+
+    /** @var bool */
+    private $isListsDependencyEnabled;
 
     /**
      * Show the list of users
@@ -111,7 +116,12 @@ class Lists extends tao_actions_CommonModule
 
         $this->defaultData();
 
-        $remoteListFormFactory = new tao_actions_form_RemoteList();
+        $remoteListFormFactory = new tao_actions_form_RemoteList(
+            [],
+            [
+                tao_actions_form_RemoteList::IS_LISTS_DEPENDENCY_ENABLED => $this->isListsDependencyEnabled(),
+            ]
+        );
         $remoteListForm = $remoteListFormFactory->getForm();
 
         if ($remoteListForm === null) {
@@ -198,8 +208,13 @@ class Lists extends tao_actions_CommonModule
         $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH);
         $class->setPropertyValue($propertySource, $values[tao_actions_form_RemoteList::FIELD_ITEM_URI_PATH]);
 
-        $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH);
-        $class->setPropertyValue($propertySource, $values[tao_actions_form_RemoteList::FIELD_DEPENDENCY_ITEM_URI_PATH]);
+        if ($this->isListsDependencyEnabled()) {
+            $propertySource = new RdfProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH);
+            $class->setPropertyValue(
+                $propertySource,
+                $values[tao_actions_form_RemoteList::FIELD_DEPENDENCY_ITEM_URI_PATH]
+            );
+        }
 
         return $class;
     }
@@ -548,16 +563,37 @@ class Lists extends tao_actions_CommonModule
         $labelPath = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
         );
-        $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
-        );
 
-        return new RemoteSourceContext([
+        $parameters = [
             RemoteSourceContext::PARAM_SOURCE_URL => $sourceUrl,
             RemoteSourceContext::PARAM_URI_PATH => $uriPath,
             RemoteSourceContext::PARAM_LABEL_PATH => $labelPath,
-            RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH => $dependencyUriPath,
             RemoteSourceContext::PARAM_PARSER => 'jsonpath',
-        ]);
+        ];
+
+        if ($this->isListsDependencyEnabled()) {
+            $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
+                $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
+            );
+            $parameters[RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH] = $dependencyUriPath;
+        }
+
+        return new RemoteSourceContext($parameters);
+    }
+
+    private function isListsDependencyEnabled(): bool
+    {
+        if (!isset($this->isListsDependencyEnabled)) {
+            $this->isListsDependencyEnabled = $this->getFeatureFlagChecker()->isEnabled(
+                FeatureFlagCheckerInterface::FEATURE_FLAG_LISTS_DEPENDENCY_ENABLED
+            );
+        }
+
+        return $this->isListsDependencyEnabled;
+    }
+
+    private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
+    {
+        return $this->getServiceLocator()->get(FeatureFlagChecker::class);
     }
 }
