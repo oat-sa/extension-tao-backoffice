@@ -32,6 +32,7 @@ use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\tao\model\Lists\DataAccess\Repository\DependsOnPropertyRepository;
 use oat\tao\model\TaoOntology;
 use tao_models_classes_LanguageService;
 use tao_models_classes_ListService;
@@ -96,7 +97,14 @@ class ListService extends tao_models_classes_ListService
             new ValueCollectionDeleteInput($listClass->getUri())
         );
 
-
+        if ($this->isRemote($listClass)) {
+            $this->getDependsOnPropertyRepository()->deleteCache(
+                [
+                            'listUri' => $listClass->getUri()
+                ]
+            );
+        }
+        
         return $listClass->delete();
     }
 
@@ -135,5 +143,10 @@ class ListService extends tao_models_classes_ListService
         );
 
         return $type && ($type->getUri() === RemoteSourcedListOntology::LIST_TYPE_REMOTE);
+    }
+
+    private function getDependsOnPropertyRepository(): DependsOnPropertyRepository
+    {
+        return $this->getServiceLocator()->get(DependsOnPropertyRepository::class);
     }
 }
