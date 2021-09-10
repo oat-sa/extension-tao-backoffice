@@ -104,7 +104,7 @@ class ListService extends tao_models_classes_ListService
                 ]
             );
         }
-        
+
         return $listClass->delete();
     }
 
