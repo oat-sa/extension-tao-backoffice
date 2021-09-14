@@ -25,7 +25,6 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
-use oat\tao\model\Context\AbstractContext;
 use oat\tao\model\Context\ContextInterface;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use common_ext_ExtensionException as ExtensionException;
