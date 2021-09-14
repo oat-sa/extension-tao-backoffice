@@ -584,13 +584,8 @@ class Lists extends tao_actions_CommonModule
 
     private function createListElementContext(RdfClass $list, bool $isRemote): ContextInterface
     {
-        $parentListUris = $this->hasRequestParameter('parentListUris')
-            ? (array)$this->getRequestParameter('parentListUris')
-            : [];
-
-        $parentListValues = $this->hasRequestParameter('parentListValues')
-            ? (array)$this->getRequestParameter('parentListValues')
-            : [];
+        $parentListUris = (array)$this->getPostParameter('parentListUris', []);
+        $parentListValues = (array)$this->getPostParameter('parentListValues', []);
 
         foreach ($parentListUris as $key => $parentListUri) {
             $parentListUris[$key] = tao_helpers_Uri::decode($parentListUri);
