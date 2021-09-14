@@ -83,7 +83,7 @@ class ListService extends tao_models_classes_ListService
         $allowedItemIds = null;
 
         if (!empty($parentListUris) && !empty($parentListValues)) {
-            $allowedItemIds = $this->getDependencyRepository()->findItemIds(
+            $allowedItemIds = $this->getDependencyRepository()->findChildListIds(
                 [
                     'parentListUris' => $parentListUris,
                     'parentListValues' => $parentListValues,
