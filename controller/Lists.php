@@ -25,6 +25,8 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
+use oat\tao\model\Context\AbstractContext;
+use oat\tao\model\Context\ContextInterface;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use common_ext_ExtensionException as ExtensionException;
 use core_kernel_classes_Class as RdfClass;
@@ -44,6 +46,7 @@ use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\TaoOntology;
+use oat\taoBackOffice\model\lists\ListElementContext;
 use oat\taoBackOffice\model\lists\ListService;
 use RuntimeException;
 use tao_actions_CommonModule;
@@ -334,11 +337,9 @@ class Lists extends tao_actions_CommonModule
             if (!is_null($list)) {
                 $isRemote = $this->getListService()->isRemote($list);
 
-                $limit    = $isRemote
-                    ? self::REMOTE_LIST_PREVIEW_LIMIT
-                    : 0;
+                $context = $this->createListElementContext($list, $isRemote);
 
-                foreach ($this->getListService()->getListELements($list, true, $limit) as $listElement) {
+                foreach ($this->getListService()->getListElementsByContext($context) as $listElement) {
                     $data[tao_helpers_Uri::encode($listElement->getUri())] = $listElement->getLabel();
                 }
 
@@ -579,6 +580,34 @@ class Lists extends tao_actions_CommonModule
         }
 
         return new RemoteSourceContext($parameters);
+    }
+
+    private function createListElementContext(RdfClass $list, bool $isRemote): ContextInterface
+    {
+        $parentListUris = $this->hasRequestParameter('parentListUris')
+            ? (array)$this->getRequestParameter('parentListUris')
+            : [];
+
+        $parentListValues = $this->hasRequestParameter('parentListValues')
+            ? (array)$this->getRequestParameter('parentListValues')
+            : [];
+
+        foreach ($parentListUris as $key => $parentListUri) {
+            $parentListUris[$key] = tao_helpers_Uri::decode($parentListUri);
+        }
+
+        foreach ($parentListValues as $key => $parentListValue) {
+            $parentListValues[$key] = tao_helpers_Uri::decode($parentListValue);
+        }
+
+        return new ListElementContext(
+            [
+                ListElementContext::PARAM_LIMIT => $isRemote ? self::REMOTE_LIST_PREVIEW_LIMIT : 0,
+                ListElementContext::PARAM_LIST_URI => $list->getUri(),
+                ListElementContext::PARAM_PARENT_LIST_URIS => $parentListUris,
+                ListElementContext::PARAM_PARENT_LIST_VALUES => $parentListValues,
+            ]
+        );
     }
 
     private function isListsDependencyEnabled(): bool

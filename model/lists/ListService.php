@@ -25,6 +25,8 @@ namespace oat\taoBackOffice\model\lists;
 use core_kernel_classes_Class as RdfClass;
 use core_kernel_persistence_Exception;
 use oat\generis\model\kernel\uri\UriProvider;
+use oat\tao\model\Context\ContextInterface;
+use oat\tao\model\Lists\Business\Contract\DependencyRepositoryInterface;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
@@ -32,6 +34,7 @@ use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\tao\model\Lists\DataAccess\Repository\DependencyRepository;
 use oat\tao\model\Lists\DataAccess\Repository\ParentPropertyListCachedRepository;
 use oat\tao\model\TaoOntology;
 use tao_models_classes_LanguageService;
@@ -69,6 +72,52 @@ class ListService extends tao_models_classes_ListService
         return $result->count() === 0
             ? null
             : iterator_to_array($result->getIterator())[0];
+    }
+
+    public function getListElementsByContext(ContextInterface $context): ValueCollection
+    {
+        $limit = $context->getParameter(ListElementContext::PARAM_LIMIT);
+        $listUri = $context->getParameter(ListElementContext::PARAM_LIST_URI);
+        $parentListUris = $context->getParameter(ListElementContext::PARAM_PARENT_LIST_URIS);
+        $parentListValues = $context->getParameter(ListElementContext::PARAM_PARENT_LIST_VALUES);
+        $allowedItemIds = null;
+
+        if (!empty($parentListUris) && !empty($parentListValues)) {
+            $allowedItemIds = $this->getDependencyRepository()->findItemIds(
+                [
+                    'parentListUris' => $parentListUris,
+                    'parentListValues' => $parentListValues,
+                ]
+            );
+        }
+
+        $request = (new ValueCollectionSearchRequest())
+            ->setValueCollectionUri($listUri);
+
+        if ($limit) {
+            $request->setLimit($limit);
+        }
+
+        $result = $this->getValueService()->findAll(new ValueCollectionSearchInput($request));
+
+        if ($allowedItemIds === null) {
+            return $result;
+        }
+
+        /**
+         * @TODO Use this filter in the repository instead of here...
+         *
+         * Depending on other ticket for refactor safely
+         */
+        $collection = new ValueCollection();
+
+        foreach ($result as $value) {
+            if (in_array($value->getId(), $allowedItemIds)) {
+                $collection->addValue($value);
+            }
+        }
+
+        return $collection;
     }
 
     public function getListElements(RdfClass $listClass, $sort = true, $limit = 0)
@@ -148,5 +197,10 @@ class ListService extends tao_models_classes_ListService
     private function getParentPropertyListCachedRepository(): ParentPropertyListCachedRepository
     {
         return $this->getServiceLocator()->get(ParentPropertyListCachedRepository::class);
+    }
+
+    private function getDependencyRepository(): DependencyRepositoryInterface
+    {
+        return $this->getServiceLocator()->get(DependencyRepository::class);
     }
 }
