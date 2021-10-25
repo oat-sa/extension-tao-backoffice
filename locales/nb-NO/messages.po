@@ -1,0 +1,133 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2021.11\n"
+"PO-Revision-Date: 2021-10-25T20:15:42\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: nb-NO\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: nb-NO\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid " Probably given list was already imported."
+msgstr " Sannsynligvis er den gitte listen allerede importert."
+
+msgid "Create a list"
+msgstr "Opprett en liste"
+
+msgid "Create a remote list"
+msgstr "Opprett en ekstern liste"
+
+msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
+msgstr "Lag oppgaver, administrer oppgaver og tester, organiser grupper og besvarelser, utarbeid rapporter, sett opp arbeidsflyter."
+
+#, tao-public
+msgid "Delete"
+msgstr "Slett"
+
+msgid "Delete this list"
+msgstr "Slett denne listen"
+
+msgid "Edit this list"
+msgstr "Rediger denne listen"
+
+#, tao-public
+msgid "Edit Tree"
+msgstr "Rediger treet"
+
+msgid "Edit URI"
+msgstr "Rediger URI"
+
+msgid "element"
+msgstr "element"
+
+msgid "Element deleted"
+msgstr "Elementet er slettet"
+
+msgid "Element not deleted"
+msgstr "Elementet er ikke slettet"
+
+#, tao-public
+msgid "Export"
+msgstr "Eksport"
+
+#, tao-public
+msgid "Import"
+msgstr "Import"
+
+msgid "List"
+msgstr "Liste"
+
+msgid "List deleted"
+msgstr "Listen er slettet"
+
+msgid "List failed to be reloaded"
+msgstr "Listen kunne ikke lastes"
+
+msgid "List not deleted"
+msgstr "Listen er ikke slettet"
+
+msgid "List not saved"
+msgstr "Listen er ikke lagret"
+
+msgid "List reloaded"
+msgstr "Listen ble lastet på nytt"
+
+msgid "List saved"
+msgstr "Listen ble lagret"
+
+#, tao-public
+msgid "Lists"
+msgstr "Lister"
+
+msgid "Please confirm you want to delete this list element."
+msgstr "Bekreft at du vil slette denne listen."
+
+msgid "Please confirm you want to delete this list. This operation cannot be undone."
+msgstr "Bekreft at du vil slette denne listen. Denne handlingen kan ikke angres."
+
+#, tao-public
+msgid "Properties"
+msgstr "Egenskaper"
+
+msgid "Reload this list"
+msgstr "Last listen på nytt"
+
+#, tao-public
+msgid "Remote Lists"
+msgstr "Eksterne Lister"
+
+msgid "Save list"
+msgstr "Lagre liste"
+
+#, tao-public
+msgid "Settings"
+msgstr "Innstillinger"
+
+msgid "TAO Back Office"
+msgstr "TAO Back Office"
+
+msgid "Test Developers and Administrators"
+msgstr "Testutviklere og Administratorer"
+
+msgid "The list should contain unique URIs"
+msgstr "Listen bør inneholde unike URIer"
+
+msgid "The requested resource does not exist or has been deleted"
+msgstr "Den forespurte ressursen eksisterer ikke eller er slettet"
+
+#, tao-public
+msgid "Trees"
+msgstr "Trær"
+
+msgid "View tree"
+msgstr "Se tre"
+
+#, tao-public
+msgid "View Tree"
+msgstr "Se Tre"
+
