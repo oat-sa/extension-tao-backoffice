@@ -18,8 +18,7 @@
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013-2018 (update and modification) Open Assessment Technologies SA;
- *
+ *               2013-2021 (update and modification) Open Assessment Technologies SA;
  */
 
 namespace oat\taoBackOffice\controller;
@@ -47,11 +46,11 @@ use oat\tao\model\TaoOntology;
 use oat\taoBackOffice\model\lists\ListService;
 use RuntimeException;
 use tao_actions_CommonModule;
-use tao_actions_form_List;
 use tao_actions_form_RemoteList;
 use tao_helpers_Scriptloader;
 use tao_helpers_Uri;
 use tao_models_classes_LanguageService;
+use oat\taoBackOffice\model\lists\CreateListForm;
 
 /**
  * This controller provide the actions to manage the lists of data
@@ -71,7 +70,7 @@ class Lists extends tao_actions_CommonModule
     private $isListsDependencyEnabled;
 
     /**
-     * Show the list of users
+     * Show the list
      * @return void
      */
     public function index()
@@ -79,24 +78,19 @@ class Lists extends tao_actions_CommonModule
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
         $this->defaultData();
 
-        $myAdderFormContainer = new tao_actions_form_List();
-        $myForm = $myAdderFormContainer->getForm();
+        $newListFormContainer = new CreateListForm();
+        $newListForm = $newListFormContainer->getForm();
 
-        if ($myForm->isSubmited()) {
-            if ($myForm->isValid()) {
-                $values = $myForm->getValues();
-                $newList = $this->getListService()->createList($values['label']);
-                $i = 0;
-                while ($i < $values['size']) {
-                    $this->getListService()->createListElement($newList, __('element') . ' ' . ($i + 1));
-                    $i++;
-                }
+        if ($newListForm->isSubmited()) {
+            if ($newListForm->isValid()) {
+                $values = $newListForm->getValues();
+                $list = $this->getListService()->createList($values['label']);
+                $this->getListService()->createListElement($list, __('element') . ' 1');
+
             }
-        } else {
-            $myForm->getElement('label')->setValue(__('List') . ' ' . (count($this->getListService()->getLists()) + 1));
         }
-        $this->setData('form', $myForm->render());
 
+        $this->setData('newListForm', $newListForm->render());
         $this->setData('lists', $this->getListData());
         $this->setView('Lists/index.tpl');
     }
