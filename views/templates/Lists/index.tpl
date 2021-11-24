@@ -1,13 +1,6 @@
-
-<style>
-    /* @todo should be moved to css files */
-    #createList {
-        background: none;
-    }
-</style>
 <div class="main-container flex-container-full">
     <h2><?= __('Lists') ?></h2>
-    <div class="container-content col-3 col-sm-12 ">
+    <div class="create-list-wrapper">
         <?= get_data('newListForm') ?>
     </div>
 </div>
