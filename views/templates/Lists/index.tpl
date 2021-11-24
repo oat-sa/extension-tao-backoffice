@@ -7,7 +7,7 @@
 
 <div class="data-container-wrapper flex-container-remainder">
     <?php foreach (get_data('lists') as $i => $list): ?>
-    <section id='list-data_<?= $list["uri"] ?>' class="data-container list-container">
+    <section <?= get_data('newId') !== null ? 'data-new-list' : '' ?> id='list-data_<?= $list["uri"] ?>' class="data-container list-container">
         <header class="container-title">
             <h6><?= _dh($list['label']) ?></h6>
         </header>
