@@ -107,6 +107,7 @@ define([
 
             const $labelEdit = $(`<input type='text' name='label' value=''/>`).val($listTitleBar.text());
             $listTitleBar.closest('.container-title').html($labelEdit);
+            $labelEdit.focus();
 
             nextElementId = $listContainer.find('.list-element')
                 .replaceWith(function () {
@@ -208,8 +209,9 @@ define([
             const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
             const delEltUrl  = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
 
-            if ($('section[data-new-list]')) {
-                const uriList = $('section[data-new-list]').data('uri');
+            if ($('section[data-new-list]').length > 0) {
+                const id = $('section[data-new-list]').first().attr('id');
+                const uriList = id.replace('list-data_', '');
                 handleEditList(uriList);
             }
 

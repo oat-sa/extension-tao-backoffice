@@ -85,7 +85,7 @@ class Lists extends tao_actions_CommonModule
             if ($newListForm->isValid()) {
                 $values = $newListForm->getValues();
                 $list = $this->getListService()->createList($values['label']);
-                $this->setData('newId', $list->getUri());
+                $this->setData('newId', tao_helpers_Uri::encode($list->getUri()));
                 $this->getListService()->createListElement($list, __('element') . ' 1');
             }
         }
