@@ -43,7 +43,8 @@ define([
 
         const $label = $('<label>')
             .attr('for', id)
-            .text(__('Edit URI'));
+            .text(__('Edit URI'))
+            .focus();
 
         return $('<span>')
             .addClass('lft edit-uri')
@@ -99,7 +100,7 @@ define([
             const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
             const delEltUrl  = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
 
-            $('.list-edit-btn').click(function () {
+            $('.list-edit-btn', '#createList a').click(function () {
                 const uri = $(this).data('uri');
                 const $listContainer = findListContainer(uri);
 
