@@ -50,7 +50,6 @@ use tao_actions_form_RemoteList;
 use tao_helpers_Scriptloader;
 use tao_helpers_Uri;
 use tao_models_classes_LanguageService;
-use oat\taoBackOffice\model\lists\CreateListForm;
 
 /**
  * This controller provide the actions to manage the lists of data
@@ -78,17 +77,24 @@ class Lists extends tao_actions_CommonModule
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
         $this->defaultData();
 
-        $newListFormContainer = new CreateListForm();
-        $newListForm = $newListFormContainer->getForm();
+        $this->setData('lists', $this->getListData());
+        $this->setView('Lists/index.tpl');
+    }
 
-        if ($newListForm->isSubmited() && $newListForm->isValid()) {
-            $values = $newListForm->getValues();
-            $list = $this->getListService()->createList($values['label']);
+    /**
+     * Action called when the user creates a new list.
+     * @return void
+     */
+    public function newLocalList() {
+        $body = $this->getPsrRequest()->getParsedBody();
+        if(isset($body['createList_sent']))
+        {
+            $newName = __('List').' '.(count($this->getListData()) + 1);
+            $list = $this->getListService()->createList($newName);
             $this->setData('newId', tao_helpers_Uri::encode($list->getUri()));
             $this->getListService()->createListElement($list, __('element') . ' 1');
         }
 
-        $this->setData('newListForm', $newListForm->render());
         $this->setData('lists', $this->getListData());
         $this->setView('Lists/index.tpl');
     }
