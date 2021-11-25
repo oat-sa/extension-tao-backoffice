@@ -40,16 +40,16 @@ class CreateListForm extends tao_helpers_form_FormContainer
     {
         $this->form = tao_helpers_form_FormFactory::getForm('createList');
 
-        $addElt = tao_helpers_form_FormFactory::getElement('add', 'Free');
+        $createList = tao_helpers_form_FormFactory::getElement('add', 'Free');
         
-        $addElt->setValue(
+        $createList->setValue(
             sprintf(
                 '<a href="#" class="form-submitter btn-success"><span class="icon-add"></span> %s</a>',
                 __('Create list')
             )
         );
 
-        $this->form->setActions([$addElt]);
+        $this->form->setActions([$createList]);
     }
 
     /**
