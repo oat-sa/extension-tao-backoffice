@@ -48,8 +48,7 @@ class CreateListForm extends tao_helpers_form_FormContainer
         
         $addElt->setValue(
             sprintf(
-                '<a href="#" class="%s"><span class="icon-add"></span> %s</a>',
-                'form-submitter btn-success ',
+                '<a href="#" class="form-submitter btn-success"><span class="icon-add"></span> %s</a>',
                 __('Create list')
             )
         );
