@@ -34,11 +34,7 @@ use tao_helpers_form_FormFactory;
 class CreateListForm extends tao_helpers_form_FormContainer
 {
     /**
-     * Builds a new form used to create a new list
-     *
-     * @access public
-     * @author Bertrand Chevrier, <bertrand.chevrier@tudor.lu>
-     * @return mixed
+     * {@inheritdoc}
      */
     public function initForm()
     {
