@@ -69,7 +69,9 @@ class Lists extends tao_actions_CommonModule
     private $isListsDependencyEnabled;
 
     /**
-     * Show the list
+     * This REST endpoint returns the page with the lists and, additionally,
+     * creates a new list if the form to do so is provided as the request body.
+     *
      * @return void
      */
     public function index()
@@ -77,15 +79,6 @@ class Lists extends tao_actions_CommonModule
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
         $this->defaultData();
 
-        $this->setData('lists', $this->getListData());
-        $this->setView('Lists/index.tpl');
-    }
-
-    /**
-     * Action called when the user creates a new list.
-     * @return void
-     */
-    public function newLocalList() {
         $body = $this->getPsrRequest()->getParsedBody();
         if(isset($body['createList_sent']))
         {

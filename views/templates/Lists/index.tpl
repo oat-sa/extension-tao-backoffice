@@ -2,7 +2,7 @@
     <h2><?= __('Lists') ?></h2>
     <div class="create-list-wrapper">
         <div class="xhtml_form">
-            <form method="post" id="createList" name="createList" action="/taoBackOffice/Lists/newLocalList">
+            <form method="post" id="createList" name="createList" action="/taoBackOffice/Lists">
                 <input type="hidden" class="global" name="createList_sent" value="1">
                 <div class="form-toolbar">
                     <a href="#" class="form-submitter btn-success"><span class="icon-add"></span> Create list</a>
