@@ -27,6 +27,9 @@ define([
 ], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section) {
     'use strict';
 
+    let saveUrl;
+    let delEltUrl;
+
     function findListContainer(uri) {
         return $(`#list-data_${uri}`);
     }
@@ -204,10 +207,10 @@ define([
          */
         start() {
 
-            const saveUrl    = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
+            saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
             const delListUrl = urlUtil.route('removeList', 'Lists', 'taoBackOffice');
             const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
-            const delEltUrl  = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
+            delEltUrl = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
 
             if ($('section[data-new-list]').length > 0) {
                 const id = $('section[data-new-list]').first().attr('id');
