@@ -24,13 +24,14 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
 use common_ext_ExtensionException as ExtensionException;
 use core_kernel_classes_Class as RdfClass;
 use core_kernel_classes_Property as RdfProperty;
 use core_kernel_persistence_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\http\HttpJsonResponseTrait;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
@@ -62,6 +63,7 @@ use tao_models_classes_LanguageService;
 class Lists extends tao_actions_CommonModule
 {
     use OntologyAwareTrait;
+    use HttpJsonResponseTrait;
 
     private const REMOTE_LIST_PREVIEW_LIMIT = 20;
 
@@ -69,24 +71,36 @@ class Lists extends tao_actions_CommonModule
     private $isListsDependencyEnabled;
 
     /**
-     * This REST endpoint returns the page with the lists and, additionally,
-     * creates a new list if the form to do so is provided as the request body.
+     * This REST endpoint:
+     * - Returns the page with the lists for GET requests
+     * - Creates a new list and returns its name and URI for POST requests
      *
      * @return void
      */
     public function index()
     {
+        if ($this->getPsrRequest()->getMethod() == 'POST') {
+            if (!$this->isXmlHttpRequest()) {
+                throw new common_exception_BadRequest('wrong request mode');
+            }
+
+            $newName = __('List') . ' ' . (count($this->getListData()) + 1);
+            $list = $this->getListService()->createList($newName);
+            $this->getListService()->createListElement($list, __('element') . ' 1');
+
+            $createdResponse = [
+                'newList' => [
+                    'name' => $newName,
+                    'uri' => $list->getUri(),
+                ]
+            ];
+
+            $this->setSuccessJsonResponse($createdResponse, 201);
+            return;
+        }
+
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
         $this->defaultData();
-
-        $body = $this->getPsrRequest()->getParsedBody();
-        if(isset($body['createList_sent']))
-        {
-            $newName = __('List').' '.(count($this->getListData()) + 1);
-            $list = $this->getListService()->createList($newName);
-            $this->setData('newId', tao_helpers_Uri::encode($list->getUri()));
-            $this->getListService()->createListElement($list, __('element') . ' 1');
-        }
 
         $this->setData('lists', $this->getListData());
         $this->setView('Lists/index.tpl');
