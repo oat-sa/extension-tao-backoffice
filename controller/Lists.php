@@ -79,7 +79,7 @@ class Lists extends tao_actions_CommonModule
      */
     public function index()
     {
-        if ($this->getPsrRequest()->getMethod() == 'POST') {
+        if ($this->getPsrRequest()->getMethod() === 'POST') {
             if (!$this->isXmlHttpRequest()) {
                 throw new common_exception_BadRequest('wrong request mode');
             }
