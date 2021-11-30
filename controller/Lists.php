@@ -44,6 +44,7 @@ use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\TaoOntology;
+use oat\taoBackOffice\model\lists\ListCreator;
 use oat\taoBackOffice\model\lists\ListService;
 use RuntimeException;
 use tao_actions_CommonModule;
@@ -80,18 +81,14 @@ class Lists extends tao_actions_CommonModule
     public function index()
     {
         if ($this->getPsrRequest()->getMethod() === 'POST') {
+            // @todo Move isXmlHttpRequest() check inside ListCreator
             if (!$this->isXmlHttpRequest()) {
                 throw new common_exception_BadRequest('wrong request mode');
             }
 
-            $newName = __('List') . ' ' . (count($this->getListData()) + 1);
-            $list = $this->getListService()->createList($newName);
-            $this->getListService()->createListElement($list, __('element') . ' 1');
-
-            $createdResponse = [
-                'name' => $newName,
-                'uri' => $list->getUri(),
-            ];
+            // @todo Retrieve it through the service locator
+            $creator = new ListCreator($this->getListService());
+            $createdResponse = $creator->createByRequest($this->getPsrRequest());
 
             $this->setSuccessJsonResponse($createdResponse, 201);
             return;
