@@ -89,10 +89,8 @@ class Lists extends tao_actions_CommonModule
             $this->getListService()->createListElement($list, __('element') . ' 1');
 
             $createdResponse = [
-                'newList' => [
-                    'name' => $newName,
-                    'uri' => $list->getUri(),
-                ]
+                'name' => $newName,
+                'uri' => $list->getUri(),
             ];
 
             $this->setSuccessJsonResponse($createdResponse, 201);
