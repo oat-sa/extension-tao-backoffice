@@ -21,7 +21,7 @@
 namespace oat\taoBackOffice\model\lists;
 
 use common_exception_BadRequest;
-use Nyholm\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use tao_models_classes_ListService;
 
 class ListCreator
@@ -37,7 +37,7 @@ class ListCreator
     /**
      * @throws common_exception_BadRequest
      */
-    public function createByRequest(ServerRequest $request): ListCreatedResponse
+    public function createByRequest(ServerRequestInterface $request): ListCreatedResponse
     {
         $newName = __('List') . ' ' . ($this->getListCount() + 1);
 
