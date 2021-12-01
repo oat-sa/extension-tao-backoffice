@@ -23,6 +23,7 @@ namespace oat\taoBackOffice\model\lists;
 use common_exception_BadRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use tao_models_classes_ListService;
+use Iterator;
 
 class ListCreator
 {
@@ -42,9 +43,15 @@ class ListCreator
         $newName = __('List') . ' ' . ($this->getListCount() + 1);
 
         $list = $this->listService->createList($newName);
-        $element = $this->listService->createListElement($list, __('element') . ' 1');
+        $this->listService->createListElement($list, __('Element') . ' 1');
 
-        return new ListCreatedResponse($list, [$element]);
+        $elements = $this->listService->getListElements($list);
+
+        if($elements instanceof Iterator) {
+            $elements = iterator_to_array($elements);
+        }
+
+        return new ListCreatedResponse($list, $elements);
     }
 
     private function getListCount(bool $remote = false): int
