@@ -42,9 +42,9 @@ class ListCreator
         $newName = __('List') . ' ' . ($this->getListCount() + 1);
 
         $list = $this->listService->createList($newName);
-        $this->listService->createListElement($list, __('element') . ' 1');
+        $element = $this->listService->createListElement($list, __('element') . ' 1');
 
-        return new ListCreatedResponse($list);
+        return new ListCreatedResponse($list, [$element]);
     }
 
     private function getListCount(bool $remote = false): int

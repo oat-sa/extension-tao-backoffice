@@ -21,22 +21,38 @@
 namespace oat\taoBackOffice\model\lists;
 
 use core_kernel_classes_Class;
+use core_kernel_classes_Resource;
 
 class ListCreatedResponse implements \JsonSerializable
 {
     /** @var core_kernel_classes_Class */
     private $list;
 
-    public function __construct(core_kernel_classes_Class $list)
+    /** @var core_kernel_classes_Resource[] */
+    private $elements;
+
+    public function __construct(core_kernel_classes_Class $list, array $elements = [])
     {
-        $this->list = $list;
+        $this->list     = $list;
+        $this->elements = $this->elements;
     }
 
     public function jsonSerialize(): array
     {
+        $elementsView = [];
+
+        foreach ($this->elements as $element)
+        {
+            $elementsView[] = [
+                'uri' => $element->getUri(),
+                'label' => $element->getLabel()
+            ];
+        }
+
         return [
-            'name' => $this->list->getLabel(),
-            'uri' => $this->list->getUri(),
+            'label'    => $this->list->getLabel(),
+            'uri'      => $this->list->getUri(),
+            'elements' => $elementsView
         ];
     }
 }
