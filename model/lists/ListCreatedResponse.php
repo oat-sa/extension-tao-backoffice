@@ -22,6 +22,7 @@ namespace oat\taoBackOffice\model\lists;
 
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
+use tao_helpers_Uri;
 
 class ListCreatedResponse implements \JsonSerializable
 {
@@ -44,14 +45,14 @@ class ListCreatedResponse implements \JsonSerializable
         foreach ($this->elements as $element)
         {
             $elementsView[] = [
-                'uri' => $element->getUri(),
+                'uri' => tao_helpers_Uri::encode($element->getUri()),
                 'label' => $element->getLabel()
             ];
         }
 
         return [
+            'uri'      => tao_helpers_Uri::encode($this->list->getUri()),
             'label'    => $this->list->getLabel(),
-            'uri'      => $this->list->getUri(),
             'elements' => $elementsView
         ];
     }
