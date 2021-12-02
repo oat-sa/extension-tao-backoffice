@@ -60,7 +60,7 @@ class ListCreator
 
         foreach ($this->listService->getLists() as $listClass) {
             if ($this->listService->isRemote($listClass) === $remote) {
-                $accumulator++;
+                ++$accumulator;
             }
         }
 
