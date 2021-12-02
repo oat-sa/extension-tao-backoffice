@@ -2,10 +2,10 @@
     <h2><?= __('Lists') ?></h2>
     <div class="create-list-wrapper">
         <div class="xhtml_form">
-            <form method="post" id="createList" name="createList" action="/taoBackOffice/Lists">
+            <form id="createList" name="createList">
                 <input type="hidden" class="global" name="createList_sent" value="1">
                 <div class="form-toolbar">
-                    <a href="#" class="form-submitter btn-success"><span class="icon-add"></span> Create list</a>
+                    <button type="button" class="form-submitter btn-success"><span class="icon-add"></span> Create list</button>
                 </div>
             </form>
         </div>
@@ -14,7 +14,7 @@
 
 <div class="data-container-wrapper flex-container-remainder">
     <?php foreach (get_data('lists') as $i => $list): ?>
-    <section <?= get_data('newId') == $list['uri'] ? 'data-new-list' : '' ?> id='list-data_<?= $list["uri"] ?>' class="data-container list-container">
+    <section id='list-data_<?= $list["uri"] ?>' class="data-container list-container">
         <header class="container-title">
             <h6><?= _dh($list['label']) ?></h6>
         </header>
