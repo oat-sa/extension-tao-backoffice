@@ -91,6 +91,7 @@ class Lists extends tao_actions_CommonModule
             $createdResponse = $creator->createByRequest($this->getPsrRequest());
 
             $this->setSuccessJsonResponse($createdResponse, 201);
+
             return;
         }
 

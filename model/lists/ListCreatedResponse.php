@@ -35,7 +35,7 @@ class ListCreatedResponse implements JsonSerializable
 
     public function __construct(core_kernel_classes_Class $list, array $elements = [])
     {
-        $this->list     = $list;
+        $this->list = $list;
         $this->elements = $elements;
     }
 
@@ -51,8 +51,8 @@ class ListCreatedResponse implements JsonSerializable
         }
 
         return [
-            'uri'      => tao_helpers_Uri::encode($this->list->getUri()),
-            'label'    => $this->list->getLabel(),
+            'uri' => tao_helpers_Uri::encode($this->list->getUri()),
+            'label' => $this->list->getLabel(),
             'elements' => $elementsView
         ];
     }
