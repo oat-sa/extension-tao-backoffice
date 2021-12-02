@@ -43,8 +43,7 @@ class ListCreatedResponse implements JsonSerializable
     {
         $elementsView = [];
 
-        foreach ($this->elements as $element)
-        {
+        foreach ($this->elements as $element) {
             $elementsView[] = [
                 'uri' => tao_helpers_Uri::encode($element->getUri()),
                 'label' => $element->getLabel()

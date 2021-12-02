@@ -47,7 +47,7 @@ class ListCreator
 
         $elements = $this->listService->getListElements($list);
 
-        if($elements instanceof Iterator) {
+        if ($elements instanceof Iterator) {
             $elements = iterator_to_array($elements);
         }
 
