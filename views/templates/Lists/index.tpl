@@ -22,8 +22,7 @@
             <ol>
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">
-                    <span class="list-element" id="list-element_<?= $level ?>_<?= $element['uri'] ?>"><?=
-                        _dh($element['label']) ?></span>
+                    <span class="list-element" id="list-element_<?= $level ?>_<?= $element['uri'] ?>"><?=_dh($element['label']) ?></span>
                 </li>
                 <?php endforeach ?>
             </ol>

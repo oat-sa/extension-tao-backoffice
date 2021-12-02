@@ -274,7 +274,7 @@ define([
         <div class="container-content" id='list-elements_${newList.uri}'>
             <ol>
                 <li id="list-element_0">
-                    <span class="list-element" id="list-element_${newList.elements[0].uri}">${newList.elements[0].label}</span>
+                    <span class="list-element" id="list-element_0_${newList.elements[0].uri}">${newList.elements[0].label}</span>
                 </li>
             </ol>
         </div>
