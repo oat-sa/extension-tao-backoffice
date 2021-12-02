@@ -23,12 +23,10 @@ define([
     'ui/feedback',
     'ui/dialog/confirm',
     'layout/section',
-    'css!taoBackOfficeCss/list'
-], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section) {
+    'core/request',
+    'css!taoBackOfficeCss/list',
+], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section, request) {
     'use strict';
-
-    let saveUrl;
-    let delEltUrl;
 
     function findListContainer(uri) {
         return $(`#list-data_${uri}`);
@@ -91,10 +89,11 @@ define([
         findListContainer($(this).attr('id')).toggleClass('with-uri');
     }
 
-    function handleEditList (uriList) {
-        const uri = uriList || $(this).data('uri');
+    function handleEditList (targetUri) {
+        const saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
+        const delEltUrl = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
+        const uri = getUriValue(targetUri);
         const $listContainer = findListContainer(uri);
-
         let $listForm       = $listContainer.find('form');
         const $listTitleBar = $listContainer.find('.container-title h6');
         const $listToolBar  = $listContainer.find('.data-container-footer').empty();
@@ -200,65 +199,117 @@ define([
         });
     };
 
+    async function handleCreateList() {
+        const url = '/taoBackOffice/Lists';
+        const newList = await request({
+            url: url,
+            method: "POST",
+        });
+
+        addNewList(newList.data);
+    };
+
+    function addNewList(newList) {
+        const $newListContainer = createListContainer(newList);
+        addHandlerListeners($newListContainer);
+        $('.data-container-wrapper').append($newListContainer);
+        handleEditList(newList.uri);
+    }
+
+    function handleDeleteList() {
+        const delListUrl = urlUtil.route('removeList', 'Lists', 'taoBackOffice');
+        const $btn  = $(this);
+
+        dialogConfirm(
+            __('Please confirm you want to delete this list. This operation cannot be undone.'),
+            function accept() {
+                const uri   = $btn.data('uri');
+                const $list = $btn.parents('.data-container');
+                $.postJson(
+                    delListUrl,
+                    { uri },
+                    response => {
+                        if (response.deleted) {
+                            feedback().success(__('List deleted'));
+                            $list.remove();
+                        } else {
+                            feedback().error(__('List not deleted'));
+                        }
+                    }
+                );
+            }
+        );
+    };
+
+    function handleReloadList() {
+        const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
+        const uri = $(this).data('uri');
+
+        $.postJson(
+            reloadListUrl,
+            { uri },
+            response => {
+                if (response.saved) {
+                    feedback().success(__('List reloaded'));
+                    section.get('taoBo_remotelist').loadContentBlock(urlUtil.route('remote', 'Lists', 'taoBackOffice'));
+                } else {
+                    feedback().error(__('List failed to be reloaded'));
+                }
+            }
+        );
+    };
+
+    function addHandlerListeners($listContainer) {
+        $listContainer.on('click', '.list-edit-btn', handleEditList);
+        $listContainer.on('click', '.list-delete-btn', handleDeleteList);
+        $listContainer.on('click', '.list-reload-btn', handleReloadList);
+    };
+
+    function createListContainer(newList) {
+        return $(`<section id='list-data_${newList.uri}' class="data-container list-container">
+        <header class="container-title">
+            <h6>${newList.label}</h6>
+        </header>
+
+        <div class="container-content" id='list-elements_${newList.uri}'>
+            <ol>
+                <li id="list-element_0">
+                    <span class="list-element" id="list-element_${newList.elements[0].uri}">${newList.elements[0].label}</span>
+                </li>
+            </ol>
+        </div>
+        <footer class="data-container-footer action-bar">
+            <button type="button" title="${__('Edit this list')}" class="icon-edit list-edit-btn btn-info small rgt" data-uri="${newList.uri}">
+            </button>
+            <button type="button" title="${__('Delete this list')}" class="icon-bin list-delete-btn btn-warning small rgt" data-uri="${newList.uri}">
+            </button>
+        </footer> `);
+    };
+
+    function getUriValue(targetUri) {
+        if (typeof targetUri === 'string') {
+            return targetUri;
+        } else if (targetUri.currentTarget){
+            return $(targetUri.currentTarget).data('uri');
+        }
+    };
+
     return {
 
         /**
          * The list controller entrypoint
          */
         start() {
-
-            saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
-            const delListUrl = urlUtil.route('removeList', 'Lists', 'taoBackOffice');
-            const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
-            delEltUrl = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
-
-            if ($('section[data-new-list]').length > 0) {
-                const id = $('section[data-new-list]').first().attr('id');
-                const uriList = id.replace('list-data_', '');
-                handleEditList(uriList);
-            }
+            $('.form-submitter').off('click').on('click', (function (e) {
+                e.preventDefault();
+                handleCreateList();
+            }));
 
             $('.list-edit-btn').click(handleEditList);
 
-            $('.list-delete-btn').click(function () {
-                const $btn  = $(this);
-                dialogConfirm(
-                    __('Please confirm you want to delete this list. This operation cannot be undone.'),
-                    function accept() {
-                        const uri   = $btn.data('uri');
-                        const $list = $btn.parents('.data-container');
-                        $.postJson(
-                            delListUrl,
-                            { uri },
-                            response => {
-                                if (response.deleted) {
-                                    feedback().success(__('List deleted'));
-                                    $list.remove();
-                                } else {
-                                    feedback().error(__('List not deleted'));
-                                }
-                            }
-                        );
-                    }
-                );
-            });
+            $('.list-delete-btn').click(handleDeleteList);
 
-            $('.list-reload-btn').click(function () {
-                const uri = $(this).data('uri');
-
-                $.postJson(
-                    reloadListUrl,
-                    { uri },
-                    response => {
-                        if (response.saved) {
-                            feedback().success(__('List reloaded'));
-                            section.get('taoBo_remotelist').loadContentBlock(urlUtil.route('remote', 'Lists', 'taoBackOffice'));
-                        } else {
-                            feedback().error(__('List failed to be reloaded'));
-                        }
-                    }
-                );
-            });
+            $('.list-reload-btn').click(handleReloadList);
         }
     };
 });
