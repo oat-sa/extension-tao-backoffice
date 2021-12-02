@@ -22,9 +22,10 @@ namespace oat\taoBackOffice\model\lists;
 
 use core_kernel_classes_Class;
 use core_kernel_classes_Resource;
+use JsonSerializable;
 use tao_helpers_Uri;
 
-class ListCreatedResponse implements \JsonSerializable
+class ListCreatedResponse implements JsonSerializable
 {
     /** @var core_kernel_classes_Class */
     private $list;
