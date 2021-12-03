@@ -86,9 +86,7 @@ class Lists extends tao_actions_CommonModule
                 throw new common_exception_BadRequest('wrong request mode');
             }
 
-            // @todo Retrieve it through the service locator
-            $creator = new ListCreator($this->getListService());
-            $createdResponse = $creator->createByRequest($this->getPsrRequest());
+            $createdResponse = $this->getListCreator()->createByRequest($this->getPsrRequest());
 
             $this->setSuccessJsonResponse($createdResponse, 201);
 
@@ -551,6 +549,11 @@ class Lists extends tao_actions_CommonModule
     protected function getListService()
     {
         return ListService::singleton();
+    }
+
+    private function getListCreator(): ListCreator
+    {
+        return $this->getPsrContainer()->get(ListCreator::class);
     }
 
     private function createRemoteSourceContext(RdfClass $collectionClass): RemoteSourceContext
