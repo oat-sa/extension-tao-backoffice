@@ -77,16 +77,17 @@ class Lists extends tao_actions_CommonModule
      * - Creates a new list and returns its name and URI for POST requests
      *
      * @return void
+     *
+     * @throws common_exception_BadRequest
      */
     public function index()
     {
         if ($this->getPsrRequest()->getMethod() === 'POST') {
-            // @todo Move isXmlHttpRequest() check inside ListCreator
             if (!$this->isXmlHttpRequest()) {
                 throw new common_exception_BadRequest('wrong request mode');
             }
 
-            $createdResponse = $this->getListCreator()->createByRequest($this->getPsrRequest());
+            $createdResponse = $this->getListCreator()->createEmptyList();
 
             $this->setSuccessJsonResponse($createdResponse, 201);
 

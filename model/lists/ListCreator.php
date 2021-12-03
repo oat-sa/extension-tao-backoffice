@@ -22,24 +22,26 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
-use common_exception_BadRequest;
 use Iterator;
-use Psr\Http\Message\ServerRequestInterface;
+use oat\tao\model\Specification\ClassSpecificationInterface;
 
 class ListCreator
 {
     /** @var ListService */
     private $listService;
 
-    public function __construct(ListService $listService)
-    {
+    /** @var ClassSpecificationInterface */
+    private $remoteListClassSpecification;
+
+    public function __construct(
+        ListService $listService,
+        ClassSpecificationInterface $remoteListClassSpecification
+    ) {
         $this->listService = $listService;
+        $this->remoteListClassSpecification = $remoteListClassSpecification;
     }
 
-    /**
-     * @throws common_exception_BadRequest
-     */
-    public function createByRequest(ServerRequestInterface $request): ListCreatedResponse
+    public function createEmptyList(): ListCreatedResponse
     {
         $newName = __('List') . ' ' . ($this->getListCount() + 1);
 
@@ -55,12 +57,13 @@ class ListCreator
         return new ListCreatedResponse($list, $elements);
     }
 
-    private function getListCount(bool $remote = false): int
+    private function getListCount(): int
     {
         $accumulator = 0;
 
+        // @todo Count from database instead of loading all lists in memory
         foreach ($this->listService->getLists() as $listClass) {
-            if ($this->listService->isRemote($listClass) === $remote) {
+            if (!$this->remoteListClassSpecification->isSatisfiedBy($listClass)) {
                 ++$accumulator;
             }
         }

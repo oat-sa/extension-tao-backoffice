@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoBackOffice\model\lists;
 
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -43,6 +44,7 @@ class ListServiceProvider implements ContainerServiceProviderInterface
             ->args(
                 [
                     service(ListService::class),
+                    service(RemoteListClassSpecification::class),
                 ]
             );
     }
