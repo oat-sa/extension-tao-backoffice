@@ -31,7 +31,7 @@ class ListCreator
     /** @var ListService */
     private $listService;
 
-    public function __construct(ListService $listService/* = null*/)
+    public function __construct(ListService $listService)
     {
         $this->listService = $listService;
     }
