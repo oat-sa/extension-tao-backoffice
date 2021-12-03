@@ -24,6 +24,7 @@ namespace oat\taoBackOffice\model\lists;
 
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class ListServiceProvider implements ContainerServiceProviderInterface
 {
@@ -31,6 +32,18 @@ class ListServiceProvider implements ContainerServiceProviderInterface
     {
         $services = $configurator->services();
 
-        $services->set(ListCreator::class, ListCreator::class)->public();
+        $services
+            ->set(ListService::class, ListService::class)
+            ->public()
+            ->factory(ListService::class . '::singleton');
+
+        $services
+            ->set(ListCreator::class, ListCreator::class)
+            ->public()
+            ->args(
+                [
+                    service(ListService::class),
+                ]
+            );
     }
 }

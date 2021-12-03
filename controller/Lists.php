@@ -548,7 +548,7 @@ class Lists extends tao_actions_CommonModule
      */
     protected function getListService()
     {
-        return ListService::singleton();
+        return $this->getPsrContainer()->get(ListService::class);
     }
 
     private function getListCreator(): ListCreator

@@ -23,18 +23,17 @@ declare(strict_types=1);
 namespace oat\taoBackOffice\model\lists;
 
 use common_exception_BadRequest;
-use Psr\Http\Message\ServerRequestInterface;
 use Iterator;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ListCreator
 {
     /** @var ListService */
     private $listService;
 
-    public function __construct(ListService $listService = null)
+    public function __construct(ListService $listService/* = null*/)
     {
-        // @todo Use DI container instead of singleton
-        $this->listService = $listService ?? ListService::singleton();
+        $this->listService = $listService;
     }
 
     /**
