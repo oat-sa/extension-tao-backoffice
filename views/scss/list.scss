@@ -73,3 +73,17 @@
     }
   }
 }
+
+.create-list-wrapper {
+  display: flex;
+
+  #createList {
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+
+  .form-toolbar {
+    margin: 10px 0 50px 0;
+  }
+}

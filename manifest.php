@@ -1,6 +1,7 @@
 <?php
 
 use oat\taoBackOffice\controller\Redirector;
+use oat\taoBackOffice\model\lists\ListServiceProvider;
 use oat\tao\model\user\TaoRoles;
 
 /**
@@ -58,5 +59,8 @@ return [
     ],
     'extra' => [
         'structures' => __DIR__ . DIRECTORY_SEPARATOR . 'controller' . DIRECTORY_SEPARATOR . 'structures.xml',
+    ],
+    'containerServiceProviders' => [
+        ListServiceProvider::class,
     ]
 ];

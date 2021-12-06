@@ -18,20 +18,20 @@
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013-2018 (update and modification) Open Assessment Technologies SA;
- *
+ *               2013-2021 (update and modification) Open Assessment Technologies SA;
  */
 
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
 use common_ext_ExtensionException as ExtensionException;
 use core_kernel_classes_Class as RdfClass;
 use core_kernel_classes_Property as RdfProperty;
 use core_kernel_persistence_Exception;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\helpers\Template;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\http\HttpJsonResponseTrait;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
@@ -44,10 +44,10 @@ use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\TaoOntology;
+use oat\taoBackOffice\model\lists\ListCreator;
 use oat\taoBackOffice\model\lists\ListService;
 use RuntimeException;
 use tao_actions_CommonModule;
-use tao_actions_form_List;
 use tao_actions_form_RemoteList;
 use tao_helpers_Scriptloader;
 use tao_helpers_Uri;
@@ -64,6 +64,7 @@ use tao_models_classes_LanguageService;
 class Lists extends tao_actions_CommonModule
 {
     use OntologyAwareTrait;
+    use HttpJsonResponseTrait;
 
     private const REMOTE_LIST_PREVIEW_LIMIT = 20;
 
@@ -71,31 +72,30 @@ class Lists extends tao_actions_CommonModule
     private $isListsDependencyEnabled;
 
     /**
-     * Show the list of users
+     * This REST endpoint:
+     * - Returns the page with the lists for GET requests
+     * - Creates a new list and returns its name and URI for POST requests
+     *
      * @return void
+     *
+     * @throws common_exception_BadRequest
      */
     public function index()
     {
+        if ($this->getPsrRequest()->getMethod() === 'POST') {
+            if (!$this->isXmlHttpRequest()) {
+                throw new common_exception_BadRequest('wrong request mode');
+            }
+
+            $createdResponse = $this->getListCreator()->createEmptyList();
+
+            $this->setSuccessJsonResponse($createdResponse, 201);
+
+            return;
+        }
+
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
         $this->defaultData();
-
-        $myAdderFormContainer = new tao_actions_form_List();
-        $myForm = $myAdderFormContainer->getForm();
-
-        if ($myForm->isSubmited()) {
-            if ($myForm->isValid()) {
-                $values = $myForm->getValues();
-                $newList = $this->getListService()->createList($values['label']);
-                $i = 0;
-                while ($i < $values['size']) {
-                    $this->getListService()->createListElement($newList, __('element') . ' ' . ($i + 1));
-                    $i++;
-                }
-            }
-        } else {
-            $myForm->getElement('label')->setValue(__('List') . ' ' . (count($this->getListService()->getLists()) + 1));
-        }
-        $this->setData('form', $myForm->render());
 
         $this->setData('lists', $this->getListData());
         $this->setView('Lists/index.tpl');
@@ -549,7 +549,12 @@ class Lists extends tao_actions_CommonModule
      */
     protected function getListService()
     {
-        return ListService::singleton();
+        return $this->getPsrContainer()->get(ListService::class);
+    }
+
+    private function getListCreator(): ListCreator
+    {
+        return $this->getPsrContainer()->get(ListCreator::class);
     }
 
     private function createRemoteSourceContext(RdfClass $collectionClass): RemoteSourceContext
