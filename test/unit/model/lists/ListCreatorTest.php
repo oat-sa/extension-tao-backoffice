@@ -22,12 +22,14 @@ declare(strict_types=1);
 
 namespace oat\taoMediaManager\test\unit\model;
 
+use ArrayIterator;
 use oat\generis\test\TestCase;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\taoBackOffice\model\lists\ListCreator;
 use oat\taoBackOffice\model\lists\ListService;
 use core_kernel_classes_Class;
+use PHPUnit\Framework\MockObject\MockObject;
 
 class ListCreatorTest extends TestCase
 {
@@ -48,81 +50,53 @@ class ListCreatorTest extends TestCase
         $this->sut = new ListCreator($this->listService, $this->remoteListClassSpecification);
     }
 
-    /**
-     * @dataProvider createEmptyListDataProvider
-     */
-    public function testCreateEmptyList(string $listName, array $existingLists): void
+    public function testCreateEmptyList(): void
     {
-        var_export($existingLists);
-
         $list = $this->createMock(core_kernel_classes_Class::class);
+        $existingLists = [
+            $this->createMock(core_kernel_classes_Class::class),
+            $this->createMock(core_kernel_classes_Class::class),
+            $this->createMock(core_kernel_classes_Class::class),
+        ];
 
-        $allLists = [];
-        foreach ($existingLists as $previousListInfo) {
-            $previousList = $previousListInfo[0];
-            $isRemote = $previousListInfo[1];
+        $this->remoteListClassSpecification
+            ->expects($this->at(0))
+            ->method('isSatisfiedBy')
+            ->willReturn(false);
 
-            $this->remoteListClassSpecification
-                ->method('isSatisfiedBy')
-                ->with($previousList)
-                ->willReturn($isRemote);
+        $this->remoteListClassSpecification
+            ->expects($this->at(1))
+            ->method('isSatisfiedBy')
+            ->willReturn(false);
 
-            $allLists[] = $previousList;
-        }
+        $this->remoteListClassSpecification
+            ->expects($this->at(2))
+            ->method('isSatisfiedBy')
+            ->willReturn(true);
 
         $this->listService
             ->method('getLists')
-            ->willReturn($allLists);
+            ->willReturn($existingLists);
 
         $this->listService
+            ->expects($this->once())
             ->method('createList')
-            ->with($listName)
+            ->with(__('List') . ' 3')
             ->willReturn($list);
 
         $this->listService
             ->expects($this->once())
             ->method('createListElement')
-            ->with($list, __('Element').' 1');
+            ->with($list, __('Element') . ' 1');
 
         $this->listService
             ->method('getListElements')
             ->with($list)
-            ->willReturn(new \ArrayIterator([]));
+            ->willReturn(new ArrayIterator([]));
 
-        $expected = new ListCreatedResponse($list, []);
-
-        $this->assertEquals($expected, $this->sut->createEmptyList());
-    }
-
-    public function createEmptyListDataProvider(): array
-    {
-       return [
-           'New list with no prior lists' => [
-               'listName' => __('List') . ' 1',
-               'existingLists' => [],
-           ],
-           'New list with a previous list' => [
-               'listName' => __('List') . ' 2',
-               'existingLists' => [
-                   // [list, isRemote]
-                   [$this->createMock(core_kernel_classes_Class::class), false],
-               ],
-           ],
-           'New list with more than one previous list' => [
-               'listName' => __('List') . ' 3',
-               'existingLists' => [
-                   [$this->createMock(core_kernel_classes_Class::class), false],
-                   [$this->createMock(core_kernel_classes_Class::class), false],
-               ],
-           ],
-           /* @fixme Not working
-           'New list with remote and non-remote previous lists' => [
-               'listName' => __('List') . ' 2',
-               'existingLists' => [
-                   [$this->createMock(core_kernel_classes_Class::class), false],
-                   [$this->createMock(core_kernel_classes_Class::class), true],
-               ],
-           ]*/
-       ];
+        $this->assertEquals(
+            new ListCreatedResponse($list, []),
+            $this->sut->createEmptyList()
+        );
     }
 }
