@@ -15,16 +15,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2021 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
+ * Copyright (c) 2021 (original work) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
+use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class ListServiceProvider implements ContainerServiceProviderInterface
@@ -45,6 +47,15 @@ class ListServiceProvider implements ContainerServiceProviderInterface
                 [
                     service(ListService::class),
                     service(RemoteListClassSpecification::class),
+                ]
+            );
+
+        $services
+            ->set(EditableListSpecification::class, EditableListSpecification::class)
+            ->public()
+            ->args(
+                [
+                    service(Ontology::SERVICE_ID),
                 ]
             );
     }

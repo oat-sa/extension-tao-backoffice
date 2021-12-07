@@ -15,46 +15,40 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2018-2021 (original work) Open Assessment Technologies SA;
  */
+
+declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
+use tao_models_classes_ListService;
+use Psr\Container\ContainerInterface;
 use core_kernel_classes_Class as RdfClass;
-use core_kernel_persistence_Exception;
 use oat\generis\model\kernel\uri\UriProvider;
 use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
-use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
+use oat\tao\model\Specification\ClassSpecificationInterface;
+use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
-use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
-use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
+use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use oat\tao\model\Lists\DataAccess\Repository\ParentPropertyListCachedRepository;
-use oat\tao\model\TaoOntology;
-use tao_models_classes_LanguageService;
-use tao_models_classes_ListService;
 
-/**
- * Class ListService
- */
 class ListService extends tao_models_classes_ListService
 {
     /**
+     * @TODO Make two different kind of lists: system list that are not editable and usual list.
+     *
      * Whenever or not a list is editable
      * The Language list should not be editable.
      *
-     * @param RdfClass $listClass
-     *
-     * @return boolean
-     * @todo Make two different kind of lists: system list that are not editable and usual list.
+     * @return bool
      */
     public function isEditable(RdfClass $listClass)
     {
-        return $listClass->isSubClassOf($this->getClass(TaoOntology::CLASS_URI_LIST))
-            && $listClass->getUri() !== tao_models_classes_LanguageService::CLASS_URI_LANGUAGES;
+        return $this->getEditableListClassSpecification()->isSatisfiedBy($listClass);
     }
 
     public function getListElement(RdfClass $listClass, $uri)
@@ -71,10 +65,15 @@ class ListService extends tao_models_classes_ListService
             : iterator_to_array($result->getIterator())[0];
     }
 
-    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0)
+    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0, int $offset = 0)
     {
         $request = new ValueCollectionSearchRequest();
         $request->setValueCollectionUri($listClass->getUri());
+
+        if ($offset) {
+            $request->setOffset($offset);
+        }
+
         if ($limit) {
             $request->setLimit($limit);
         }
@@ -87,8 +86,6 @@ class ListService extends tao_models_classes_ListService
     }
 
     /**
-     * @param RdfClass $listClass
-     *
      * @return bool
      */
     public function removeList(RdfClass $listClass)
@@ -108,21 +105,24 @@ class ListService extends tao_models_classes_ListService
         return $listClass->delete();
     }
 
+    /**
+     * @param string $label
+     *
+     * @return void
+     */
     public function createListElement(RdfClass $listClass, $label = '')
     {
-        $newUri = $this->createUri();
-
         $valueCollection = new ValueCollection(
             $listClass->getUri(),
-            new Value(null, $newUri, $label)
+            new Value(null, $this->createUri(), $label)
         );
 
         $this->getValueService()->persist($valueCollection);
     }
 
-    private function getValueService(): ValueCollectionService
+    public function isRemote(RdfClass $listClass): bool
     {
-        return $this->getServiceLocator()->get(ValueCollectionService::class);
+        return $this->getRemoteListClassSpecification()->isSatisfiedBy($listClass);
     }
 
     private function createUri(): string
@@ -130,23 +130,28 @@ class ListService extends tao_models_classes_ListService
         return $this->getServiceLocator()->get(UriProvider::class)->provide();
     }
 
-    /**
-     * @param RdfClass $listClass
-     *
-     * @return bool
-     * @throws core_kernel_persistence_Exception
-     */
-    public function isRemote(RdfClass $listClass): bool
+    private function getValueService(): ValueCollectionService
     {
-        $type = $listClass->getOnePropertyValue(
-            $listClass->getProperty(RemoteSourcedListOntology::PROPERTY_LIST_TYPE)
-        );
-
-        return $type && ($type->getUri() === RemoteSourcedListOntology::LIST_TYPE_REMOTE);
+        return $this->getServiceLocator()->get(ValueCollectionService::class);
     }
 
     private function getParentPropertyListCachedRepository(): ParentPropertyListCachedRepository
     {
         return $this->getServiceLocator()->get(ParentPropertyListCachedRepository::class);
+    }
+
+    private function getRemoteListClassSpecification(): ClassSpecificationInterface
+    {
+        return $this->getContainer()->get(RemoteListClassSpecification::class);
+    }
+
+    private function getEditableListClassSpecification(): ClassSpecificationInterface
+    {
+        return $this->getContainer()->get(EditableListClassSpecification::class);
+    }
+
+    private function getContainer(): ContainerInterface
+    {
+        return $this->getServiceLocator()->getContainer();
     }
 }
