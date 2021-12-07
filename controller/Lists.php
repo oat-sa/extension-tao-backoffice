@@ -338,32 +338,23 @@ class Lists extends tao_actions_CommonModule
 
         if ($this->hasRequestParameter('classUri')) {
             $listService = $this->getListService();
+            $type = $this->getRequestParameter('type');
 
-            if (
-                $this->getRequestParameter('type') === 'class'
-                && $this->getRequestParameter('classUri') === 'root'
-            ) {
-                $listClass = $listService->createList();
-
-                if ($listClass !== null) {
-                    $response['label'] = $listClass->getLabel();
-                    $response['uri'] = tao_helpers_Uri::encode($listClass->getUri());
-                }
-            }
-
-            if ($this->getRequestParameter('type') === 'instance') {
+            if ($type === 'class' && $this->getRequestParameter('classUri') === 'root') {
+                $createdResource = $listService->createList();
+            } elseif ($type === 'instance') {
                 $classUri = tao_helpers_Uri::decode($this->getRequestParameter('classUri'));
                 $listClass = $listService->getList($classUri);
 
                 if ($listClass !== null) {
                     $listService->createListElement($listClass);
-                    $listElement = iterator_to_array($listService->getListElements($listClass))[0] ?? null;
-
-                    if ($listElement !== null) {
-                        $response['label'] = $listElement->getLabel();
-                        $response['uri'] = tao_helpers_Uri::encode($listElement->getUri());
-                    }
+                    $createdResource = iterator_to_array($listService->getListElements($listClass))[0] ?? null;
                 }
+            }
+
+            if (isset($createdResource)) {
+                $response['label'] = $createdResource->getLabel();
+                $response['uri'] = tao_helpers_Uri::encode($createdResource->getUri());
             }
         }
 
