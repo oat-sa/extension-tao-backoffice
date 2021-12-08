@@ -200,12 +200,11 @@ define([
     }
 
     function handleCreateList($form) {
-        const remoteListCreationRoute = urlUtil.route('remote', 'Lists', 'taoBackOffice');
-        const isRemoteListCreation = remoteListCreationRoute.includes($form.attr('action'));
+        const isRemoteListCreation = ($form.attr('action') || '').includes('remote');
 
         request({
             url: isRemoteListCreation
-                ? remoteListCreationRoute
+                ? urlUtil.route('remote', 'Lists', 'taoBackOffice')
                 : urlUtil.route('index', 'Lists', 'taoBackOffice'),
             method: 'POST',
             data: isRemoteListCreation
