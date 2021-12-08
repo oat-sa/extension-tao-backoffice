@@ -24,6 +24,7 @@
 namespace oat\taoBackOffice\controller;
 
 use common_exception_BadRequest;
+use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use common_ext_ExtensionException as ExtensionException;
 use core_kernel_classes_Class as RdfClass;
 use core_kernel_classes_Property as RdfProperty;
@@ -135,15 +136,22 @@ class Lists extends tao_actions_CommonModule
 
                 try {
                     $this->sync($valueCollectionService, $remoteSource, $newList);
-                }
-                catch (ValueConflictException $exception) {
+
+                    // @FIXME Refactor this part as this is a hotfix
+                    $elements = $this->getListService()->getListElements($newList);
+                    $this->setSuccessJsonResponse(
+                        new ListCreatedResponse($newList, iterator_to_array($elements)),
+                        201
+                    );
+
+                    return;
+                } catch (ValueConflictException $exception) {
                     $this->returnError(
                         $exception->getMessage() . __(' Probably given list was already imported.')
                     );
 
                     return;
-                }
-                catch (RuntimeException $exception) {
+                } catch (RuntimeException $exception) {
                     throw $exception;
                 } finally {
                     if (isset($exception)) {
@@ -155,6 +163,7 @@ class Lists extends tao_actions_CommonModule
             $newListLabel = __('List') . ' ' . (count($this->getListService()->getLists()) + 1);
             $remoteListForm->getElement(tao_actions_form_RemoteList::FIELD_NAME)->setValue($newListLabel);
         }
+
         $this->setData('form', $remoteListForm->render());
         $this->setData('lists', $this->getListData(true));
         $this->setView('RemoteLists/index.tpl');
