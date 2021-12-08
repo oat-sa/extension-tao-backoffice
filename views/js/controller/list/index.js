@@ -197,24 +197,40 @@ define([
                 );
             }
         });
-    };
+    }
 
-    async function handleCreateList() {
-        const url = '/taoBackOffice/Lists';
-        const newList = await request({
-            url: url,
-            method: "POST",
+    function handleCreateList() {
+        request({
+            url: urlUtil.route('index', 'Lists', 'taoBackOffice'),
+            method: 'POST',
+        }).then(response => {
+            response.data.uri = Uri.encode(response.data.uri);
+            addNewList(response.data);
         });
+    }
 
-        newList.data.uri = Uri.encode(newList.data.uri);
-        addNewList(newList.data);
-    };
+    function handleCreateRemoteList(serializedFormData) {
+        request({
+            url: urlUtil.route('remote', 'Lists', 'taoBackOffice'),
+            method: 'POST',
+            data: serializedFormData,
+        }).then(response => {
+            response.data.uri = Uri.encode(response.data.uri);
+            addNewRemoteList(response.data);
+        });
+    }
 
     function addNewList(newList) {
         const $newListContainer = createListContainer(newList);
         addHandlerListeners($newListContainer);
         $('.data-container-wrapper').append($newListContainer);
         handleEditList(newList.uri);
+    }
+
+    function addNewRemoteList(newList) {
+        const $newListContainer = createRemoteListContainer(newList);
+        addHandlerListeners($newListContainer);
+        $('.data-container-wrapper').append($newListContainer);
     }
 
     function handleDeleteList() {
@@ -240,7 +256,7 @@ define([
                 );
             }
         );
-    };
+    }
 
     function handleReloadList() {
         const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
@@ -258,34 +274,79 @@ define([
                 }
             }
         );
-    };
+    }
 
     function addHandlerListeners($listContainer) {
         $listContainer.on('click', '.list-edit-btn', handleEditList);
         $listContainer.on('click', '.list-delete-btn', handleDeleteList);
         $listContainer.on('click', '.list-reload-btn', handleReloadList);
-    };
+    }
 
     function createListContainer(newList) {
-        return $(`<section id='list-data_${newList.uri}' class="data-container list-container">
-        <header class="container-title">
-            <h6>${newList.label}</h6>
-        </header>
+        return $(
+            `<section id="list-data_${newList.uri}" class="data-container list-container">
+            <header class="container-title">
+                <h6>${newList.label}</h6>
+            </header>
+    
+            <div class="container-content" id="list-elements_${newList.uri}">
+                <ol>
+                    <li id="list-element_0">
+                        <span class="list-element" id="list-element_0_${Uri.encode(newList.elements[0].uri)}">${newList.elements[0].label}</span>
+                    </li>
+                </ol>
+            </div>
+            <footer class="data-container-footer action-bar">
+                <button
+                    type="button"
+                    title="${__('Edit this list')}"
+                    class="icon-edit list-edit-btn btn-info small rgt"
+                    data-uri="${newList.uri}"
+                ></button>
+                <button
+                    type="button"
+                    title="${__('Delete this list')}"
+                    class="icon-bin list-delete-btn btn-warning small rgt"
+                    data-uri="${newList.uri}"
+                ></button>
+            </footer>`
+        );
+    }
 
-        <div class="container-content" id='list-elements_${newList.uri}'>
-            <ol>
-                <li id="list-element_0">
-                    <span class="list-element" id="list-element_0_${Uri.encode(newList.elements[0].uri)}">${newList.elements[0].label}</span>
-                </li>
-            </ol>
-        </div>
-        <footer class="data-container-footer action-bar">
-            <button type="button" title="${__('Edit this list')}" class="icon-edit list-edit-btn btn-info small rgt" data-uri="${newList.uri}">
-            </button>
-            <button type="button" title="${__('Delete this list')}" class="icon-bin list-delete-btn btn-warning small rgt" data-uri="${newList.uri}">
-            </button>
-        </footer> `);
-    };
+    function createRemoteListContainer(newList) {
+        let listElements = '';
+
+        newList.elements.forEach((element, index) => {
+            listElements += `<li id="list-element_${index}">
+                <span class="list-element" id="list-element_0_${Uri.encode(element.uri)}">${element.label}</span>
+            </li>`;
+        });
+
+        return $(
+            `<section id="list-data_${newList.uri}" class="data-container list-container">
+            <header class="container-title">
+                <h6>${newList.label}</h6>
+            </header>
+            <div class="container-content" id="list-elements_${newList.uri}">
+                <ol>${listElements}</ol>
+            </div>
+            <footer class="data-container-footer action-bar">
+                <button
+                    type="button"
+                    title="${__('Reload this list')}"
+                    class="icon-reload list-reload-btn btn-info small rgt"
+                    data-uri="${newList.uri}"
+                ></button>
+                <button
+                    type="button"
+                    title="${__('Delete this list')}"
+                    class="icon-bin list-delete-btn btn-warning small rgt"
+                    data-uri="${newList.uri}"
+                ></button>
+            </footer>
+        </section>`
+        );
+    }
 
     function getUriValue(targetUri) {
         if (typeof targetUri === 'string') {
@@ -293,23 +354,23 @@ define([
         } else if (targetUri.currentTarget){
             return $(targetUri.currentTarget).data('uri');
         }
-    };
+    }
 
     return {
-
-        /**
-         * The list controller entrypoint
-         */
+        // The list controller entrypoint
         start() {
             $('.form-submitter').off('click').on('click', (function (e) {
                 e.preventDefault();
-                handleCreateList();
+
+                const $form = $(e.target).closest('form');
+
+                urlUtil.route('remote', 'Lists', 'taoBackOffice').includes($form.attr('action'))
+                    ? handleCreateRemoteList($form.serialize())
+                    : handleCreateList();
             }));
 
             $('.list-edit-btn').click(handleEditList);
-
             $('.list-delete-btn').click(handleDeleteList);
-
             $('.list-reload-btn').click(handleReloadList);
         }
     };
