@@ -51,7 +51,7 @@ class ListServiceProvider implements ContainerServiceProviderInterface
             );
 
         $services
-            ->set(EditableListSpecification::class, EditableListSpecification::class)
+            ->set(EditableListClassSpecification::class, EditableListClassSpecification::class)
             ->public()
             ->args(
                 [
