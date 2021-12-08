@@ -199,38 +199,34 @@ define([
         });
     }
 
-    function handleCreateList() {
+    function handleCreateList($form) {
+        const remoteListCreationRoute = urlUtil.route('remote', 'Lists', 'taoBackOffice');
+        const isRemoteListCreation = remoteListCreationRoute.includes($form.attr('action'));
+
         request({
-            url: urlUtil.route('index', 'Lists', 'taoBackOffice'),
+            url: isRemoteListCreation
+                ? remoteListCreationRoute
+                : urlUtil.route('index', 'Lists', 'taoBackOffice'),
             method: 'POST',
+            data: isRemoteListCreation
+                ? $form.serialize()
+                : null,
         }).then(response => {
             response.data.uri = Uri.encode(response.data.uri);
-            addNewList(response.data);
+            addNewList(response.data, isRemoteListCreation);
         });
     }
 
-    function handleCreateRemoteList(serializedFormData) {
-        request({
-            url: urlUtil.route('remote', 'Lists', 'taoBackOffice'),
-            method: 'POST',
-            data: serializedFormData,
-        }).then(response => {
-            response.data.uri = Uri.encode(response.data.uri);
-            addNewRemoteList(response.data);
-        });
-    }
-
-    function addNewList(newList) {
-        const $newListContainer = createListContainer(newList);
+    function addNewList(newList, isRemoteList) {
+        const $newListContainer = createListContainer(newList, isRemoteList);
         addHandlerListeners($newListContainer);
-        $('.data-container-wrapper').append($newListContainer);
-        handleEditList(newList.uri);
-    }
 
-    function addNewRemoteList(newList) {
-        const $newListContainer = createRemoteListContainer(newList);
-        addHandlerListeners($newListContainer);
-        $('.data-container-wrapper').append($newListContainer);
+        const containerIdentifier = isRemoteList ? '#panel-taoBo_remotelist' : '#panel-taoBo_list';
+        $(`${containerIdentifier} .data-container-wrapper`).append($newListContainer);
+
+        if (!isRemoteList) {
+            handleEditList(newList.uri);
+        }
     }
 
     function handleDeleteList() {
@@ -282,70 +278,41 @@ define([
         $listContainer.on('click', '.list-reload-btn', handleReloadList);
     }
 
-    function createListContainer(newList) {
+    function createListContainer(newList, isRemoteList) {
         return $(
             `<section id="list-data_${newList.uri}" class="data-container list-container">
-            <header class="container-title">
-                <h6>${newList.label}</h6>
-            </header>
-    
-            <div class="container-content" id="list-elements_${newList.uri}">
-                <ol>
-                    <li id="list-element_0">
-                        <span class="list-element" id="list-element_0_${Uri.encode(newList.elements[0].uri)}">${newList.elements[0].label}</span>
-                    </li>
-                </ol>
-            </div>
-            <footer class="data-container-footer action-bar">
-                <button
-                    type="button"
-                    title="${__('Edit this list')}"
-                    class="icon-edit list-edit-btn btn-info small rgt"
-                    data-uri="${newList.uri}"
-                ></button>
-                <button
-                    type="button"
-                    title="${__('Delete this list')}"
-                    class="icon-bin list-delete-btn btn-warning small rgt"
-                    data-uri="${newList.uri}"
-                ></button>
-            </footer>`
+                <header class="container-title">
+                    <h6>${newList.label}</h6>
+                </header>
+                <div class="container-content" id="list-elements_${newList.uri}">
+                    ${renderListElements(newList.elements)}
+                </div>
+                <footer class="data-container-footer action-bar">
+                    <button
+                        type="button"
+                        title="${isRemoteList ? __('Reload this list') : __('Edit this list')}"
+                        class="icon-reload ${isRemoteList ? 'list-reload-btn' : 'list-edit-btn'} btn-info small rgt"
+                        data-uri="${newList.uri}"
+                    ></button>
+                    <button
+                        type="button"
+                        title="${__('Delete this list')}"
+                        class="icon-bin list-delete-btn btn-warning small rgt"
+                        data-uri="${newList.uri}"
+                    ></button>
+                </footer>
+            </section>`
         );
     }
 
-    function createRemoteListContainer(newList) {
-        let listElements = '';
-
-        newList.elements.forEach((element, index) => {
-            listElements += `<li id="list-element_${index}">
+    function renderListElements(elements) {
+        const list = elements.map((element, index) => {
+            return `<li id="list-element_${index}">
                 <span class="list-element" id="list-element_0_${Uri.encode(element.uri)}">${element.label}</span>
             </li>`;
         });
 
-        return $(
-            `<section id="list-data_${newList.uri}" class="data-container list-container">
-            <header class="container-title">
-                <h6>${newList.label}</h6>
-            </header>
-            <div class="container-content" id="list-elements_${newList.uri}">
-                <ol>${listElements}</ol>
-            </div>
-            <footer class="data-container-footer action-bar">
-                <button
-                    type="button"
-                    title="${__('Reload this list')}"
-                    class="icon-reload list-reload-btn btn-info small rgt"
-                    data-uri="${newList.uri}"
-                ></button>
-                <button
-                    type="button"
-                    title="${__('Delete this list')}"
-                    class="icon-bin list-delete-btn btn-warning small rgt"
-                    data-uri="${newList.uri}"
-                ></button>
-            </footer>
-        </section>`
-        );
+        return `<ol>${list.join('')}</ol>`;
     }
 
     function getUriValue(targetUri) {
@@ -359,14 +326,10 @@ define([
     return {
         // The list controller entrypoint
         start() {
-            $('.form-submitter').off('click').on('click', (function (e) {
+            $('.form-submitter').off('click').on('click', (e => {
                 e.preventDefault();
 
-                const $form = $(e.target).closest('form');
-
-                urlUtil.route('remote', 'Lists', 'taoBackOffice').includes($form.attr('action'))
-                    ? handleCreateRemoteList($form.serialize())
-                    : handleCreateList();
+                handleCreateList($(e.target).closest('form'));
             }));
 
             $('.list-edit-btn').click(handleEditList);
