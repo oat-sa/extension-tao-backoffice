@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
-use oat\generis\model\data\Ontology;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -47,15 +46,6 @@ class ListServiceProvider implements ContainerServiceProviderInterface
                 [
                     service(ListService::class),
                     service(RemoteListClassSpecification::class),
-                ]
-            );
-
-        $services
-            ->set(EditableListClassSpecification::class, EditableListClassSpecification::class)
-            ->public()
-            ->args(
-                [
-                    service(Ontology::SERVICE_ID),
                 ]
             );
     }

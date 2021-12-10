@@ -34,13 +34,12 @@ use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
+use oat\tao\model\Lists\Business\Specification\EditableListClassSpecification;
 use oat\tao\model\Lists\DataAccess\Repository\ParentPropertyListCachedRepository;
 
 class ListService extends tao_models_classes_ListService
 {
     /**
-     * @TODO Make two different kind of lists: system list that are not editable and usual list.
-     *
      * Whenever or not a list is editable
      * The Language list should not be editable.
      *
