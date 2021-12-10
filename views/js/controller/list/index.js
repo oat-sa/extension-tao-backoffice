@@ -197,24 +197,35 @@ define([
                 );
             }
         });
-    };
+    }
 
-    async function handleCreateList() {
-        const url = '/taoBackOffice/Lists';
-        const newList = await request({
-            url: url,
-            method: "POST",
+    function handleCreateList($form) {
+        const isRemoteListCreation = ($form.attr('action') || '').includes('remote');
+
+        request({
+            url: isRemoteListCreation
+                ? urlUtil.route('remote', 'Lists', 'taoBackOffice')
+                : urlUtil.route('index', 'Lists', 'taoBackOffice'),
+            method: 'POST',
+            data: isRemoteListCreation
+                ? $form.serialize()
+                : null,
+        }).then(response => {
+            response.data.uri = Uri.encode(response.data.uri);
+            addNewList(response.data, isRemoteListCreation);
         });
+    }
 
-        newList.data.uri = Uri.encode(newList.data.uri);
-        addNewList(newList.data);
-    };
-
-    function addNewList(newList) {
-        const $newListContainer = createListContainer(newList);
+    function addNewList(newList, isRemoteList) {
+        const $newListContainer = createListContainer(newList, isRemoteList);
         addHandlerListeners($newListContainer);
-        $('.data-container-wrapper').append($newListContainer);
-        handleEditList(newList.uri);
+
+        const containerIdentifier = isRemoteList ? '#panel-taoBo_remotelist' : '#panel-taoBo_list';
+        $(`${containerIdentifier} .data-container-wrapper`).append($newListContainer);
+
+        if (!isRemoteList) {
+            handleEditList(newList.uri);
+        }
     }
 
     function handleDeleteList() {
@@ -240,7 +251,7 @@ define([
                 );
             }
         );
-    };
+    }
 
     function handleReloadList() {
         const reloadListUrl = urlUtil.route('reloadRemoteList', 'Lists', 'taoBackOffice');
@@ -258,34 +269,50 @@ define([
                 }
             }
         );
-    };
+    }
 
     function addHandlerListeners($listContainer) {
         $listContainer.on('click', '.list-edit-btn', handleEditList);
         $listContainer.on('click', '.list-delete-btn', handleDeleteList);
         $listContainer.on('click', '.list-reload-btn', handleReloadList);
-    };
+    }
 
-    function createListContainer(newList) {
-        return $(`<section id='list-data_${newList.uri}' class="data-container list-container">
-        <header class="container-title">
-            <h6>${newList.label}</h6>
-        </header>
+    function createListContainer(newList, isRemoteList) {
+        return $(
+            `<section id="list-data_${newList.uri}" class="data-container list-container">
+                <header class="container-title">
+                    <h6>${newList.label}</h6>
+                </header>
+                <div class="container-content" id="list-elements_${newList.uri}">
+                    ${renderListElements(newList.elements)}
+                </div>
+                <footer class="data-container-footer action-bar">
+                    <button
+                        type="button"
+                        title="${isRemoteList ? __('Reload this list') : __('Edit this list')}"
+                        class="icon-reload ${isRemoteList ? 'list-reload-btn' : 'list-edit-btn'} btn-info small rgt"
+                        data-uri="${newList.uri}"
+                    ></button>
+                    <button
+                        type="button"
+                        title="${__('Delete this list')}"
+                        class="icon-bin list-delete-btn btn-warning small rgt"
+                        data-uri="${newList.uri}"
+                    ></button>
+                </footer>
+            </section>`
+        );
+    }
 
-        <div class="container-content" id='list-elements_${newList.uri}'>
-            <ol>
-                <li id="list-element_0">
-                    <span class="list-element" id="list-element_0_${Uri.encode(newList.elements[0].uri)}">${newList.elements[0].label}</span>
-                </li>
-            </ol>
-        </div>
-        <footer class="data-container-footer action-bar">
-            <button type="button" title="${__('Edit this list')}" class="icon-edit list-edit-btn btn-info small rgt" data-uri="${newList.uri}">
-            </button>
-            <button type="button" title="${__('Delete this list')}" class="icon-bin list-delete-btn btn-warning small rgt" data-uri="${newList.uri}">
-            </button>
-        </footer> `);
-    };
+    function renderListElements(elements) {
+        const list = elements.map((element, index) => {
+            return `<li id="list-element_${index}">
+                <span class="list-element" id="list-element_0_${Uri.encode(element.uri)}">${element.label}</span>
+            </li>`;
+        });
+
+        return `<ol>${list.join('')}</ol>`;
+    }
 
     function getUriValue(targetUri) {
         if (typeof targetUri === 'string') {
@@ -293,23 +320,19 @@ define([
         } else if (targetUri.currentTarget){
             return $(targetUri.currentTarget).data('uri');
         }
-    };
+    }
 
     return {
-
-        /**
-         * The list controller entrypoint
-         */
+        // The list controller entrypoint
         start() {
-            $('.form-submitter').off('click').on('click', (function (e) {
+            $('.form-submitter').off('click').on('click', (e => {
                 e.preventDefault();
-                handleCreateList();
+
+                handleCreateList($(e.target).closest('form'));
             }));
 
             $('.list-edit-btn').click(handleEditList);
-
             $('.list-delete-btn').click(handleDeleteList);
-
             $('.list-reload-btn').click(handleReloadList);
         }
     };

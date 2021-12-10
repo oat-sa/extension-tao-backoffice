@@ -43,6 +43,7 @@ use oat\tao\model\Lists\Business\Domain\Value;
 use oat\taoBackOffice\model\lists\ListCreator;
 use oat\taoBackOffice\model\lists\ListService;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\tao\model\Lists\Business\Service\RemoteSource;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
@@ -124,6 +125,15 @@ class Lists extends tao_actions_CommonModule
 
                 try {
                     $this->sync($valueCollectionService, $remoteSource, $newList);
+
+                    // @FIXME Refactor this part as this is a hotfix
+                    $elements = $this->getListService()->getListElements($newList);
+                    $this->setSuccessJsonResponse(
+                        new ListCreatedResponse($newList, iterator_to_array($elements)),
+                        201
+                    );
+
+                    return;
                 } catch (ValueConflictException $exception) {
                     $this->returnError(
                         $exception->getMessage() . __(' Probably given list was already imported.')
