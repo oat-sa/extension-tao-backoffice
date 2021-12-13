@@ -64,14 +64,10 @@ class ListService extends tao_models_classes_ListService
             : iterator_to_array($result->getIterator())[0];
     }
 
-    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0, int $offset = 0)
+    public function getListElements(RdfClass $listClass, $sort = true, $limit = 0)
     {
         $request = new ValueCollectionSearchRequest();
         $request->setValueCollectionUri($listClass->getUri());
-
-        if ($offset) {
-            $request->setOffset($offset);
-        }
 
         if ($limit) {
             $request->setLimit($limit);

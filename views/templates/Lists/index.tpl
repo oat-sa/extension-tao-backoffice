@@ -22,7 +22,7 @@
         <header class="container-title">
             <h6><?= _dh($list['label']) ?></h6>
         </header>
-        <div class="container-content" id="list-elements_<?= $list['uri'] ?>">
+        <div class="container-content" id="list-elements_<?= $list['uri'] ?>" data-total-count="<?= $list['totalCount'] ?>">
             <ol>
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">

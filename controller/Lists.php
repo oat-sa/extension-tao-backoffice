@@ -54,6 +54,9 @@ use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
+use oat\taoBackOffice\model\ListElement\Service\ListElementsFinderProxy;
+use oat\taoBackOffice\model\ListElement\Context\ListElementsFinderContext;
+use oat\taoBackOffice\model\ListElement\Contract\ListElementsFinderInterface;
 
 class Lists extends tao_actions_CommonModule
 {
@@ -126,14 +129,22 @@ class Lists extends tao_actions_CommonModule
                 try {
                     $this->sync($valueCollectionService, $remoteSource, $newList);
 
-                    // @FIXME Refactor this part as this is a hotfix
-                    $elements = $this->getListService()->getListElements($newList);
+                    // @FIXME >>> Refactor this part as this is a hotfix
+                    $listElements = $this->getListElementsFinder()->find(
+                        $this->createListElementsFinderContext($newList, true)
+                    );
+
+                    if ($listElements->getTotalCount() > self::REMOTE_LIST_PREVIEW_LIMIT) {
+                        $listElements->addValue(new Value(null, '', '...'));
+                    }
+
                     $this->setSuccessJsonResponse(
-                        new ListCreatedResponse($newList, iterator_to_array($elements)),
+                        new ListCreatedResponse($newList, iterator_to_array($listElements)),
                         201
                     );
 
                     return;
+                    // @FIXME <<< Refactor this part as this is a hotfix
                 } catch (ValueConflictException $exception) {
                     $this->returnError(
                         $exception->getMessage() . __(' Probably given list was already imported.')
@@ -247,11 +258,11 @@ class Lists extends tao_actions_CommonModule
 
             if ($list !== null) {
                 $isRemote = $this->getListService()->isRemote($list);
-                $limit = $isRemote ? self::REMOTE_LIST_PREVIEW_LIMIT : self::LIST_LIMIT;
-                $offset = (int) $this->getGetParameter('offset', 0);
-                $listElements = $this->getListService()->getListELements($list, true, $limit, $offset);
+                $listElements = $this->getListElementsFinder()->find(
+                    $this->createListElementsFinderContext($list, $isRemote)
+                );
 
-                foreach ($listElements as $listElement) {
+                foreach ($listElements->getIterator() as $listElement) {
                     $data[tao_helpers_Uri::encode($listElement->getUri())] = $listElement->getLabel();
                 }
 
@@ -476,6 +487,7 @@ class Lists extends tao_actions_CommonModule
     private function getListData(bool $showRemoteLists = false): array
     {
         $listService = $this->getListService();
+        $listElementsFinder = $this->getListElementsFinder();
         $lists = [];
 
         foreach ($listService->getLists() as $listClass) {
@@ -484,10 +496,11 @@ class Lists extends tao_actions_CommonModule
             }
 
             $elements = [];
-            $limit = $showRemoteLists ? self::REMOTE_LIST_PREVIEW_LIMIT : self::LIST_LIMIT;
-            $listElements = $listService->getListElements($listClass, true, $limit);
+            $listElements = $listElementsFinder->find(
+                $this->createListElementsFinderContext($listClass, $showRemoteLists)
+            );
 
-            foreach ($listElements as $index => $listElement) {
+            foreach ($listElements->getIterator() as $index => $listElement) {
                 $elements[$index] = [
                     'uri' => tao_helpers_Uri::encode($listElement->getUri()),
                     'label' => $listElement->getLabel(),
@@ -508,6 +521,7 @@ class Lists extends tao_actions_CommonModule
                 'label' => $listClass->getLabel(),
                 'editable' => $listService->isEditable($listClass),
                 'elements' => $elements,
+                'totalCount' => $listElements->getTotalCount(),
             ];
         }
 
@@ -543,6 +557,28 @@ class Lists extends tao_actions_CommonModule
         return new RemoteSourceContext($parameters);
     }
 
+    private function createListElementsFinderContext(
+        core_kernel_classes_Class $listClass,
+        bool $isRemote
+    ): ListElementsFinderContext {
+        $parameters = [
+            ListElementsFinderContext::PARAMETER_TYPE => $isRemote
+                ? ListElementsFinderProxy::TYPE_REMOTE
+                : ListElementsFinderProxy::TYPE_LOCAL,
+            ListElementsFinderContext::PARAMETER_LIST_CLASS => $listClass,
+        ];
+
+        if ($this->hasGetParameter('offset')) {
+            $parameters[ListElementsFinderContext::PARAMETER_OFFSET] = (int) $this->getGetParameter('offset');
+        }
+
+        if (!$isRemote && $this->hasGetParameter('limit')) {
+            $parameters[ListElementsFinderContext::PARAMETER_LIMIT] = (int) $this->getGetParameter('limit');
+        }
+
+        return new ListElementsFinderContext($parameters);
+    }
+
     private function isListsDependencyEnabled(): bool
     {
         if (!isset($this->isListsDependencyEnabled)) {
@@ -572,5 +608,10 @@ class Lists extends tao_actions_CommonModule
     private function getOntology(): Ontology
     {
         return $this->getPsrContainer()->get(Ontology::SERVICE_ID);
+    }
+
+    private function getListElementsFinder(): ListElementsFinderInterface
+    {
+        return $this->getPsrContainer()->get(ListElementsFinderProxy::class);
     }
 }
