@@ -62,8 +62,6 @@ class Lists extends tao_actions_CommonModule
 {
     use HttpJsonResponseTrait;
 
-    // @TODO Make this configurable
-    private const LIST_LIMIT = 20;
     private const REMOTE_LIST_PREVIEW_LIMIT = 20;
 
     /** @var bool */
