@@ -26,6 +26,7 @@ use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
 use oat\taoBackOffice\model\ListElement\Service\ListElementsFinderProxy;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
+use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
@@ -46,7 +47,7 @@ class ListElementServiceProvider implements ContainerServiceProviderInterface
                 ]
             );
 
-        $parameters->set('LOCAL_LIST_ELEMENTS_LIMIT', 0);
+        $parameters->set('LOCAL_LIST_ELEMENTS_LIMIT', 20);
         $parameters->set('REMOTE_LIST_ELEMENTS_LIMIT', 20);
 
         $services
@@ -54,6 +55,7 @@ class ListElementServiceProvider implements ContainerServiceProviderInterface
             ->public()
             ->args(
                 [
+                    service(RemoteListClassSpecification::class),
                     service(ListElementsFinder::class),
                     env('LOCAL_LIST_ELEMENTS_LIMIT')
                         ->default('LOCAL_LIST_ELEMENTS_LIMIT')

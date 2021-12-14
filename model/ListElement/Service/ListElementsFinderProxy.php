@@ -22,15 +22,18 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\ListElement\Service;
 
+use core_kernel_classes_Class;
 use oat\tao\model\Context\ContextInterface;
+use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
+use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoBackOffice\model\ListElement\Context\ListElementsFinderContext;
 use oat\taoBackOffice\model\ListElement\Contract\ListElementsFinderInterface;
 
 class ListElementsFinderProxy implements ListElementsFinderInterface
 {
-    public const TYPE_LOCAL = 'local';
-    public const TYPE_REMOTE = 'remote';
+    /** @var ClassSpecificationInterface */
+    private $remoteListClassSpecification;
 
     /** @var ListElementsFinderInterface */
     private $listElementsFinder;
@@ -42,10 +45,12 @@ class ListElementsFinderProxy implements ListElementsFinderInterface
     private $remoteListElementsLimit;
 
     public function __construct(
+        ClassSpecificationInterface $remoteListClassSpecification,
         ListElementsFinderInterface $listElementsFinder,
         int $localListElementsLimit,
         int $remoteListElementsLimit
     ) {
+        $this->remoteListClassSpecification = $remoteListClassSpecification;
         $this->listElementsFinder = $listElementsFinder;
         $this->localListElementsLimit = $localListElementsLimit;
         $this->remoteListElementsLimit = $remoteListElementsLimit;
@@ -53,17 +58,34 @@ class ListElementsFinderProxy implements ListElementsFinderInterface
 
     public function find(ContextInterface $context): ValueCollection
     {
-        $type = $context->getParameter(ListElementsFinderContext::PARAMETER_TYPE, self::TYPE_LOCAL);
+        /** @var core_kernel_classes_Class $listClass */
+        $listClass = $context->getParameter(ListElementsFinderContext::PARAMETER_LIST_CLASS);
+        $isRemoteList = $this->remoteListClassSpecification->isSatisfiedBy($listClass);
 
-        if ($context->getParameter(ListElementsFinderContext::PARAMETER_LIMIT) === null) {
+        $this->setLimit($context, $isRemoteList);
+
+        $listElements = $this->listElementsFinder->find($context);
+        $this->postProcessRemoteListElements($listElements, $isRemoteList);
+
+        return $listElements;
+    }
+
+    private function setLimit(ContextInterface $context, bool $isRemoteList): void
+    {
+        if ($isRemoteList || $context->getParameter(ListElementsFinderContext::PARAMETER_LIMIT) === null) {
             $context->setParameter(
                 ListElementsFinderContext::PARAMETER_LIMIT,
-                $type === self::TYPE_LOCAL
-                    ? $this->localListElementsLimit
-                    : $this->remoteListElementsLimit
+                $isRemoteList
+                    ? $this->remoteListElementsLimit
+                    : $this->localListElementsLimit
             );
         }
+    }
 
-        return $this->listElementsFinder->find($context);
+    private function postProcessRemoteListElements(ValueCollection $listElements, bool $isRemoteList): void
+    {
+        if ($isRemoteList && $listElements->getTotalCount() > $this->remoteListElementsLimit) {
+            $listElements->addValue(new Value(null, '', '...'));
+        }
     }
 }

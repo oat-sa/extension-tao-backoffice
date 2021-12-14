@@ -62,8 +62,6 @@ class Lists extends tao_actions_CommonModule
 {
     use HttpJsonResponseTrait;
 
-    private const REMOTE_LIST_PREVIEW_LIMIT = 20;
-
     /** @var bool */
     private $isListsDependencyEnabled;
 
@@ -129,12 +127,8 @@ class Lists extends tao_actions_CommonModule
 
                     // @FIXME >>> Refactor this part as this is a hotfix
                     $listElements = $this->getListElementsFinder()->find(
-                        $this->createListElementsFinderContext($newList, true)
+                        $this->createListElementsFinderContext($newList)
                     );
-
-                    if ($listElements->getTotalCount() > self::REMOTE_LIST_PREVIEW_LIMIT) {
-                        $listElements->addValue(new Value(null, '', '...'));
-                    }
 
                     $this->setSuccessJsonResponse(
                         new ListCreatedResponse($newList, iterator_to_array($listElements)),
@@ -255,17 +249,12 @@ class Lists extends tao_actions_CommonModule
             $list = $this->getListService()->getList($listUri);
 
             if ($list !== null) {
-                $isRemote = $this->getListService()->isRemote($list);
                 $listElements = $this->getListElementsFinder()->find(
-                    $this->createListElementsFinderContext($list, $isRemote)
+                    $this->createListElementsFinderContext($list)
                 );
 
                 foreach ($listElements->getIterator() as $listElement) {
                     $data[tao_helpers_Uri::encode($listElement->getUri())] = $listElement->getLabel();
-                }
-
-                if ($isRemote && count($data) === self::REMOTE_LIST_PREVIEW_LIMIT) {
-                    $data[''] = '...';
                 }
             }
         }
@@ -495,7 +484,7 @@ class Lists extends tao_actions_CommonModule
 
             $elements = [];
             $listElements = $listElementsFinder->find(
-                $this->createListElementsFinderContext($listClass, $showRemoteLists)
+                $this->createListElementsFinderContext($listClass)
             );
 
             foreach ($listElements->getIterator() as $index => $listElement) {
@@ -506,13 +495,6 @@ class Lists extends tao_actions_CommonModule
             }
 
             ksort($elements);
-
-            if ($showRemoteLists && count($elements) === self::REMOTE_LIST_PREVIEW_LIMIT) {
-                $elements[] = [
-                    'uri' => '',
-                    'label' => '...',
-                ];
-            }
 
             $lists[] = [
                 'uri' => tao_helpers_Uri::encode($listClass->getUri()),
@@ -555,14 +537,9 @@ class Lists extends tao_actions_CommonModule
         return new RemoteSourceContext($parameters);
     }
 
-    private function createListElementsFinderContext(
-        core_kernel_classes_Class $listClass,
-        bool $isRemote
-    ): ListElementsFinderContext {
+    private function createListElementsFinderContext(core_kernel_classes_Class $listClass): ListElementsFinderContext
+    {
         $parameters = [
-            ListElementsFinderContext::PARAMETER_TYPE => $isRemote
-                ? ListElementsFinderProxy::TYPE_REMOTE
-                : ListElementsFinderProxy::TYPE_LOCAL,
             ListElementsFinderContext::PARAMETER_LIST_CLASS => $listClass,
         ];
 
@@ -570,7 +547,7 @@ class Lists extends tao_actions_CommonModule
             $parameters[ListElementsFinderContext::PARAMETER_OFFSET] = (int) $this->getGetParameter('offset');
         }
 
-        if (!$isRemote && $this->hasGetParameter('limit')) {
+        if ($this->hasGetParameter('limit')) {
             $parameters[ListElementsFinderContext::PARAMETER_LIMIT] = (int) $this->getGetParameter('limit');
         }
 

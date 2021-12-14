@@ -28,7 +28,6 @@ use oat\tao\model\Context\AbstractContext;
 
 class ListElementsFinderContext extends AbstractContext
 {
-    public const PARAMETER_TYPE = 'type';
     public const PARAMETER_LIST_CLASS = 'listClass';
     public const PARAMETER_LIMIT = 'limit';
     public const PARAMETER_OFFSET = 'offset';
@@ -47,7 +46,6 @@ class ListElementsFinderContext extends AbstractContext
     protected function getSupportedParameters(): array
     {
         return [
-            self::PARAMETER_TYPE,
             self::PARAMETER_LIST_CLASS,
             self::PARAMETER_LIMIT,
             self::PARAMETER_OFFSET,
@@ -56,10 +54,6 @@ class ListElementsFinderContext extends AbstractContext
 
     protected function validateParameter(string $parameter, $parameterValue): void
     {
-        if ($parameter === self::PARAMETER_TYPE && is_string($parameterValue)) {
-            return;
-        }
-
         if ($parameter === self::PARAMETER_LIST_CLASS && $parameterValue instanceof core_kernel_classes_Class) {
             return;
         }
