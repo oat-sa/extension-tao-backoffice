@@ -77,9 +77,7 @@ class Lists extends tao_actions_CommonModule
     public function index(): void
     {
         if ($this->getPsrRequest()->getMethod() === 'POST') {
-            if (!$this->isXmlHttpRequest()) {
-                throw new common_exception_BadRequest('wrong request mode');
-            }
+            $this->assertIsXmlHttpRequest();
 
             $createdResponse = $this->getListCreator()->createEmptyList();
             $this->setSuccessJsonResponse($createdResponse, 201);
@@ -167,9 +165,7 @@ class Lists extends tao_actions_CommonModule
      */
     public function reloadRemoteList(ValueCollectionService $valueCollectionService, RemoteSource $remoteSource): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         $saved = false;
         $uri = $_POST['uri'] ?? null;
@@ -213,9 +209,7 @@ class Lists extends tao_actions_CommonModule
      */
     public function getListsData(): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         $data = [];
 
@@ -238,9 +232,7 @@ class Lists extends tao_actions_CommonModule
      */
     public function getListElements(): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         $data = [
             'elements' => [],
@@ -264,11 +256,12 @@ class Lists extends tao_actions_CommonModule
         $this->setSuccessJsonResponse($data);
     }
 
+    /**
+     * @throws common_exception_BadRequest
+     */
     public function saveLists(ValueCollectionService $valueCollectionService): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         if (!$this->hasRequestParameter('uri')) {
             $this->returnJson(['saved' => false]);
@@ -340,9 +333,7 @@ class Lists extends tao_actions_CommonModule
      */
     public function create(): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         $response = [];
 
@@ -371,11 +362,12 @@ class Lists extends tao_actions_CommonModule
         $this->returnJson($response);
     }
 
+    /**
+     * @throws common_exception_BadRequest
+     */
     public function rename(): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         $data = ['renamed' => false];
 
@@ -404,11 +396,12 @@ class Lists extends tao_actions_CommonModule
         $this->returnJson($data);
     }
 
+    /**
+     * @throws common_exception_BadRequest
+     */
     public function removeList(string $uri = null): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         $deleted = false;
 
@@ -423,11 +416,12 @@ class Lists extends tao_actions_CommonModule
         $this->returnJson(['deleted' => $deleted]);
     }
 
+    /**
+     * @throws common_exception_BadRequest
+     */
     public function removeListElement(): void
     {
-        if (!$this->isXmlHttpRequest()) {
-            throw new common_exception_BadRequest('wrong request mode');
-        }
+        $this->assertIsXmlHttpRequest();
 
         $deleted = false;
 
@@ -553,6 +547,13 @@ class Lists extends tao_actions_CommonModule
         }
 
         return $this->isListsDependencyEnabled;
+    }
+
+    private function assertIsXmlHttpRequest(): void
+    {
+        if (!$this->isXmlHttpRequest()) {
+            throw new common_exception_BadRequest('wrong request mode');
+        }
     }
 
     private function getFeatureFlagChecker(): FeatureFlagCheckerInterface
