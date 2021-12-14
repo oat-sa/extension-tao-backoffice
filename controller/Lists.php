@@ -52,9 +52,9 @@ use oat\tao\model\Lists\Business\Domain\RemoteSourceContext;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
+use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
-use oat\taoBackOffice\model\ListElement\Service\ListElementsFinderProxy;
 use oat\taoBackOffice\model\ListElement\Context\ListElementsFinderContext;
 use oat\taoBackOffice\model\ListElement\Contract\ListElementsFinderInterface;
 
@@ -124,19 +124,20 @@ class Lists extends tao_actions_CommonModule
 
                 try {
                     $this->sync($valueCollectionService, $remoteSource, $newList);
-
-                    // @FIXME >>> Refactor this part as this is a hotfix
                     $listElements = $this->getListElementsFinder()->find(
                         $this->createListElementsFinderContext($newList)
                     );
 
                     $this->setSuccessJsonResponse(
-                        new ListCreatedResponse($newList, iterator_to_array($listElements)),
+                        new ListCreatedResponse(
+                            $newList,
+                            $listElements->jsonSerialize(),
+                            $listElements->getTotalCount()
+                        ),
                         201
                     );
 
                     return;
-                    // @FIXME <<< Refactor this part as this is a hotfix
                 } catch (ValueConflictException $exception) {
                     $this->returnError(
                         $exception->getMessage() . __(' Probably given list was already imported.')
@@ -234,7 +235,6 @@ class Lists extends tao_actions_CommonModule
 
     /**
      * @throws common_Exception
-     * @throws core_kernel_persistence_Exception
      */
     public function getListElements(): void
     {
@@ -242,7 +242,10 @@ class Lists extends tao_actions_CommonModule
             throw new common_exception_BadRequest('wrong request mode');
         }
 
-        $data = [];
+        $data = [
+            'elements' => [],
+            'totalCount' => 0,
+        ];
 
         if ($this->hasGetParameter('listUri')) {
             $listUri = tao_helpers_Uri::decode($this->getGetParameter('listUri'));
@@ -253,13 +256,12 @@ class Lists extends tao_actions_CommonModule
                     $this->createListElementsFinderContext($list)
                 );
 
-                foreach ($listElements->getIterator() as $listElement) {
-                    $data[tao_helpers_Uri::encode($listElement->getUri())] = $listElement->getLabel();
-                }
+                $data['elements'] = $listElements->jsonSerialize();
+                $data['totalCount'] = $listElements->getTotalCount();
             }
         }
 
-        $this->returnJson($data);
+        $this->setSuccessJsonResponse($data);
     }
 
     public function saveLists(ValueCollectionService $valueCollectionService): void
@@ -482,25 +484,13 @@ class Lists extends tao_actions_CommonModule
                 continue;
             }
 
-            $elements = [];
-            $listElements = $listElementsFinder->find(
-                $this->createListElementsFinderContext($listClass)
-            );
-
-            foreach ($listElements->getIterator() as $index => $listElement) {
-                $elements[$index] = [
-                    'uri' => tao_helpers_Uri::encode($listElement->getUri()),
-                    'label' => $listElement->getLabel(),
-                ];
-            }
-
-            ksort($elements);
+            $listElements = $listElementsFinder->find($this->createListElementsFinderContext($listClass));
 
             $lists[] = [
                 'uri' => tao_helpers_Uri::encode($listClass->getUri()),
                 'label' => $listClass->getLabel(),
                 'editable' => $listService->isEditable($listClass),
-                'elements' => $elements,
+                'elements' => $listElements->jsonSerialize(),
                 'totalCount' => $listElements->getTotalCount(),
             ];
         }
@@ -587,6 +577,6 @@ class Lists extends tao_actions_CommonModule
 
     private function getListElementsFinder(): ListElementsFinderInterface
     {
-        return $this->getPsrContainer()->get(ListElementsFinderProxy::class);
+        return $this->getPsrContainer()->get(ListElementsFinder::class);
     }
 }

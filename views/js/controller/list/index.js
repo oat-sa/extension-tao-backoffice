@@ -284,7 +284,7 @@ define([
                     <h6>${newList.label}</h6>
                 </header>
                 <div class="container-content" id="list-elements_${newList.uri}">
-                    ${renderListElements(newList.elements)}
+                    ${renderListElements(newList, isRemoteList)}
                 </div>
                 <footer class="data-container-footer action-bar">
                     <button
@@ -304,14 +304,24 @@ define([
         );
     }
 
-    function renderListElements(elements) {
-        const list = elements.map((element, index) => {
-            return `<li id="list-element_${index}">
-                <span class="list-element" id="list-element_0_${Uri.encode(element.uri)}">${element.label}</span>
-            </li>`;
+    function renderListElements(newList, isRemoteList) {
+        let list = newList.elements.map((element, index) => {
+            return renderListElement(index, element.uri, element.label);
         });
 
+        if (isRemoteList && newList.totalCount > newList.elements.length) {
+            const newElementIndex = newList.elements.length + 1;
+
+            list.push(renderListElement(newElementIndex, '', '...'));
+        }
+
         return `<ol>${list.join('')}</ol>`;
+    }
+
+    function renderListElement(index, uri, label) {
+        return `<li id="list-element_${index}">
+            <span class="list-element" id="list-element_${index}_${Uri.encode(uri)}">${label}</span>
+        </li>`;
     }
 
     function getUriValue(targetUri) {

@@ -26,17 +26,28 @@
             <ol>
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">
-                    <span class="list-element" id="list-element_<?= $level ?>_<?= $element['uri'] ?>"><?= _dh($element['label']) ?></span>
+                    <span
+                        class="list-element"
+                        id="list-element_<?= $level ?>_<?= \tao_helpers_Uri::encode($element->getUri()) ?>"
+                    ><?= _dh($element->getLabel()) ?></span>
                 </li>
                 <?php endforeach ?>
             </ol>
         </div>
         <footer class="data-container-footer action-bar  <?php !$list['editable'] && print 'hidden'?>">
         <?php if ($list['editable']): ?>
-            <button type="button" title="<?= $editListTitle ?>" class="icon-edit list-edit-btn btn-info small rgt" data-uri="<?= $list['uri'] ?>">
-            </button>
-            <button type="button" title="<?= $deleteListTitle ?>" class="icon-bin list-delete-btn btn-warning small rgt" data-uri="<?= $list['uri'] ?>">
-            </button>
+            <button
+                type="button"
+                title="<?= $editListTitle ?>"
+                class="icon-edit list-edit-btn btn-info small rgt"
+                data-uri="<?= $list['uri'] ?>"
+            ></button>
+            <button
+                type="button"
+                title="<?= $deleteListTitle ?>"
+                class="icon-bin list-delete-btn btn-warning small rgt"
+                data-uri="<?= $list['uri'] ?>"
+            ></button>
         <?php endif ?>
         </footer>
     </section>
