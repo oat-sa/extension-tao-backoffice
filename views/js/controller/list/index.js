@@ -332,6 +332,22 @@ define([
         }
     }
 
+    function handleLoadMore() {
+        debugger;
+        const $btn  = $(this);
+        const loadMoreUrl = urlUtil.route('getListElements', 'Lists', 'taoBackOffice');
+        const uri   = getUriValue($btn.data('uri'));
+        const offset = $btn.parents('.container-content').children('ol').children('[id^=list-element]').length;
+        const limit = 20;
+        $.getJSON(
+            loadMoreUrl,
+            { uri, offset, limit },
+            response => {
+                debugger;
+            }
+        );
+    }
+
     return {
         // The list controller entrypoint
         start() {
@@ -344,6 +360,7 @@ define([
             $('.list-edit-btn').click(handleEditList);
             $('.list-delete-btn').click(handleDeleteList);
             $('.list-reload-btn').click(handleReloadList);
+            $('.load-more-btn').click(handleLoadMore);
         }
     };
 });

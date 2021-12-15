@@ -33,6 +33,12 @@
                 </li>
                 <?php endforeach ?>
             </ol>
+            <?php if ($list['totalCount'] > count($list['elements'])) : ?>
+                <div class='pagination-container'>
+                    <a class='load-more-btn' data-uri="<?= $list['uri'] ?>">Load more</a>
+                    <span><?php echo $list['totalCount'] ?> elements</span>
+                </div>
+            <?php endif ?>
         </div>
         <footer class="data-container-footer action-bar  <?php !$list['editable'] && print 'hidden'?>">
         <?php if ($list['editable']): ?>
