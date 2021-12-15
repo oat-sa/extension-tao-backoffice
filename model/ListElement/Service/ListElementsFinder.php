@@ -100,18 +100,16 @@ class ListElementsFinder implements ListElementsFinderInterface
 
     private function getLimit(ContextInterface $context): int
     {
-        /** @var core_kernel_classes_Class $listClass */
-        $listClass = $context->getParameter(ListElementsFinderContext::PARAMETER_LIST_CLASS);
-        $isRemoteList = $this->remoteListClassSpecification->isSatisfiedBy($listClass);
+        if ($context->getParameter(ListElementsFinderContext::PARAMETER_LIMIT) === null) {
+            /** @var core_kernel_classes_Class $listClass */
+            $listClass = $context->getParameter(ListElementsFinderContext::PARAMETER_LIST_CLASS);
+            $isRemoteList = $this->remoteListClassSpecification->isSatisfiedBy($listClass);
 
-        $limit = 0;
-
-        if ($isRemoteList || $context->getParameter(ListElementsFinderContext::PARAMETER_LIMIT) === null) {
-            $limit = $isRemoteList
+            return $isRemoteList
                 ? $this->remoteListElementsLimit
                 : $this->localListElementsLimit;
         }
 
-        return $limit;
+        return $context->getParameter(ListElementsFinderContext::PARAMETER_LIMIT);
     }
 }
