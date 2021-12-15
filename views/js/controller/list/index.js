@@ -336,18 +336,21 @@ define([
         debugger;
         const $btn  = $(this);
         const loadMoreUrl = urlUtil.route('getListElements', 'Lists', 'taoBackOffice');
-        const uri   = getUriValue($btn.data('uri'));
-        const offset = $btn.parents('.container-content').children('ol').children('[id^=list-element]').length;
-        const limit = 20;
+        const listUri   = getUriValue($btn.data('uri'));
+        const $list = $btn.parents('.container-content').children('ol');
+        const offset = $list.children('[id^=list-element]').length;
         $.getJSON(
             loadMoreUrl,
-            { uri, offset, limit },
+            { listUri, offset },
             response => {
-                debugger;
+                for (let i = 0, newId = offset, id = ''; i < response.data.elements.length; i++) {
+                    id = `list-element_${newId++}_`;
+                    $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${listUri}'>${response.data.elements[i].label}</span>`))
+                    .closest('.container-content').scrollTop($list.height());
+                }
             }
         );
     }
-
     return {
         // The list controller entrypoint
         start() {
