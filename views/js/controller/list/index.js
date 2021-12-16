@@ -346,9 +346,11 @@ define([
         const listUri   = getUriValue($btn.data('uri'));
         const $listContainer = findListContainer(listUri);
         const offset = $listContainer.find('ol').children('[id^=list-element]').length;
-        $btn.text('loading...');
+        $btn.find('a').text('loading...');
+        $btn.find('.icon-loop').toggleClass('rotate');
         loadListElements(listUri, offset).then(newListData => {
-            $btn.text('load more');
+            $btn.find('a').text('load more');
+            $btn.find('.icon-loop').toggleClass('rotate');
             extendListWithNewElements(newListData, $listContainer, listUri);
         });
 

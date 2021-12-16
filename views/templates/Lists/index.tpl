@@ -35,7 +35,10 @@
             </ol>
             <?php if ($list['totalCount'] > count($list['elements'])) : ?>
                 <div class='pagination-container'>
-                    <a class='load-more-btn' data-uri="<?= $list['uri'] ?>">Load more</a>
+                    <div class='load-more-btn' data-uri="<?= $list['uri'] ?>">
+                        <span class="icon-loop"/>
+                        <a>Load more</a>
+                    </div>
                     <span><?php echo $list['totalCount'] ?> elements</span>
                 </div>
             <?php endif ?>
