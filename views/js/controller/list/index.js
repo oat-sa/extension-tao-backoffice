@@ -333,20 +333,23 @@ define([
     }
 
     function handleLoadMore() {
-        debugger;
         const $btn  = $(this);
         const loadMoreUrl = urlUtil.route('getListElements', 'Lists', 'taoBackOffice');
         const listUri   = getUriValue($btn.data('uri'));
-        const $list = $btn.parents('.container-content').children('ol');
-        const offset = $list.children('[id^=list-element]').length;
+        const listContainer = $btn.parents('.container-content');
+        const $list = listContainer.children('ol');
+        let offset = $list.children('[id^=list-element]').length;
         $.getJSON(
             loadMoreUrl,
             { listUri, offset },
             response => {
-                for (let i = 0, newId = offset, id = ''; i < response.data.elements.length; i++) {
-                    id = `list-element_${newId++}_`;
+                for (let i = 0, id = ''; i < response.data.elements.length; i++) {
+                    id = `list-element_${offset++}_`;
                     $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${listUri}'>${response.data.elements[i].label}</span>`))
                     .closest('.container-content').scrollTop($list.height());
+                }
+                if (offset === response.data.totalCount) {
+                    listContainer.children('.pagination-container').hide();
                 }
             }
         );
