@@ -94,9 +94,9 @@ define([
         const $listContainer = findListContainer(uri);
         const offset = $listContainer.find('ol').children('[id^=list-element]').length;        
 
-        const res = await (loadListElements(uri, offset,0));
+        const newListData = await (loadListElements(uri, offset,0));
 
-        extendListWithNewElements(res, $listContainer, uri);        
+        extendListWithNewElements(newListData, $listContainer, uri);        
 
         const saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
         const delEltUrl = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
@@ -347,9 +347,9 @@ define([
         const $listContainer = findListContainer(listUri);
         const offset = $listContainer.find('ol').children('[id^=list-element]').length;               
 
-        const res = await (loadListElements(listUri, offset));
+        const newListData = await (loadListElements(listUri, offset));
 
-        extendListWithNewElements(res, $listContainer, listUri);
+        extendListWithNewElements(newListData, $listContainer, listUri);
     }
 
     /**
@@ -387,7 +387,7 @@ define([
 
         for (let i = 0, id = ''; i < elements.length; i++) {
             id = `list-element_${offset++}_`;
-            $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${listUri}'>${elements[i].label}</span>`))
+            $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span>`))
             .closest('.container-content').scrollTop($list.height());
         }
 
