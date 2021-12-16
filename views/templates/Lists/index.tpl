@@ -22,7 +22,7 @@
         <header class="container-title">
             <h6><?= _dh($list['label']) ?></h6>
         </header>
-        <div class="container-content" id="list-elements_<?= $list['uri'] ?>" data-total-count="<?= $list['totalCount'] ?>">
+        <div class="container-content" id="list-elements_<?= $list['uri'] ?>">
             <ol>
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">
@@ -39,7 +39,7 @@
                         <span class="icon-loop"/>
                         <a>Load more</a>
                     </div>
-                    <span><?php echo $list['totalCount'] ?> elements</span>
+                    <span><?= $list['totalCount'] ?> elements</span>
                 </div>
             <?php endif ?>
         </div>
