@@ -89,11 +89,17 @@ define([
         findListContainer($(this).attr('id')).toggleClass('with-uri');
     }
 
-    function handleEditList (targetUri) {
-        const saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
-        const delEltUrl = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
+    async function handleEditList (targetUri) {
         const uri = getUriValue(targetUri);
         const $listContainer = findListContainer(uri);
+        const offset = $listContainer.find('ol').children('[id^=list-element]').length;        
+
+        const res = await (loadListElements(uri, offset,0));
+
+        extendListWithNewElements(res, $listContainer, uri);        
+
+        const saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
+        const delEltUrl = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
         let $listForm       = $listContainer.find('form');
         const $listTitleBar = $listContainer.find('.container-title h6');
         const $listToolBar  = $listContainer.find('.data-container-footer').empty();
@@ -332,28 +338,64 @@ define([
         }
     }
 
-    function handleLoadMore() {
+    /**
+     * Requests new set of list elements and extends DOM list with them
+     */
+    async function handleLoadMore() {
         const $btn  = $(this);
-        const loadMoreUrl = urlUtil.route('getListElements', 'Lists', 'taoBackOffice');
         const listUri   = getUriValue($btn.data('uri'));
-        const listContainer = $btn.parents('.container-content');
-        const $list = listContainer.children('ol');
-        let offset = $list.children('[id^=list-element]').length;
-        $.getJSON(
-            loadMoreUrl,
-            { listUri, offset },
-            response => {
-                for (let i = 0, id = ''; i < response.data.elements.length; i++) {
-                    id = `list-element_${offset++}_`;
-                    $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${listUri}'>${response.data.elements[i].label}</span>`))
-                    .closest('.container-content').scrollTop($list.height());
-                }
-                if (offset === response.data.totalCount) {
-                    listContainer.children('.pagination-container').hide();
-                }
-            }
-        );
+        const $listContainer = findListContainer(listUri);
+        const offset = $listContainer.find('ol').children('[id^=list-element]').length;               
+
+        const res = await (loadListElements(listUri, offset));
+
+        extendListWithNewElements(res, $listContainer, listUri);
     }
+
+    /**
+     * Loads a set of list elements
+     * @param {string} listUri - list uri
+     * @param {number} offset - element index to retrieve elements from
+     * @param {number} limit - number of list element to get (0 is no limit)
+     * @returns Promise
+     */
+    function loadListElements(listUri, offset, limit) {
+        const loadMoreUrl = urlUtil.route('getListElements', 'Lists', 'taoBackOffice');
+
+        const res = new Promise(resolve => {
+            $.getJSON(
+                loadMoreUrl,
+                { listUri, offset, limit },
+                response => {
+                    resolve(response.data);
+                }
+            );
+        });
+        return res;
+    }
+
+    /**
+     * Extends list node with new elements and hides pagination container if all elements are loaded
+     * @param {Array} elements - new elements to include on list node 
+     * @param {number} totalCount - total number of list elements 
+     * @param {Object} listContainer - Jquery listContainer node 
+     * @param {string} listUri - list uri 
+     */
+    function extendListWithNewElements({elements, totalCount}, listContainer, listUri) {
+        const $list = listContainer.find('ol');
+        let offset = $list.children('[id^=list-element]').length;
+
+        for (let i = 0, id = ''; i < elements.length; i++) {
+            id = `list-element_${offset++}_`;
+            $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${listUri}'>${elements[i].label}</span>`))
+            .closest('.container-content').scrollTop($list.height());
+        }
+
+        if (offset === totalCount) {
+            listContainer.find('.pagination-container').hide();
+        }
+    }
+
     return {
         // The list controller entrypoint
         start() {
