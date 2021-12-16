@@ -72,6 +72,14 @@
       }
     }
   }
+  .pagination-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+    span {
+      color: #838383;
+    }
+  }
 }
 
 .create-list-wrapper {
