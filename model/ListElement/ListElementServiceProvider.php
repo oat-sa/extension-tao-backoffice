@@ -20,32 +20,40 @@
 
 declare(strict_types=1);
 
-namespace oat\taoBackOffice\model\lists;
+namespace oat\taoBackOffice\model\ListElement;
 
+use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
-class ListServiceProvider implements ContainerServiceProviderInterface
+class ListElementServiceProvider implements ContainerServiceProviderInterface
 {
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
+        $parameters = $configurator->parameters();
+
+        $parameters->set('LOCAL_LIST_ELEMENTS_LIMIT', 20);
+        $parameters->set('REMOTE_LIST_ELEMENTS_LIMIT', 20);
 
         $services
-            ->set(ListService::class, ListService::class)
-            ->public()
-            ->factory(ListService::class . '::singleton');
-
-        $services
-            ->set(ListCreator::class, ListCreator::class)
+            ->set(ListElementsFinder::class, ListElementsFinder::class)
             ->public()
             ->args(
                 [
-                    service(ListService::class),
                     service(RemoteListClassSpecification::class),
+                    service(ValueCollectionService::class),
+                    env('LOCAL_LIST_ELEMENTS_LIMIT')
+                        ->default('LOCAL_LIST_ELEMENTS_LIMIT')
+                        ->int(),
+                    env('REMOTE_LIST_ELEMENTS_LIMIT')
+                        ->default('REMOTE_LIST_ELEMENTS_LIMIT')
+                        ->int(),
                 ]
             );
     }
