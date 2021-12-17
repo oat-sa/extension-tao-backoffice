@@ -35,10 +35,14 @@ class ListCreatedResponse implements JsonSerializable
     /** @var core_kernel_classes_Resource[] */
     private $elements;
 
-    public function __construct(core_kernel_classes_Class $list, array $elements = [])
+    /** @var int */
+    private $totalCount;
+
+    public function __construct(core_kernel_classes_Class $list, array $elements = [], int $totalCount = 0)
     {
         $this->list = $list;
         $this->elements = $elements;
+        $this->totalCount = $totalCount;
     }
 
     public function jsonSerialize(): array
@@ -55,7 +59,8 @@ class ListCreatedResponse implements JsonSerializable
         return [
             'uri' => $this->list->getUri(),
             'label' => $this->list->getLabel(),
-            'elements' => $elementsView
+            'elements' => $elementsView,
+            'totalCount' => $this->totalCount,
         ];
     }
 }
