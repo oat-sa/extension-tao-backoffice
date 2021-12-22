@@ -1,3 +1,4 @@
 {
+  "taoBackOffice": "../../../taoBackOffice/views/js",
   "taoBackOfficeCss": "../../../taoBackOffice/views/css"
 }
