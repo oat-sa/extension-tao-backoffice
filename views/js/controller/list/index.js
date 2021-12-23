@@ -93,14 +93,15 @@ define([
     function handleEditList (targetUri) {
         const uri = getUriValue(targetUri);
         const $listContainer = findListContainer(uri);
-        const offset = $listContainer.find('ol').children('[id^=list-element]').length;
+        const list = $listContainer.find('ol');
+        const offset = list.children('[id^=list-element]').length;
         let totalItems = 0;
 
         function isLimitReached() {
-            let maxItems = 10;
-            if (Object.prototype.hasOwnProperty.call(document, 'boListElementsLimit')
-                && (document.boListElementsLimit > 0)) {
-                maxItems = document.boListMaxItems;
+            let maxItems = 1000;
+
+            if(list.data("max-items") > 0) {
+                maxItems = list.data("max-items");
             }
 
             return totalItems >= maxItems;
