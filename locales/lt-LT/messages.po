@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint132\n"
-"PO-Revision-Date: 2020-07-17T10:40:54\n"
+"Project-Id-Version: TAO 2022.01\n"
+"PO-Revision-Date: 2021-12-23T16:50:28\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: lt-LT\n"
@@ -15,9 +15,6 @@ msgstr ""
 
 msgid " Probably given list was already imported."
 msgstr ""
-
-msgid "Create a list"
-msgstr "Sukurti sąrašą"
 
 msgid "Create a remote list"
 msgstr ""
@@ -42,8 +39,8 @@ msgstr "Redaguoti Medį"
 msgid "Edit URI"
 msgstr ""
 
-msgid "element"
-msgstr "elementas"
+msgid "Element"
+msgstr ""
 
 msgid "Element deleted"
 msgstr "Elementas ištrintas"
@@ -83,6 +80,9 @@ msgstr "Sąrašas išsaugotas"
 #, tao-public
 msgid "Lists"
 msgstr "Sąrašai"
+
+msgid "Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator."
+msgstr ""
 
 msgid "Please confirm you want to delete this list element."
 msgstr "Patvirtinkite, kad tikrai norite ištrinti šį elementą."
@@ -124,10 +124,10 @@ msgstr "Užprašytas resursas neegzistuoja arba buvo ištrintas"
 msgid "Trees"
 msgstr "Medžiai"
 
-msgid "View tree"
-msgstr "Peržiūrėti medį"
-
 #, tao-public
 msgid "View Tree"
 msgstr "Peržiūrėti Medį"
+
+msgid "View tree"
+msgstr "Peržiūrėti medį"
 
