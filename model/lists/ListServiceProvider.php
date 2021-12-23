@@ -26,6 +26,7 @@ use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class ListServiceProvider implements ContainerServiceProviderInterface
@@ -33,11 +34,19 @@ class ListServiceProvider implements ContainerServiceProviderInterface
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
+        $parameters = $configurator->parameters();
+
+        $parameters->set('MAX_ALLOWED_LIST_ELEMENTS_LIMIT', 1000);
 
         $services
             ->set(ListService::class, ListService::class)
             ->public()
-            ->factory(ListService::class . '::singleton');
+            ->factory(ListService::class . '::singleton')
+            ->call('setMaxAllowedListElementsLimit', [
+                env('MAX_ALLOWED_LIST_ELEMENTS_LIMIT')
+                    ->default('MAX_ALLOWED_LIST_ELEMENTS_LIMIT')
+                    ->int()
+            ]);
 
         $services
             ->set(ListCreator::class, ListCreator::class)

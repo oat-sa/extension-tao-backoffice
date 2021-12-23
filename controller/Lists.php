@@ -89,6 +89,7 @@ class Lists extends tao_actions_CommonModule
         $this->defaultData();
 
         $this->setData('lists', $this->getListData());
+        $this->setData('listElementsLimit', $this->getListService()->getMaxAllowedListElementsLimit());
         $this->setView('Lists/index.tpl');
     }
 
