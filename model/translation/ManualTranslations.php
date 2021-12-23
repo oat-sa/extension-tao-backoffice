@@ -33,8 +33,6 @@ class ManualTranslations
     public function getManualTranslations()
     {
         return [
-            __('element'),
-            __('Create a list'),
             __('Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator.'),
         ];
     }
