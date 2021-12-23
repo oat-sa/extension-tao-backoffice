@@ -23,7 +23,7 @@
             <h6><?= _dh($list['label']) ?></h6>
         </header>
         <div class="container-content" id="list-elements_<?= $list['uri'] ?>">
-            <ol data-max-items="<?= $listElementsLimit >= 0 ? $listElementsLimit : '';?>">
+            <ol data-max-items="<?= $listElementsLimit ;?>">
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">
                     <span
