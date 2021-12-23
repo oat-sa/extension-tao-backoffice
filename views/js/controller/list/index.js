@@ -24,9 +24,14 @@ define([
     'ui/dialog/confirm',
     'layout/section',
     'core/request',
-    'css!taoBackOfficeCss/list',
-], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section, request) {
+    'tpl!taoBackOffice/tpl/tooltip',
+    'ui/tooltip',
+    'css!taoBackOfficeCss/list'
+], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section, request, tooltipTpl, tooltip) {
     'use strict';
+
+    console.warn('get limits from BE');
+    let maxItems = 10; //TODO read from BE
 
     function findListContainer(uri) {
         return $(`#list-data_${uri}`);
@@ -52,12 +57,11 @@ define([
             .append($checkbox, $label);
     }
 
-    function addSquareBtn(title, icon, $listToolBar, position='rgt') {
+    function createButton(title, icon, position='rgt') {
         const $btn = $('<button>', {
             'class': `btn-info small ${position} icon-${icon}`,
             title: __(title) }
         );
-        $listToolBar.append($btn);
 
         return $btn;
     }
@@ -93,17 +97,32 @@ define([
         const uri = getUriValue(targetUri);
         const $listContainer = findListContainer(uri);
         const offset = $listContainer.find('ol').children('[id^=list-element]').length;
+        let totalItems = 0;
 
-        loadListElements(uri, offset,0).then(newListData => {
+        function isLimitReached() {
+            return totalItems >= maxItems;
+        }
+
+        loadListElements(uri, offset, 0).then(newListData => {
             extendListWithNewElements(newListData, $listContainer);
 
             const saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
             const delEltUrl = urlUtil.route('removeListElement', 'Lists', 'taoBackOffice');
-            let $listForm       = $listContainer.find('form');
+            let $listForm = $listContainer.find('form');
             const $listTitleBar = $listContainer.find('.container-title h6');
-            const $listToolBar  = $listContainer.find('.data-container-footer').empty();
+            const $listToolBar = $listContainer.find('.data-container-footer').empty();
+            const $tooltip = $(tooltipTpl({
+                message : __('Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator.')
+            }));
             let $listSaveBtn;
             let $listNewBtn;
+
+            totalItems = newListData.totalCount;
+
+            function toggleAddButton(isDisabled) {
+                $listNewBtn.attr('disabled', isDisabled);
+                $tooltip.toggleClass('tooltip-hidden', !isDisabled);
+            }
 
             if (!$listForm.length) {
                 let nextElementId;
@@ -113,6 +132,8 @@ define([
                 $listContainer.find('form').append(`<input type='hidden' name='uri' value='${uri}' />`);
 
                 const $labelEdit = $(`<input type='text' name='label' value=''/>`).val($listTitleBar.text());
+                const $listNewContainer = $('<div></div>', {'class': 'add-button-container'});
+
                 $listTitleBar.closest('.container-title').html($labelEdit);
                 $labelEdit.focus();
 
@@ -122,7 +143,7 @@ define([
                     })
                     .length;
 
-                $listSaveBtn = addSquareBtn(__('Save list'), 'save', $listToolBar);
+                $listSaveBtn = createButton(__('Save list'), 'save');
                 $listSaveBtn.on('click', function () {
                     $.postJson(
                         saveUrl,
@@ -146,9 +167,12 @@ define([
                     return false;
                 });
 
-                $listNewBtn = addSquareBtn('New element', 'add', $listToolBar);
+                $listNewBtn = createButton('New element', 'add');
                 $listNewBtn.click(function () {
                     const $list = $(this).closest('form').find('ol');
+
+                    totalItems = totalItems + 1;
+                    toggleAddButton(isLimitReached());
 
                     $list.append($('<li>').append(createNewListElement(nextElementId++)))
                         .closest('.container-content').scrollTop($list.height());
@@ -156,9 +180,11 @@ define([
                     return false;
                 });
 
-                $listToolBar.append(createEditUriCheckbox(uri));
+                $listNewContainer.append($listNewBtn, $tooltip);
+                $listToolBar.append($listSaveBtn, $listNewContainer, createEditUriCheckbox(uri));
 
-                $listToolBar.append();
+                tooltip.lookup($listNewContainer);
+                toggleAddButton(isLimitReached());
             }
 
             $listContainer.on('click', '.list-element-delete-btn', function () {
@@ -168,6 +194,8 @@ define([
 
                 const deleteLocalElement = () => {
                     $element.remove();
+                    totalItems = totalItems - 1;
+                    toggleAddButton(isLimitReached());
                     feedback().success(__('Element deleted'));
                 };
 
