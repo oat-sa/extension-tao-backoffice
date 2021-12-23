@@ -13,6 +13,11 @@
 </div>
 
 <div class="data-container-wrapper flex-container-remainder">
+    <?php if (isset($listElementsLimit) and ($listElementsLimit >= 0)): ?>
+    <script type="text/javascript">
+        document.boListElementsLimit = <?= $listElementsLimit ;?>;
+    </script>
+    <?php endif ?>
     <?php
         $editListTitle = __('Edit this list');
         $deleteListTitle = __('Delete this list');

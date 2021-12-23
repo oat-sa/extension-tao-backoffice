@@ -30,9 +30,6 @@ define([
 ], function ($, __, Uri, urlUtil, feedback, dialogConfirm, section, request, tooltipTpl, tooltip) {
     'use strict';
 
-    console.warn('get limits from BE');
-    let maxItems = 10; //TODO read from BE
-
     function findListContainer(uri) {
         return $(`#list-data_${uri}`);
     }
@@ -100,6 +97,12 @@ define([
         let totalItems = 0;
 
         function isLimitReached() {
+            let maxItems = 10;
+            if (Object.prototype.hasOwnProperty.call(document, 'boListElementsLimit')
+                && (document.boListElementsLimit > 0)) {
+                maxItems = document.boListMaxItems;
+            }
+
             return totalItems >= maxItems;
         }
 
