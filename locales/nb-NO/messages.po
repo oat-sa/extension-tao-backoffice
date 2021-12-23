@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2021.11\n"
-"PO-Revision-Date: 2021-10-25T20:15:42\n"
+"Project-Id-Version: TAO 2022.01\n"
+"PO-Revision-Date: 2021-12-23T16:50:29\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nb-NO\n"
@@ -15,9 +15,6 @@ msgstr ""
 
 msgid " Probably given list was already imported."
 msgstr " Sannsynligvis er den gitte listen allerede importert."
-
-msgid "Create a list"
-msgstr "Opprett en liste"
 
 msgid "Create a remote list"
 msgstr "Opprett en ekstern liste"
@@ -42,8 +39,8 @@ msgstr "Rediger treet"
 msgid "Edit URI"
 msgstr "Rediger URI"
 
-msgid "element"
-msgstr "element"
+msgid "Element"
+msgstr ""
 
 msgid "Element deleted"
 msgstr "Elementet er slettet"
@@ -83,6 +80,9 @@ msgstr "Listen ble lagret"
 #, tao-public
 msgid "Lists"
 msgstr "Lister"
+
+msgid "Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator."
+msgstr ""
 
 msgid "Please confirm you want to delete this list element."
 msgstr "Bekreft at du vil slette denne listen."
@@ -124,10 +124,10 @@ msgstr "Den forespurte ressursen eksisterer ikke eller er slettet"
 msgid "Trees"
 msgstr "Trær"
 
-msgid "View tree"
-msgstr "Se tre"
-
 #, tao-public
 msgid "View Tree"
 msgstr "Se Tre"
+
+msgid "View tree"
+msgstr "Se tre"
 
