@@ -40,15 +40,15 @@ class ListServiceProvider implements ContainerServiceProviderInterface
         $services = $configurator->services();
         $parameters = $configurator->parameters();
 
-        $parameters->set('MAX_ALLOWED_LIST_ELEMENTS_LIMIT', 1000);
+        $parameters->set('LOCAL_LIST_MAX_ITEMS', 1000);
 
         $services
             ->set(ListService::class, ListService::class)
             ->public()
             ->factory(ListService::class . '::singleton')
-            ->call('setMaxAllowedListElementsLimit', [
-                env('MAX_ALLOWED_LIST_ELEMENTS_LIMIT')
-                    ->default('MAX_ALLOWED_LIST_ELEMENTS_LIMIT')
+            ->call('setMaxItems', [
+                env('LOCAL_LIST_MAX_ITEMS')
+                    ->default('LOCAL_LIST_MAX_ITEMS')
                     ->int()
             ]);
 

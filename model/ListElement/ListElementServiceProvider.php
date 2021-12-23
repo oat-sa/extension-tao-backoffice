@@ -41,8 +41,8 @@ class ListElementServiceProvider implements ContainerServiceProviderInterface
         $services = $configurator->services();
         $parameters = $configurator->parameters();
 
-        $parameters->set('LOCAL_LIST_ELEMENTS_LIMIT', 20);
-        $parameters->set('REMOTE_LIST_ELEMENTS_LIMIT', 20);
+        $parameters->set('LOCAL_LIST_PAGE_SIZE', 20);
+        $parameters->set('REMOTE_LIST_PAGE_SIZE', 20);
 
         $services
             ->set(ListElementsFinder::class, ListElementsFinder::class)
@@ -51,11 +51,11 @@ class ListElementServiceProvider implements ContainerServiceProviderInterface
                 [
                     service(RemoteListClassSpecification::class),
                     service(ValueCollectionService::class),
-                    env('LOCAL_LIST_ELEMENTS_LIMIT')
-                        ->default('LOCAL_LIST_ELEMENTS_LIMIT')
+                    env('LOCAL_LIST_PAGE_SIZE')
+                        ->default('LOCAL_LIST_PAGE_SIZE')
                         ->int(),
-                    env('REMOTE_LIST_ELEMENTS_LIMIT')
-                        ->default('REMOTE_LIST_ELEMENTS_LIMIT')
+                    env('REMOTE_LIST_PAGE_SIZE')
+                        ->default('REMOTE_LIST_PAGE_SIZE')
                         ->int(),
                 ]
             );

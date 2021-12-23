@@ -42,7 +42,7 @@ use oat\tao\model\Lists\DataAccess\Repository\ParentPropertyListCachedRepository
 class ListService extends tao_models_classes_ListService
 {
     /** @var int */
-    private $maxAllowedListElementsLimit = 1000;
+    private $maxItems = 1000;
 
     /**
      * Whenever or not a list is editable
@@ -85,14 +85,14 @@ class ListService extends tao_models_classes_ListService
         return $result->getIterator();
     }
 
-    public function getMaxAllowedListElementsLimit(): int
+    public function getMaxItems(): int
     {
-        return $this->maxAllowedListElementsLimit;
+        return $this->maxItems;
     }
 
-    public function setMaxAllowedListElementsLimit(int $value): self
+    public function setMaxItems(int $value): self
     {
-        $this->maxAllowedListElementsLimit = $value;
+        $this->maxItems = $value;
         return $this;
     }
 
