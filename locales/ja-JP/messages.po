@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint117\n"
-"PO-Revision-Date: 2020-09-22T16:02:13\n"
+"Project-Id-Version: TAO 2022.01\n"
+"PO-Revision-Date: 2021-12-23T16:50:27\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -13,8 +13,11 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
-msgid "Create a list"
-msgstr "リスト作成"
+msgid " Probably given list was already imported."
+msgstr ""
+
+msgid "Create a remote list"
+msgstr ""
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
 msgstr "アイテムの作成、アイテムとテストバンクの管理、デリバリの作成、レポートの準備、ワークフローの設定。"
@@ -33,8 +36,11 @@ msgstr "リスト編集"
 msgid "Edit Tree"
 msgstr "ツリー編集"
 
-msgid "element"
-msgstr "エレメント"
+msgid "Edit URI"
+msgstr ""
+
+msgid "Element"
+msgstr ""
 
 msgid "Element deleted"
 msgstr "エレメントが削除されました"
@@ -56,11 +62,17 @@ msgstr "リスト"
 msgid "List deleted"
 msgstr "リストが削除されました"
 
+msgid "List failed to be reloaded"
+msgstr ""
+
 msgid "List not deleted"
 msgstr "リストは削除されませんでした"
 
 msgid "List not saved"
 msgstr "リストは保存されませんでした"
+
+msgid "List reloaded"
+msgstr ""
 
 msgid "List saved"
 msgstr "リストを保存しました"
@@ -68,6 +80,9 @@ msgstr "リストを保存しました"
 #, tao-public
 msgid "Lists"
 msgstr "リスト"
+
+msgid "Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator."
+msgstr ""
 
 msgid "Please confirm you want to delete this list element."
 msgstr "このリストを削除します。よろしいですか？"
@@ -78,6 +93,13 @@ msgstr "このリストを削除します。よろしいですか？この操作
 #, tao-public
 msgid "Properties"
 msgstr "プロパティ"
+
+msgid "Reload this list"
+msgstr ""
+
+#, tao-public
+msgid "Remote Lists"
+msgstr ""
 
 msgid "Save list"
 msgstr "リストを保存"
@@ -92,6 +114,9 @@ msgstr "TAOバックオフィス"
 msgid "Test Developers and Administrators"
 msgstr "テスト開発者と管理者"
 
+msgid "The list should contain unique URIs"
+msgstr ""
+
 msgid "The requested resource does not exist or has been deleted"
 msgstr "リクエストリソースはありません。削除されています。"
 
@@ -99,10 +124,10 @@ msgstr "リクエストリソースはありません。削除されています
 msgid "Trees"
 msgstr "ツリー"
 
-msgid "View tree"
-msgstr "ツリー表示"
-
 #, tao-public
 msgid "View Tree"
+msgstr "ツリー表示"
+
+msgid "View tree"
 msgstr "ツリー表示"
 
