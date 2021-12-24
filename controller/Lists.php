@@ -198,30 +198,6 @@ class Lists extends tao_actions_CommonModule
         ]);
     }
 
-    public function sync(
-        ValueCollectionService $valueCollectionService,
-        RemoteSource $remoteSource,
-        core_kernel_classes_Class $collectionClass,
-        bool $isReloading = false
-    ): void {
-        $context = $this->createRemoteSourceContext($collectionClass);
-        $collection = new ValueCollection(
-            $collectionClass->getUri(),
-            ...iterator_to_array($remoteSource->fetchByContext($context))
-        );
-
-        $result = $valueCollectionService->persist($collection);
-
-        if (!$result) {
-            throw new RuntimeException(
-                sprintf(
-                    'Attempt for %s of remote list was not successful',
-                    $isReloading ? 'reloading' : 'loading'
-                )
-            );
-        }
-    }
-
     /**
      * @throws common_Exception
      * @throws common_exception_Error
@@ -456,6 +432,30 @@ class Lists extends tao_actions_CommonModule
         }
 
         $this->returnJson(['deleted' => $deleted]);
+    }
+
+    private function sync(
+        ValueCollectionService $valueCollectionService,
+        RemoteSource $remoteSource,
+        core_kernel_classes_Class $collectionClass,
+        bool $isReloading = false
+    ): void {
+        $context = $this->createRemoteSourceContext($collectionClass);
+        $collection = new ValueCollection(
+            $collectionClass->getUri(),
+            ...iterator_to_array($remoteSource->fetchByContext($context))
+        );
+
+        $result = $valueCollectionService->persist($collection);
+
+        if (!$result) {
+            throw new RuntimeException(
+                sprintf(
+                    'Attempt for %s of remote list was not successful',
+                    $isReloading ? 'reloading' : 'loading'
+                )
+            );
+        }
     }
 
     private function createList(array $values): core_kernel_classes_Class
