@@ -31,7 +31,7 @@ class ListDeletionException extends RuntimeException implements common_exception
     /** @var string */
     private $userMessage;
 
-    public function __construct(string $message = '', string $userMessage = '', $code = 500, Throwable $previous = null)
+    public function __construct(string $message, string $userMessage = '', $code = 500, Throwable $previous = null)
     {
         $this->userMessage = $userMessage ?: $message;
 
