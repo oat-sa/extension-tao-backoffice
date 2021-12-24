@@ -209,7 +209,6 @@ class Lists extends tao_actions_CommonModule
             $collectionClass->getUri(),
             ...iterator_to_array($remoteSource->fetchByContext($context))
         );
-        $collection->setReloading($isReloading);
 
         $result = $valueCollectionService->persist($collection);
 
