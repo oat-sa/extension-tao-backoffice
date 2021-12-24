@@ -13,6 +13,8 @@
 </div>
 
 <div class="data-container-wrapper flex-container-remainder">
+    <input id="data-max-items" type="hidden" value="<?= $maxItems ;?>" />
+
     <?php
         $editListTitle = __('Edit this list');
         $deleteListTitle = __('Delete this list');
@@ -23,7 +25,7 @@
             <h6><?= _dh($list['label']) ?></h6>
         </header>
         <div class="container-content" id="list-elements_<?= $list['uri'] ?>">
-            <ol data-max-items="<?= $maxItems ;?>">
+            <ol>
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">
                     <span

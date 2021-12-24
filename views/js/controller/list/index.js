@@ -98,8 +98,8 @@ define([
         let totalItems = 0;
         let maxItems = 1000;
 
-        if(list.data("max-items") > 0) {
-            maxItems = list.data("max-items");
+        if($('#data-max-items').length !== 0) {
+            maxItems = parseInt($('#data-max-items').val(), 10);
         }
 
         function isLimitReached() {
