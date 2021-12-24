@@ -96,14 +96,13 @@ define([
         const list = $listContainer.find('ol');
         const offset = list.children('[id^=list-element]').length;
         let totalItems = 0;
+        let maxItems = 1000;
+
+        if(list.data("max-items") > 0) {
+            maxItems = list.data("max-items");
+        }
 
         function isLimitReached() {
-            let maxItems = 1000;
-
-            if(list.data("max-items") > 0) {
-                maxItems = list.data("max-items");
-            }
-
             return totalItems >= maxItems;
         }
 
