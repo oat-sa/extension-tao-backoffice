@@ -22,14 +22,17 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
+use Throwable;
 use tao_models_classes_ListService;
 use Psr\Container\ContainerInterface;
 use core_kernel_classes_Class as RdfClass;
 use oat\generis\model\kernel\uri\UriProvider;
 use oat\tao\model\Lists\Business\Domain\Value;
+use oat\taoBackOffice\model\lists\Service\ListDeleter;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\taoBackOffice\model\lists\Contract\ListDeleterInterface;
 use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
@@ -81,23 +84,19 @@ class ListService extends tao_models_classes_ListService
     }
 
     /**
+     * @deprecated Use \oat\taoBackOffice\model\lists\Service\ListDeleter::delete()
+     *
      * @return bool
      */
     public function removeList(RdfClass $listClass)
     {
-        $this->getValueService()->delete(
-            new ValueCollectionDeleteInput($listClass->getUri())
-        );
+        try {
+            $this->getListDeleter()->delete($listClass);
 
-        if ($this->isRemote($listClass)) {
-            $this->getParentPropertyListCachedRepository()->deleteCache(
-                [
-                    'listUri' => $listClass->getUri()
-                ]
-            );
+            return true;
+        } catch (Throwable $exception) {
+            return false;
         }
-
-        return $listClass->delete();
     }
 
     /**
@@ -143,6 +142,11 @@ class ListService extends tao_models_classes_ListService
     private function getEditableListClassSpecification(): ClassSpecificationInterface
     {
         return $this->getContainer()->get(EditableListClassSpecification::class);
+    }
+
+    private function getListDeleter(): ListDeleterInterface
+    {
+        return $this->getContainer()->get(ListDeleter::class);
     }
 
     private function getContainer(): ContainerInterface
