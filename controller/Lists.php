@@ -214,7 +214,12 @@ class Lists extends tao_actions_CommonModule
         $result = $valueCollectionService->persist($collection);
 
         if (!$result) {
-            throw new RuntimeException('Attempt for (re)-generation of remote list was not successful');
+            throw new RuntimeException(
+                sprintf(
+                    'Attempt for %s of remote list was not successful',
+                    $isReloading ? 'reloading' : 'loading'
+                )
+            );
         }
     }
 
