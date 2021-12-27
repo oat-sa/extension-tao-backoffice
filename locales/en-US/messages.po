@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 2022.01\n"
-"PO-Revision-Date: 2021-12-23T16:50:25\n"
+"Project-Id-Version: TAO 3.4.0-sprint132\n"
+"PO-Revision-Date: 2020-07-17T10:40:52\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: en-US\n"
@@ -14,6 +14,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 msgid " Probably given list was already imported."
+msgstr ""
+
+msgid "Create a list"
 msgstr ""
 
 msgid "Create a remote list"
@@ -39,7 +42,7 @@ msgstr ""
 msgid "Edit URI"
 msgstr ""
 
-msgid "Element"
+msgid "element"
 msgstr ""
 
 msgid "Element deleted"
@@ -79,9 +82,6 @@ msgstr ""
 
 #, tao-public
 msgid "Lists"
-msgstr ""
-
-msgid "Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator."
 msgstr ""
 
 msgid "Please confirm you want to delete this list element."
@@ -124,10 +124,10 @@ msgstr ""
 msgid "Trees"
 msgstr ""
 
-#, tao-public
-msgid "View Tree"
+msgid "View tree"
 msgstr ""
 
-msgid "View tree"
+#, tao-public
+msgid "View Tree"
 msgstr ""
 
