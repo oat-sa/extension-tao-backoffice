@@ -264,13 +264,15 @@ class Lists extends tao_actions_CommonModule
     {
         $this->assertIsXmlHttpRequest();
 
-        if (!$this->hasRequestParameter('uri')) {
+        if (!$this->hasPostParameter('uri')) {
             $this->returnJson(['saved' => false]);
 
             return;
         }
 
-        $listClass = $this->getListService()->getList(tao_helpers_Uri::decode($this->getRequestParameter('uri')));
+        $listClass = $this->getListService()->getList(
+            tao_helpers_Uri::decode($this->getPostParameter('uri'))
+        );
 
         if ($listClass === null) {
             $this->returnJson(['saved' => false]);
@@ -293,24 +295,32 @@ class Lists extends tao_actions_CommonModule
             )
         );
 
-        foreach ($payload as $key => $value) {
-            if (preg_match('/^list-element_/', $key)) {
-                $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
-                $uri = tao_helpers_Uri::decode($encodedUri);
-                $newUriValue = trim($payload["uri_$key"] ?? '');
-                $element = $elements->extractValueByUri($uri);
+        $listElements = array_filter($payload, function (string $key) {
+            return (bool)preg_match('/^list-element_/', $key);
+        },
+        ARRAY_FILTER_USE_KEY);
 
-                if ($element === null) {
-                    $elements->addValue(new Value(null, $newUriValue, $value));
+        $maxItems = $this->getListService()->getMaxItems();
+        if ($maxItems > 0) {
+            $listElements = array_slice($listElements, 0, $maxItems);
+        }
 
-                    continue;
-                }
+        foreach ($listElements as $key => $value) {
+            $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
+            $uri = tao_helpers_Uri::decode($encodedUri);
+            $newUriValue = trim($payload["uri_$key"] ?? '');
+            $element = $elements->extractValueByUri($uri);
 
-                $element->setLabel($value);
+            if ($element === null) {
+                $elements->addValue(new Value(null, $newUriValue, $value));
 
-                if ($newUriValue) {
-                    $element->setUri($newUriValue);
-                }
+                continue;
+            }
+
+            $element->setLabel($value);
+
+            if ($newUriValue) {
+                $element->setUri($newUriValue);
             }
         }
 
