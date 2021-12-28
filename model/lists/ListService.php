@@ -33,7 +33,6 @@ use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\taoBackOffice\model\lists\Contract\ListDeleterInterface;
-use oat\tao\model\Lists\Business\Input\ValueCollectionDeleteInput;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
