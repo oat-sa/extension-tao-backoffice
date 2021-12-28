@@ -259,6 +259,10 @@ class Lists extends tao_actions_CommonModule
 
     /**
      * @throws common_exception_BadRequest
+     *
+     * @todo Use $this->setSuccessJsonResponse() & setErrorJsonResponse()
+     *       instead of returnJson(). For that, frontend should access
+     *       'success' attribute from the response instead of 'saved'
      */
     public function saveLists(ValueCollectionService $valueCollectionService): void
     {
@@ -300,11 +304,6 @@ class Lists extends tao_actions_CommonModule
         },
         ARRAY_FILTER_USE_KEY);
 
-        $maxItems = $this->getListService()->getMaxItems();
-        if ($maxItems > 0) {
-            $listElements = array_slice($listElements, 0, $maxItems);
-        }
-
         foreach ($listElements as $key => $value) {
             $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
             $uri = tao_helpers_Uri::decode($encodedUri);
@@ -325,7 +324,13 @@ class Lists extends tao_actions_CommonModule
         }
 
         try {
-            $this->returnJson(['saved' => $valueCollectionService->persist($elements)]);
+            $this->returnJson(
+                [
+                    'saved' => $valueCollectionService->persist(
+                        $elements,
+                        $this->getListService()->getMaxItems()
+                    )
+                ]);
         } catch (ValueConflictException $exception) {
             $this->returnJson(
                 [
