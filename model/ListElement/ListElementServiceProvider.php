@@ -24,6 +24,9 @@ namespace oat\taoBackOffice\model\ListElement;
 
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
+use oat\taoBackOffice\model\ListElement\Service\ListElementsDeleter;
+use oat\tao\model\Lists\DataAccess\Repository\RdfValueCollectionRepository;
+use oat\tao\model\Lists\DataAccess\Repository\RdsValueCollectionRepository;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -54,6 +57,22 @@ class ListElementServiceProvider implements ContainerServiceProviderInterface
                     env('REMOTE_LIST_ELEMENTS_LIMIT')
                         ->default('REMOTE_LIST_ELEMENTS_LIMIT')
                         ->int(),
+                ]
+            );
+
+        $services
+            ->set(ListElementsDeleter::class, ListElementsDeleter::class)
+            ->public()
+            ->call(
+                'addRepository',
+                [
+                    service(RdfValueCollectionRepository::SERVICE_ID),
+                ]
+            )
+            ->call(
+                'addRepository',
+                [
+                    service(RdsValueCollectionRepository::SERVICE_ID),
                 ]
             );
     }

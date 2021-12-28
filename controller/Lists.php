@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\controller;
 
+use Throwable;
 use tao_helpers_Uri;
 use RuntimeException;
 use common_Exception;
@@ -45,12 +46,15 @@ use oat\taoBackOffice\model\lists\ListService;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\tao\model\Lists\Business\Service\RemoteSource;
+use oat\taoBackOffice\model\lists\Service\ListDeleter;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\Lists\Business\Domain\RemoteSourceContext;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
+use oat\taoBackOffice\model\lists\Contract\ListDeleterInterface;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
+use oat\taoBackOffice\model\lists\Exception\ListDeletionException;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
@@ -137,16 +141,14 @@ class Lists extends tao_actions_CommonModule
 
                     return;
                 } catch (ValueConflictException $exception) {
-                    $this->returnError(
-                        $exception->getMessage() . __(' Probably given list was already imported.')
-                    );
+                    $this->setErrorJsonResponse($exception->getUserMessage());
 
                     return;
                 } catch (RuntimeException $exception) {
                     throw $exception;
                 } finally {
                     if (isset($exception)) {
-                        $this->removeList(tao_helpers_Uri::encode($newList->getUri()));
+                        $this->getListDeleter()->delete($newList);
                     }
                 }
             }
@@ -168,39 +170,32 @@ class Lists extends tao_actions_CommonModule
         $this->assertIsXmlHttpRequest();
 
         $saved = false;
+        $message = __('Attempt for reloading of remote list was not successful');
+
         $uri = $_POST['uri'] ?? null;
 
         if ($uri !== null) {
-            $decodedUri = tao_helpers_Uri::decode($uri);
+            try {
+                $this->sync(
+                    $valueCollectionService,
+                    $remoteSource,
+                    $this->getListService()->getList(tao_helpers_Uri::decode($uri)),
+                    true
+                );
 
-            $this->sync(
-                $valueCollectionService,
-                $remoteSource,
-                $this->getListService()->getList($decodedUri)
-            );
-
-            $saved = true;
+                $saved = true;
+                $message = __('Remote list was successfully reloaded');
+            } catch (Throwable $exception) {
+                if ($exception instanceof ValueConflictException) {
+                    $message = $exception->getUserMessage();
+                }
+            }
         }
 
-        $this->returnJson(['saved' => $saved]);
-    }
-
-    public function sync(
-        ValueCollectionService $valueCollectionService,
-        RemoteSource $remoteSource,
-        core_kernel_classes_Class $collectionClass
-    ): void {
-        $context = $this->createRemoteSourceContext($collectionClass);
-        $collection = new ValueCollection(
-            $collectionClass->getUri(),
-            ...iterator_to_array($remoteSource->fetchByContext($context))
-        );
-
-        $result = $valueCollectionService->persist($collection);
-
-        if (!$result) {
-            throw new RuntimeException('Sync was not successful');
-        }
+        $this->returnJson([
+            'saved' => $saved,
+            'message' => $message,
+        ]);
     }
 
     /**
@@ -406,11 +401,14 @@ class Lists extends tao_actions_CommonModule
         $deleted = false;
 
         if ($uri !== null) {
-            $decodedUri = tao_helpers_Uri::decode($uri);
+            try {
+                $list = $this->getListService()->getList(tao_helpers_Uri::decode($uri));
+                $this->getListDeleter()->delete($list);
 
-            $deleted = $this->getListService()->removeList(
-                $this->getListService()->getList($decodedUri)
-            );
+                $deleted = true;
+            } catch (ListDeletionException $exception) {
+                $deleted = false;
+            }
         }
 
         $this->returnJson(['deleted' => $deleted]);
@@ -434,6 +432,30 @@ class Lists extends tao_actions_CommonModule
         }
 
         $this->returnJson(['deleted' => $deleted]);
+    }
+
+    private function sync(
+        ValueCollectionService $valueCollectionService,
+        RemoteSource $remoteSource,
+        core_kernel_classes_Class $collectionClass,
+        bool $isReloading = false
+    ): void {
+        $context = $this->createRemoteSourceContext($collectionClass);
+        $collection = new ValueCollection(
+            $collectionClass->getUri(),
+            ...iterator_to_array($remoteSource->fetchByContext($context))
+        );
+
+        $result = $valueCollectionService->persist($collection);
+
+        if (!$result) {
+            throw new RuntimeException(
+                sprintf(
+                    'Attempt for %s of remote list was not successful',
+                    $isReloading ? 'reloading' : 'loading'
+                )
+            );
+        }
     }
 
     private function createList(array $values): core_kernel_classes_Class
@@ -579,5 +601,10 @@ class Lists extends tao_actions_CommonModule
     private function getListElementsFinder(): ListElementsFinderInterface
     {
         return $this->getPsrContainer()->get(ListElementsFinder::class);
+    }
+
+    private function getListDeleter(): ListDeleterInterface
+    {
+        return $this->getPsrContainer()->get(ListDeleter::class);
     }
 }
