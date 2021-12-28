@@ -25,38 +25,39 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\controller;
 
-use tao_helpers_Uri;
-use RuntimeException;
-use common_Exception;
-use common_exception_Error;
-use oat\tao\helpers\Template;
-use tao_actions_CommonModule;
-use tao_helpers_Scriptloader;
-use core_kernel_classes_Class;
-use common_exception_BadRequest;
-use tao_actions_form_RemoteList;
-use common_ext_ExtensionException;
 use oat\generis\model\data\Ontology;
-use core_kernel_persistence_Exception;
+use oat\tao\helpers\Template;
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\http\HttpJsonResponseTrait;
 use oat\tao\model\Lists\Business\Domain\Value;
-use oat\taoBackOffice\model\lists\ListCreator;
-use oat\taoBackOffice\model\lists\ListService;
-use oat\tao\model\featureFlag\FeatureFlagChecker;
-use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\tao\model\Lists\Business\Service\RemoteSource;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
-use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\Lists\Business\Domain\RemoteSourceContext;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
-use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
+use oat\taoBackOffice\model\lists\ListCreatedResponse;
+use oat\taoBackOffice\model\lists\ListCreator;
+use oat\taoBackOffice\model\lists\ListService;
 use oat\taoBackOffice\model\ListElement\Context\ListElementsFinderContext;
 use oat\taoBackOffice\model\ListElement\Contract\ListElementsFinderInterface;
+use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
+use common_Exception;
+use common_exception_BadRequest;
+use common_exception_Error;
+use common_ext_ExtensionException;
+use core_kernel_classes_Class;
+use core_kernel_persistence_Exception;
+use tao_actions_CommonModule;
+use tao_actions_form_RemoteList;
+use tao_helpers_Scriptloader;
+use tao_helpers_Uri;
+use OverflowException;
+use RuntimeException;
 
 class Lists extends tao_actions_CommonModule
 {
@@ -331,6 +332,15 @@ class Lists extends tao_actions_CommonModule
                         $this->getListService()->getMaxItems()
                     )
                 ]);
+        } catch (OverflowException $exception) {
+            $this->returnJson(
+                [
+                    'saved' => false,
+                    'errors' => [
+                        __('The list exceeds the allowed number of items'),
+                    ],
+                ]
+            );
         } catch (ValueConflictException $exception) {
             $this->returnJson(
                 [
