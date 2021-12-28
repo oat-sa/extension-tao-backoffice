@@ -219,6 +219,8 @@ define([
         }).then(response => {
             response.data.uri = Uri.encode(response.data.uri);
             addNewList(response.data, isRemoteListCreation);
+        }).catch(function(err) {
+            feedback().error(err.response.message || err);
         });
     }
 
@@ -271,7 +273,7 @@ define([
                     feedback().success(__('List reloaded'));
                     section.get('taoBo_remotelist').loadContentBlock(urlUtil.route('remote', 'Lists', 'taoBackOffice'));
                 } else {
-                    feedback().error(__('List failed to be reloaded'));
+                    feedback().error(response.message || __('List failed to be reloaded'));
                 }
             }
         );
