@@ -324,13 +324,12 @@ class Lists extends tao_actions_CommonModule
             }
         }
 
+        $valueCollectionService->setMaxItems($this->getListService()->getMaxItems());
+
         try {
             $this->returnJson(
                 [
-                    'saved' => $valueCollectionService->persist(
-                        $elements,
-                        $this->getListService()->getMaxItems()
-                    )
+                    'saved' => $valueCollectionService->persist($elements)
                 ]);
         } catch (OverflowException $exception) {
             $this->returnJson(
