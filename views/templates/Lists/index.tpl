@@ -13,6 +13,8 @@
 </div>
 
 <div class="data-container-wrapper flex-container-remainder">
+    <input id="data-max-items" type="hidden" value="<?= $maxItems ;?>" />
+
     <?php
         $editListTitle = __('Edit this list');
         $deleteListTitle = __('Delete this list');
