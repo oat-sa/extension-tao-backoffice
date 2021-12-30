@@ -30,6 +30,7 @@ use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use oat\tao\model\Lists\DataAccess\Repository\ParentPropertyListCachedRepository;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class ListServiceProvider implements ContainerServiceProviderInterface
@@ -37,11 +38,19 @@ class ListServiceProvider implements ContainerServiceProviderInterface
     public function __invoke(ContainerConfigurator $configurator): void
     {
         $services = $configurator->services();
+        $parameters = $configurator->parameters();
+
+        $parameters->set('LOCAL_LIST_MAX_ITEMS', 1000);
 
         $services
             ->set(ListService::class, ListService::class)
             ->public()
-            ->factory(ListService::class . '::singleton');
+            ->factory(ListService::class . '::singleton')
+            ->call('setMaxItems', [
+                env('LOCAL_LIST_MAX_ITEMS')
+                    ->default('LOCAL_LIST_MAX_ITEMS')
+                    ->int()
+            ]);
 
         $services
             ->set(ListCreator::class, ListCreator::class)
