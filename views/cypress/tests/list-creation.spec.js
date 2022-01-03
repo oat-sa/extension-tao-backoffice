@@ -54,7 +54,9 @@ describe('Item Authoring', () => {
                 let listsTotal;
 
                 cy.loginAsAdmin();
+                cy.intercept('GET', '**/taoBackOffice/Lists/index').as('getLists')
                 cy.visit(boURL.settingsList);
+                cy.wait('@getLists');
                 cy.url().should('include', 'section=taoBo_list');
 
                 cy.get(boSelectors.listContainer)
@@ -65,7 +67,7 @@ describe('Item Authoring', () => {
 
                 cy.intercept('POST', '**/taoBackOffice/Lists/index').as('createList');
 
-                cy.get(boSelectors.createListButton)
+                cy.getSettled(boSelectors.createListButton)
                     .should('have.text', ' Create list')
                     .should('be.visible')
                     .click();
