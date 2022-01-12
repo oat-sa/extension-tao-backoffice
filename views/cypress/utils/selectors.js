@@ -2,6 +2,8 @@ export default {
     lists: '[id^="list-data"]',
     listLast: '[id^="list-data"]:last-child',
 
+    maxItems: '[data-testid="maxItems"]',
+
     // List
     listName: '[data-testid="listName"]',
     createListButton: '#createList button',

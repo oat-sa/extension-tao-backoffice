@@ -63,6 +63,7 @@ const createList = () => {
 
 /**
  * Save list by URI or Last
+ * using a pattern for list name for easy cleanup
  * @param {String} [null] uri - uri number of the list to Save otherwise will be saved the last
  */
 const saveList = (uri = null) => {
@@ -123,6 +124,7 @@ describe('Managing lists', () => {
 
     it('List creating', () => {
         let listsTotal;
+
         // Check state before creating a new list
         cy.get(selectorsBO.lists)
             .then(list => {
@@ -209,7 +211,7 @@ describe('Managing lists', () => {
 
                 // Add elements
                 for(let i = 0; i < elementsToAdd; i++) {
-                    let elementName = `New name is ${number}`;
+                    let elementName = `New name is ${getRandomNumber()}`;
                         cy.getSettled(`section[id$="${uri}"]`)
                             .find(selectorsBO.addElementButton)
                             .should('be.visible')
@@ -227,12 +229,12 @@ describe('Managing lists', () => {
                             .find('li:last-child')
                             .find(selectorsBO.elementUriInput)
                             .should('be.visible')
-                            .type(`new uri is ${number}`);
+                            .type(`new uri is ${getRandomNumber()}`);
 
                         elementsNames.push(elementName);
                 }
 
-                // Save list
+                // Save
                 cy.intercept('POST', urlBO.list.save).as('saveList');
                 cy.getSettled(`section[id$="${uri}"]`)
                     .find(selectorsBO.saveElementButton)
@@ -296,6 +298,70 @@ describe('Managing lists', () => {
                     .find(selectorsBO.elementsList)
                     .children()
                     .should('have.length', 0);
+            });
+    });
+
+    it.skip('Disable "Add elements" button when maximum elements is reached', () => {
+        const limit = 5;
+
+        // Mock limit to 5
+        cy.getSettled(selectorsBO.maxItems)
+            .then(($input) => {
+                assert.isAbove(parseInt($input.val()), 0, 'Value more than 0');
+                $input.val(limit);
+            });
+
+        createList()
+            .then((interception)=>{
+                const uri = interception.response.body.data.uri.split('#').pop();
+
+                // Add elements
+                for(let i = 0; i < limit + 1; i++) {
+                    cy.getSettled(`section[id$="${uri}"]`)
+                        .find(selectorsBO.addElementButton)
+                        .should('be.visible')
+                        .click();
+
+                    cy.getSettled(`section[id$="${uri}"]`)
+                        .find(selectorsBO.elementsList)
+                        .find('li:last-child')
+                        .find(selectorsBO.elementNameInput)
+                        .should('be.visible')
+                        .type(`New name is ${number}`);
+                }
+
+                // Validate disabled state
+                cy.getSettled(`section[id$="${uri}"]`)
+                    .find(selectorsBO.elementsList)
+                    .children()
+                    .should('have.length', limit);
+
+                cy.getSettled(`section[id$="${uri}"] `)
+                    .find(selectorsBO.addElementButton)
+                    .should('be.visible')
+                    .should('be.disabled');
+
+                // Remove element to trigger an enabled state
+                cy.getSettled(`section[id$="${uri}"]`)
+                    .find(selectorsBO.elementsList)
+                    .find('li:last-child')
+                    .find(selectorsBO.deleteElementButton)
+                    .should('be.visible')
+                    .click();
+                confirmModal();
+
+                // Validate enabled state
+                cy.getSettled(`section[id$="${uri}"]`)
+                    .find(selectorsBO.elementsList)
+                    .children()
+                    .should('have.length', limit - 1);
+
+                cy.getSettled(`section[id$="${uri}"]`)
+                    .find(selectorsBO.addElementButton)
+                    .should('be.visible')
+                    .should('not.be.disabled');
+
+                saveList(uri);
             });
     });
 
