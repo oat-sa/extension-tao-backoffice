@@ -37,6 +37,20 @@ const clearData = () => {
         });
 };
 
+/**
+ * Close modal window with confirm
+ * TODO: consider to move to core command
+ */
+ const confirmModal = () => {
+    cy.getSettled('[data-control="navigable-modal-body"]')
+        .find('button[data-control="ok"]')
+        .should('be.visible')
+        .click();
+};
+
+/**
+ * Creating list without exit editing
+ */
 const createList = () => {
     cy.intercept('POST', urlBO.list.index).as('createList');
     cy.getSettled(selectorsBO.createListButton)
@@ -47,14 +61,11 @@ const createList = () => {
     return cy.wait('@createList');
 };
 
-const confirmModal = () => {
-    cy.getSettled('[data-control="navigable-modal-body"]')
-        .find('button[data-control="ok"]')
-        .should('be.visible')
-        .click();
-};
-
-const saveList = (uri = false) => {
+/**
+ * Save list by URI or Last
+ * @param {String} [null] uri - uri number of the list to Save otherwise will be saved the last
+ */
+const saveList = (uri = null) => {
     let targetSelector = uri ? (`[id$="${uri}"]`) : selectorsBO.listLast;
 
     cy.getSettled(targetSelector)
@@ -71,7 +82,11 @@ const saveList = (uri = false) => {
     return cy.wait('@saveList');
 };
 
-const deleteList = (uri = false) => {
+/**
+ * Delete list by URI or Last
+ * @param {String} [null] uri - uri number of the list to Delete otherwise will be deleted the last
+ */
+const deleteList = (uri = null) => {
     let targetSelector = uri ? (`[id$="${uri}"]`) : selectorsBO.listLast;
 
     cy.log(`Deleting list: ${targetSelector}`);
@@ -155,10 +170,9 @@ describe('Managing lists', () => {
                 const uri = interception.response.body.data.uri.split('#').pop();
                 const number = getRandomNumber();
                 const listName = `${LIST_NAME_PREFIX}_${number}`;
-                const elementAddName = `New name is ${number}`;
-                const elementAddURI = `New uri is ${number}`;
-                const elementRename = `Renamed is ${number}`;
-                const elementRenameURI = `Renamed uri is ${number}`;
+                const elementRename = `Updated name is ${number}`;
+                const elementsToAdd = 1; // TODO: after BE fix increase it to enable multiple add
+                let elementsNames = [];
 
                 saveList(uri);
 
@@ -184,26 +198,6 @@ describe('Managing lists', () => {
                     .find('li:last-child')
                     .find(selectorsBO.elementNameInput)
                     .should('be.visible')
-                    .type(elementAddName);
-
-                cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
-                    .find('li:last-child')
-                    .find(selectorsBO.elementUriInput)
-                    .should('be.visible')
-                    .type(elementAddURI);
-
-                // Add element
-                cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.addElementButton)
-                    .should('be.visible')
-                    .click();
-
-                cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
-                    .find('li:last-child')
-                    .find(selectorsBO.elementNameInput)
-                    .should('be.visible')
                     .type(elementRename);
 
                 cy.getSettled(`section[id$="${uri}"]`)
@@ -211,7 +205,32 @@ describe('Managing lists', () => {
                     .find('li:last-child')
                     .find(selectorsBO.elementUriInput)
                     .should('be.visible')
-                    .type(elementRenameURI);
+                    .type(`Updated uri is ${number}`);
+
+                // Add elements
+                for(let i = 0; i < elementsToAdd; i++) {
+                    let elementName = `New name is ${number}`;
+                        cy.getSettled(`section[id$="${uri}"]`)
+                            .find(selectorsBO.addElementButton)
+                            .should('be.visible')
+                            .click();
+
+                        cy.getSettled(`section[id$="${uri}"]`)
+                            .find(selectorsBO.elementsList)
+                            .find('li:last-child')
+                            .find(selectorsBO.elementNameInput)
+                            .should('be.visible')
+                            .type(elementName);
+
+                        cy.getSettled(`section[id$="${uri}"]`)
+                            .find(selectorsBO.elementsList)
+                            .find('li:last-child')
+                            .find(selectorsBO.elementUriInput)
+                            .should('be.visible')
+                            .type(`new uri is ${number}`);
+
+                        elementsNames.push(elementName);
+                }
 
                 // Save list
                 cy.intercept('POST', urlBO.list.save).as('saveList');
@@ -229,17 +248,19 @@ describe('Managing lists', () => {
                 cy.getSettled(`section[id$="${uri}"]`)
                     .find(selectorsBO.elementsList)
                     .children()
-                    .should('have.length', 2);
+                    .should('have.length', (elementsToAdd + 1));
 
-                cy.getSettled(`section[id$="${uri}"]`)
-                    .children()
-                    .contains(elementAddName)
-                    .should('have.length', 1);
-
-                cy.getSettled(`section[id$="${uri}"]`)
+                    cy.getSettled(`section[id$="${uri}"]`)
                     .children()
                     .contains(elementRename)
                     .should('have.length', 1);
+
+                elementsNames.forEach((name) => {
+                    cy.getSettled(`section[id$="${uri}"]`)
+                        .children()
+                        .contains(name)
+                        .should('have.length', 1);
+                    });
             });
     });
 
