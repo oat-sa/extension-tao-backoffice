@@ -38,17 +38,6 @@ const clearData = () => {
 };
 
 /**
- * Close modal window with confirm
- * TODO: consider to move to core command
- */
- const confirmModal = () => {
-    cy.getSettled('[data-control="navigable-modal-body"]')
-        .find('button[data-control="ok"]')
-        .should('be.visible')
-        .click();
-};
-
-/**
  * Creating list without exit editing
  */
 const createList = () => {
@@ -98,7 +87,7 @@ const deleteList = (uri = null) => {
         .should('be.visible')
         .click();
     cy.intercept('POST', '**/taoBackOffice/Lists/removeList').as('removeList');
-    confirmModal();
+    cy.modalConfirm();
     cy.wait('@removeList');
 };
 
@@ -200,6 +189,7 @@ describe('Managing lists', () => {
                     .find('li:last-child')
                     .find(selectorsBO.elementNameInput)
                     .should('be.visible')
+                    .clear()
                     .type(elementRename);
 
                 cy.getSettled(`section[id$="${uri}"]`)
@@ -207,6 +197,7 @@ describe('Managing lists', () => {
                     .find('li:last-child')
                     .find(selectorsBO.elementUriInput)
                     .should('be.visible')
+                    .clear()
                     .type(`Updated uri is ${number}`);
 
                 // Add elements
@@ -284,7 +275,7 @@ describe('Managing lists', () => {
                     .should('be.visible')
                     .click();
 
-                confirmModal();
+                cy.modalConfirm();
 
                 cy.intercept('POST', urlBO.list.save).as('saveList');
                 cy.getSettled(`section[id$="${uri}"]`)
@@ -348,7 +339,7 @@ describe('Managing lists', () => {
                     .find(selectorsBO.deleteElementButton)
                     .should('be.visible')
                     .click();
-                confirmModal();
+                cy.modalConfirm();
 
                 // Validate enabled state
                 cy.getSettled(`section[id$="${uri}"]`)
@@ -387,7 +378,7 @@ describe('Managing lists', () => {
                     .should('be.visible')
                     .click();
 
-                confirmModal();
+                cy.modalConfirm();
 
                 cy.wait('@deleteList');
 
