@@ -13,7 +13,7 @@
 </div>
 
 <div class="data-container-wrapper flex-container-remainder">
-    <input id="data-max-items" type="hidden" value="<?= $maxItems ;?>" />
+    <input id="data-max-items" type="hidden" value="<?= $maxItems ;?>" data-testid="maxItems" />
 
     <?php
         $editListTitle = __('Edit this list');
@@ -22,10 +22,10 @@
     <?php foreach (get_data('lists') as $i => $list): ?>
     <section id="list-data_<?= $list['uri'] ?>" class="data-container list-container">
         <header class="container-title">
-            <h6><?= _dh($list['label']) ?></h6>
+            <h6 data-testid="listName"><?= _dh($list['label']) ?></h6>
         </header>
         <div class="container-content" id="list-elements_<?= $list['uri'] ?>">
-            <ol>
+            <ol data-testid="elements">
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">
                     <span
@@ -51,12 +51,14 @@
                 type="button"
                 title="<?= $editListTitle ?>"
                 class="icon-edit list-edit-btn btn-info small rgt"
+                data-testid="listEditButton"
                 data-uri="<?= $list['uri'] ?>"
             ></button>
             <button
                 type="button"
                 title="<?= $deleteListTitle ?>"
                 class="icon-bin list-delete-btn btn-warning small rgt"
+                data-testid="listDeleteButton"
                 data-uri="<?= $list['uri'] ?>"
             ></button>
         <?php endif ?>

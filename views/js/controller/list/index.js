@@ -42,6 +42,7 @@ define([
         const $checkbox = $('<input>')
             .attr('type', 'checkbox')
             .attr('id', id)
+            .attr('data-testid', 'editUriCheckbox')
             .change(handleEditCheckboxStateChange);
 
         const $label = $('<label>')
@@ -57,6 +58,7 @@ define([
     function createButton(title, icon, position='rgt') {
         const $btn = $('<button>', {
             'class': `btn-info small ${position} icon-${icon}`,
+            'data-testid': (`${icon}ElementButton`),
             title: __(title) }
         );
 
@@ -75,13 +77,13 @@ define([
         return $(`<div class='list-element'>
             <div class='list-element'>
                 <div class='list-element__input-container'>
-                    <input type='text' name='${name}' value='${value}' />
+                    <input type='text' name='${name}' value='${value}' data-testid='elementNameInput'/>
                     <div class='list-element__input-container__uri'>
                         <label for='uri_${name}' class='title'>URI</label>
-                        <input id='uri_${name}' type='text' name='uri_${name}' value='${Uri.decode(clearUri(name))}'>
+                        <input id='uri_${name}' type='text' name='uri_${name}' value='${Uri.decode(clearUri(name))}' data-testid='elementUriInput'>
                     </div>
                 </div>
-                <span class='icon-checkbox-crossed list-element-delete-btn'>
+                <span class='icon-checkbox-crossed list-element-delete-btn' data-testid='deleteElementButton'>
             </div>
         </div>`);
     }
@@ -134,7 +136,7 @@ define([
                 $listContainer.wrapInner($listForm);
                 $listContainer.find('form').append(`<input type='hidden' name='uri' value='${uri}' />`);
 
-                const $labelEdit = $(`<input type='text' name='label' value=''/>`).val($listTitleBar.text());
+                const $labelEdit = $(`<input type='text' name='label' value='' data-testid='listNameInput' />`).val($listTitleBar.text());
                 const $listNewContainer = $('<div></div>', {'class': 'add-button-container'});
 
                 $listTitleBar.closest('.container-title').html($labelEdit);
@@ -354,7 +356,7 @@ define([
             list.push(renderListElement(newElementIndex, '', '...'));
         }
 
-        return `<ol>${list.join('')}</ol>`;
+        return `<ol data-testid="elements">${list.join('')}</ol>`;
     }
 
     function renderListElement(index, uri, label) {
