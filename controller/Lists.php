@@ -44,6 +44,10 @@ use oat\taoBackOffice\model\lists\Exception\ListDeletionException;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
+use oat\tao\model\Lists\Business\Contract\ListElementSorterInterface;
+use oat\tao\model\Language\Business\Specification\LanguageClassSpecification;
+use oat\tao\model\Language\Service\LanguageListElementSortService;
+use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\taoBackOffice\model\lists\ListCreator;
 use oat\taoBackOffice\model\lists\ListService;
@@ -319,10 +323,13 @@ class Lists extends tao_actions_CommonModule
             )
         );
 
-        $listElements = array_filter($payload, function (string $key) {
-            return (bool)preg_match('/^list-element_/', $key);
-        },
-        ARRAY_FILTER_USE_KEY);
+        $listElements = array_filter(
+            $payload,
+            function (string $key) {
+                return (bool)preg_match('/^list-element_/', $key);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
 
         foreach ($listElements as $key => $value) {
             $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
@@ -349,7 +356,8 @@ class Lists extends tao_actions_CommonModule
             $this->returnJson(
                 [
                     'saved' => $valueCollectionService->persist($elements)
-                ]);
+                ]
+            );
         } catch (OverflowException $exception) {
             $this->returnJson(
                 [
@@ -488,7 +496,7 @@ class Lists extends tao_actions_CommonModule
         $class = $this->getListService()->createList($values[tao_actions_form_RemoteList::FIELD_NAME]);
 
         $propertyType = $class->getProperty(CollectionType::TYPE_PROPERTY);
-        $propertyRemote = $class->getProperty((string) CollectionType::remote());
+        $propertyRemote = $class->getProperty((string)CollectionType::remote());
         $class->setPropertyValue($propertyType, $propertyRemote);
 
         $propertySource = $class->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI);
@@ -531,7 +539,7 @@ class Lists extends tao_actions_CommonModule
                 'uri' => tao_helpers_Uri::encode($listClass->getUri()),
                 'label' => $listClass->getLabel(),
                 'editable' => $listService->isEditable($listClass),
-                'elements' => $listElements->jsonSerialize(),
+                'elements' => $this->getSortedElementsDependingOnListClass($listClass, $listElements),
                 'totalCount' => $listElements->getTotalCount(),
             ];
         }
@@ -539,15 +547,25 @@ class Lists extends tao_actions_CommonModule
         return $lists;
     }
 
+    private function getSortedElementsDependingOnListClass(
+        core_kernel_classes_Class $listClass,
+        ValueCollection $listElements
+    ): array {
+        if ($this->getLanguageClassSpecification()->isSatisfiedBy($listClass)) {
+            return $this->getLanguageListElementSortService()->getSortedListCollectionValues($listElements);
+        }
+        return $listElements->jsonSerialize();
+    }
+
     private function createRemoteSourceContext(core_kernel_classes_Class $collectionClass): RemoteSourceContext
     {
-        $sourceUrl = (string) $collectionClass->getOnePropertyValue(
+        $sourceUrl = (string)$collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
         );
-        $uriPath = (string) $collectionClass->getOnePropertyValue(
+        $uriPath = (string)$collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
         );
-        $labelPath = (string) $collectionClass->getOnePropertyValue(
+        $labelPath = (string)$collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
         );
 
@@ -559,7 +577,7 @@ class Lists extends tao_actions_CommonModule
         ];
 
         if ($this->isListsDependencyEnabled()) {
-            $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
+            $dependencyUriPath = (string)$collectionClass->getOnePropertyValue(
                 $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
             );
             $parameters[RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH] = $dependencyUriPath;
@@ -575,11 +593,16 @@ class Lists extends tao_actions_CommonModule
         ];
 
         if ($this->hasGetParameter('offset')) {
-            $parameters[ListElementsFinderContext::PARAMETER_OFFSET] = (int) $this->getGetParameter('offset');
+            $parameters[ListElementsFinderContext::PARAMETER_OFFSET] = (int)$this->getGetParameter('offset');
         }
 
         if ($this->hasGetParameter('limit')) {
-            $parameters[ListElementsFinderContext::PARAMETER_LIMIT] = (int) $this->getGetParameter('limit');
+            $parameters[ListElementsFinderContext::PARAMETER_LIMIT] = (int)$this->getGetParameter('limit');
+        }
+
+        // Todo to be able to sort limited selection we need to sort by RDBS now disabling limit for Language list
+        if ($this->getLanguageClassSpecification()->isSatisfiedBy($listClass)) {
+            $parameters[ListElementsFinderContext::PARAMETER_LIMIT] = 0;
         }
 
         return new ListElementsFinderContext($parameters);
@@ -631,5 +654,15 @@ class Lists extends tao_actions_CommonModule
     private function getListDeleter(): ListDeleterInterface
     {
         return $this->getPsrContainer()->get(ListDeleter::class);
+    }
+
+    private function getLanguageClassSpecification(): ClassSpecificationInterface
+    {
+        return $this->getPsrContainer()->get(LanguageClassSpecification::class);
+    }
+
+    private function getLanguageListElementSortService(): ListElementSorterInterface
+    {
+        return $this->getPsrContainer()->get(LanguageListElementSortService::class);
     }
 }
