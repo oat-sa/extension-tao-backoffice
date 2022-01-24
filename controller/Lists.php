@@ -18,7 +18,7 @@
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2008-2010 (update and modification) Deutsche Institut für Internationale Pädagogische Forschung (under the project TAO-TRANSFER);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013-2021 (update and modification) Open Assessment Technologies SA;
+ *               2013-2022 (update and modification) Open Assessment Technologies SA;
  */
 
 declare(strict_types=1);
@@ -496,7 +496,7 @@ class Lists extends tao_actions_CommonModule
         $class = $this->getListService()->createList($values[tao_actions_form_RemoteList::FIELD_NAME]);
 
         $propertyType = $class->getProperty(CollectionType::TYPE_PROPERTY);
-        $propertyRemote = $class->getProperty((string)CollectionType::remote());
+        $propertyRemote = $class->getProperty((string) CollectionType::remote());
         $class->setPropertyValue($propertyType, $propertyRemote);
 
         $propertySource = $class->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI);
@@ -559,13 +559,13 @@ class Lists extends tao_actions_CommonModule
 
     private function createRemoteSourceContext(core_kernel_classes_Class $collectionClass): RemoteSourceContext
     {
-        $sourceUrl = (string)$collectionClass->getOnePropertyValue(
+        $sourceUrl = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
         );
-        $uriPath = (string)$collectionClass->getOnePropertyValue(
+        $uriPath = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
         );
-        $labelPath = (string)$collectionClass->getOnePropertyValue(
+        $labelPath = (string) $collectionClass->getOnePropertyValue(
             $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
         );
 
@@ -577,7 +577,7 @@ class Lists extends tao_actions_CommonModule
         ];
 
         if ($this->isListsDependencyEnabled()) {
-            $dependencyUriPath = (string)$collectionClass->getOnePropertyValue(
+            $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
                 $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
             );
             $parameters[RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH] = $dependencyUriPath;
@@ -593,11 +593,11 @@ class Lists extends tao_actions_CommonModule
         ];
 
         if ($this->hasGetParameter('offset')) {
-            $parameters[ListElementsFinderContext::PARAMETER_OFFSET] = (int)$this->getGetParameter('offset');
+            $parameters[ListElementsFinderContext::PARAMETER_OFFSET] = (int) $this->getGetParameter('offset');
         }
 
         if ($this->hasGetParameter('limit')) {
-            $parameters[ListElementsFinderContext::PARAMETER_LIMIT] = (int)$this->getGetParameter('limit');
+            $parameters[ListElementsFinderContext::PARAMETER_LIMIT] = (int) $this->getGetParameter('limit');
         }
 
         // Todo to be able to sort limited selection we need to sort by RDBS now disabling limit for Language list
