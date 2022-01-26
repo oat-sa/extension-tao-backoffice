@@ -325,7 +325,7 @@ class Lists extends tao_actions_CommonModule
 
         $listElements = array_filter(
             $payload,
-            function (string $key) {
+            function (string $key): bool {
                 return (bool)preg_match('/^list-element_/', $key);
             },
             ARRAY_FILTER_USE_KEY
