@@ -16,8 +16,8 @@
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA ;
  */
 
-import urlBO from '../utils/urls';
-import selectorsBO from '../utils/selectors';
+import urls from '../../../../tao/views/cypress/utils/urls';
+import selectorsList from '../../../../tao/views/cypress/utils/selectors/list';
 import { getRandomNumber } from '../../../../tao/views/cypress/utils/helpers';
 
 
@@ -28,74 +28,21 @@ const LIST_NAME_PREFIX = 'Test E2E list';
  */
 const clearData = () => {
     cy.log('Clear data');
-    cy.getSettled(selectorsBO.lists)
+    cy.getSettled(selectorsList.lists)
         .each($list => {
-            if ($list.find(selectorsBO.listName).text().includes(LIST_NAME_PREFIX)) {
-                const uri = $list.find(selectorsBO.listDeleteButton).attr('data-uri').split('_').pop();
-                deleteList(uri);
+            if ($list.find(selectorsList.listName).text().includes(LIST_NAME_PREFIX)) {
+                const uri = $list.find(selectorsList.listDeleteButton).attr('data-uri').split('_').pop();
+                cy.deleteList(uri);
             }
         });
 };
 
-/**
- * Creating list without exit editing
- */
-const createList = () => {
-    cy.intercept('POST', urlBO.list.index).as('createList');
-    cy.getSettled(selectorsBO.createListButton)
-        .should('have.text', ' Create list')
-        .should('be.visible')
-        .click();
-
-    return cy.wait('@createList');
-};
-
-/**
- * Save list by URI or Last
- * using a pattern for list name for easy cleanup
- * @param {String} [null] uri - uri number of the list to Save otherwise will be saved the last
- */
-const saveList = (uri = null) => {
-    let targetSelector = uri ? (`[id$="${uri}"]`) : selectorsBO.listLast;
-
-    cy.getSettled(targetSelector)
-        .find(selectorsBO.listNameInput)
-        .clear()
-        .type(`${LIST_NAME_PREFIX}_${getRandomNumber()}`);
-
-    cy.intercept('POST', urlBO.list.save).as('saveList');
-    cy.getSettled(targetSelector)
-        .find(selectorsBO.saveElementButton)
-        .should('be.visible')
-        .click();
-
-    return cy.wait('@saveList');
-};
-
-/**
- * Delete list by URI or Last
- * @param {String} [null] uri - uri number of the list to Delete otherwise will be deleted the last
- */
-const deleteList = (uri = null) => {
-    let targetSelector = uri ? (`[id$="${uri}"]`) : selectorsBO.listLast;
-
-    cy.log(`Deleting list: ${targetSelector}`);
-
-    cy.getSettled(targetSelector)
-        .find(selectorsBO.listDeleteButton)
-        .scrollIntoView()
-        .should('be.visible')
-        .click();
-    cy.intercept('POST', '**/taoBackOffice/Lists/removeList').as('removeList');
-    cy.modalConfirm();
-    cy.wait('@removeList');
-};
 
 describe('Managing lists', () => {
     before(() => {
         cy.loginAsAdmin();
-        cy.intercept('GET', urlBO.list.index).as('getLists')
-        cy.visit(urlBO.settingsList);
+        cy.intercept('GET', urls.list.index).as('getLists')
+        cy.visit(urls.settings.list);
         cy.wait('@getLists');
 
         clearData();
@@ -106,8 +53,8 @@ describe('Managing lists', () => {
     });
 
     afterEach(()=>{
-        cy.intercept('GET', urlBO.list.index).as('getLists')
-        cy.visit(urlBO.settingsList);
+        cy.intercept('GET', urls.list.index).as('getLists')
+        cy.visit(urls.settings.list);
         cy.wait('@getLists');
     });
 
@@ -115,48 +62,48 @@ describe('Managing lists', () => {
         let listsTotal;
 
         // Check state before creating a new list
-        cy.get(selectorsBO.lists)
+        cy.get(selectorsList.lists)
             .then(list => {
                 listsTotal = Cypress.$(list).length;
                 expect(list).to.have.length(listsTotal);
             });
 
-        createList()
+        cy.createList()
             .then((interception) => {
                 // Validate response
                 assert.isNotNull(interception.response.body.data.label, 'Response has label');
                 assert.isNotNull(interception.response.body.data.uri, 'Response has URI');
                 assert.isNotNull(interception.response.body.data.elements, 'Response has Elements');
 
-                cy.getSettled(selectorsBO.listLast)
+                cy.getSettled(selectorsList.listLast)
                     .find('input[id^="https_"]')
                     .scrollIntoView()
                     .check();
 
-                cy.getSettled(selectorsBO.listLast)
-                    .find(selectorsBO.listNameInput)
+                cy.getSettled(selectorsList.listLast)
+                    .find(selectorsList.listNameInput)
                     .should('have.value', interception.response.body.data.label);
 
-                cy.getSettled(selectorsBO.listLast)
-                    .find(selectorsBO.elementNameInput)
+                cy.getSettled(selectorsList.listLast)
+                    .find(selectorsList.elementNameInput)
                     .should('have.value', interception.response.body.data.elements[0].label);
 
-                cy.getSettled(selectorsBO.listLast)
-                    .find(selectorsBO.elementUriInput)
+                cy.getSettled(selectorsList.listLast)
+                    .find(selectorsList.elementUriInput)
                     .should('have.value', interception.response.body.data.elements[0].uri);
             });
 
-        saveList();
+        cy.saveList(`${LIST_NAME_PREFIX}_${getRandomNumber()}`);
 
         // Validate +1 list
-        cy.get(selectorsBO.lists)
+        cy.get(selectorsList.lists)
             .then(listing => {
                 expect(listing).to.have.length(listsTotal + 1);
             });
     });
 
     it('List editing', () => {
-        createList()
+        cy.createList()
             .then((interception)=>{
                 const uri = interception.response.body.data.uri.split('#').pop();
                 const number = getRandomNumber();
@@ -165,37 +112,37 @@ describe('Managing lists', () => {
                 const elementsToAdd = 1; // TODO: after BE fix increase it to enable multiple add
                 let elementsNames = [];
 
-                saveList(uri);
+                cy.saveList(`${LIST_NAME_PREFIX}_${getRandomNumber()}`, uri);
 
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.listEditButton)
+                    .find(selectorsList.listEditButton)
                     .scrollIntoView()
                     .should('be.visible')
                     .click();
 
                 // Edit list
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.listNameInput)
+                    .find(selectorsList.listNameInput)
                     .clear()
                     .type(listName);
 
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.editUriCheckbox)
+                    .find(selectorsList.editUriCheckbox)
                     .check();
 
                 // Rename element
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
+                    .find(selectorsList.elementsList)
                     .find('li:last-child')
-                    .find(selectorsBO.elementNameInput)
+                    .find(selectorsList.elementNameInput)
                     .should('be.visible')
                     .clear()
                     .type(elementRename);
 
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
+                    .find(selectorsList.elementsList)
                     .find('li:last-child')
-                    .find(selectorsBO.elementUriInput)
+                    .find(selectorsList.elementUriInput)
                     .should('be.visible')
                     .clear()
                     .type(`Updated uri is ${number}`);
@@ -204,21 +151,21 @@ describe('Managing lists', () => {
                 for(let i = 0; i < elementsToAdd; i++) {
                     let elementName = `New name is ${getRandomNumber()}`;
                         cy.getSettled(`section[id$="${uri}"]`)
-                            .find(selectorsBO.addElementButton)
+                            .find(selectorsList.addElementButton)
                             .should('be.visible')
                             .click();
 
                         cy.getSettled(`section[id$="${uri}"]`)
-                            .find(selectorsBO.elementsList)
+                            .find(selectorsList.elementsList)
                             .find('li:last-child')
-                            .find(selectorsBO.elementNameInput)
+                            .find(selectorsList.elementNameInput)
                             .should('be.visible')
                             .type(elementName);
 
                         cy.getSettled(`section[id$="${uri}"]`)
-                            .find(selectorsBO.elementsList)
+                            .find(selectorsList.elementsList)
                             .find('li:last-child')
-                            .find(selectorsBO.elementUriInput)
+                            .find(selectorsList.elementUriInput)
                             .should('be.visible')
                             .type(`new uri is ${getRandomNumber()}`);
 
@@ -226,20 +173,20 @@ describe('Managing lists', () => {
                 }
 
                 // Save
-                cy.intercept('POST', urlBO.list.save).as('saveList');
+                cy.intercept('POST', urls.list.save).as('saveList');
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.saveElementButton)
+                    .find(selectorsList.saveElementButton)
                     .should('be.visible')
                     .click();
                 cy.wait('@saveList');
 
                 // Validate after saving
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.listName)
+                    .find(selectorsList.listName)
                     .should('have.text', listName);
 
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
+                    .find(selectorsList.elementsList)
                     .children()
                     .should('have.length', (elementsToAdd + 1));
 
@@ -258,35 +205,35 @@ describe('Managing lists', () => {
     });
 
     it('Elements removing', () => {
-        createList()
+        cy.createList()
             .then((interception)=>{
                 const uri = interception.response.body.data.uri.split('#').pop();
-                saveList(uri);
+                cy.saveList(`${LIST_NAME_PREFIX}_${getRandomNumber()}`, uri);
 
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.listEditButton)
+                    .find(selectorsList.listEditButton)
                     .scrollIntoView()
                     .should('be.visible')
                     .click();
 
                 // Edit list
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.deleteElementButton)
+                    .find(selectorsList.deleteElementButton)
                     .should('be.visible')
                     .click();
 
                 cy.modalConfirm();
 
-                cy.intercept('POST', urlBO.list.save).as('saveList');
+                cy.intercept('POST', urls.list.save).as('saveList');
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.saveElementButton)
+                    .find(selectorsList.saveElementButton)
                     .should('be.visible')
                     .click();
                 cy.wait('@saveList');
 
                 // Validate after saving
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
+                    .find(selectorsList.elementsList)
                     .children()
                     .should('have.length', 0);
             });
@@ -296,84 +243,84 @@ describe('Managing lists', () => {
         const limit = 5;
 
         // Mock limit to 5
-        cy.getSettled(selectorsBO.maxItems)
+        cy.getSettled(selectorsList.maxItems)
             .then(($input) => {
                 assert.isAbove(parseInt($input.val()), 0, 'Value more than 0');
                 $input.val(limit);
             });
 
-        createList()
+        cy.createList()
             .then((interception)=>{
                 const uri = interception.response.body.data.uri.split('#').pop();
 
                 // Add elements
                 for(let i = 0; i < limit + 1; i++) {
                     cy.getSettled(`section[id$="${uri}"]`)
-                        .find(selectorsBO.addElementButton)
+                        .find(selectorsList.addElementButton)
                         .should('be.visible')
                         .click();
 
                     cy.getSettled(`section[id$="${uri}"]`)
-                        .find(selectorsBO.elementsList)
+                        .find(selectorsList.elementsList)
                         .find('li:last-child')
-                        .find(selectorsBO.elementNameInput)
+                        .find(selectorsList.elementNameInput)
                         .should('be.visible')
                         .type(`New name is ${number}`);
                 }
 
                 // Validate disabled state
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
+                    .find(selectorsList.elementsList)
                     .children()
                     .should('have.length', limit);
 
                 cy.getSettled(`section[id$="${uri}"] `)
-                    .find(selectorsBO.addElementButton)
+                    .find(selectorsList.addElementButton)
                     .should('be.visible')
                     .should('be.disabled');
 
                 // Remove element to trigger an enabled state
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
+                    .find(selectorsList.elementsList)
                     .find('li:last-child')
-                    .find(selectorsBO.deleteElementButton)
+                    .find(selectorsList.deleteElementButton)
                     .should('be.visible')
                     .click();
                 cy.modalConfirm();
 
                 // Validate enabled state
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.elementsList)
+                    .find(selectorsList.elementsList)
                     .children()
                     .should('have.length', limit - 1);
 
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.addElementButton)
+                    .find(selectorsList.addElementButton)
                     .should('be.visible')
                     .should('not.be.disabled');
 
-                saveList(uri);
+                cy.saveList(`${LIST_NAME_PREFIX}_${getRandomNumber()}`, uri);
             });
     });
 
     it('List deletion', () => {
-        createList()
+        cy.createList()
             .then((interception)=>{
                 const uri = interception.response.body.data.uri.split('#').pop();
                 let listsTotal;
 
-                saveList(uri);
+                cy.saveList(`${LIST_NAME_PREFIX}_${getRandomNumber()}`, uri);
 
-                cy.get(selectorsBO.lists)
+                cy.get(selectorsList.lists)
                     .then(listing => {
                         listsTotal = Cypress.$(listing).length;
                         expect(listing).to.have.length(listsTotal);
                     });
 
-                cy.intercept('POST', urlBO.list.remove).as('deleteList');
+                cy.intercept('POST', urls.list.remove).as('deleteList');
 
                 cy.getSettled(`section[id$="${uri}"]`)
-                    .find(selectorsBO.listDeleteButton)
+                    .find(selectorsList.listDeleteButton)
                     .scrollIntoView()
                     .should('be.visible')
                     .click();
@@ -382,7 +329,7 @@ describe('Managing lists', () => {
 
                 cy.wait('@deleteList');
 
-                cy.get(selectorsBO.lists)
+                cy.get(selectorsList.lists)
                     .then(listing => {
                         expect(listing).to.have.length(listsTotal - 1);
                     });
