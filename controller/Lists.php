@@ -554,6 +554,7 @@ class Lists extends tao_actions_CommonModule
         if ($this->getLanguageClassSpecification()->isSatisfiedBy($listClass)) {
             return $this->getLanguageListElementSortService()->getSortedListCollectionValues($listElements);
         }
+
         return $listElements->jsonSerialize();
     }
 
