@@ -273,7 +273,7 @@ class Lists extends tao_actions_CommonModule
                     $this->createListElementsFinderContext($list)
                 );
 
-                $data['elements'] = $listElements->jsonSerialize();
+                $data['elements'] = $this->getSortedElementsDependingOnListClass($list, $listElements);
                 $data['totalCount'] = $listElements->getTotalCount();
             }
         }
