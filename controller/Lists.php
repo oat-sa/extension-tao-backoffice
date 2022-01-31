@@ -337,7 +337,7 @@ class Lists extends tao_actions_CommonModule
             $newUriValue = trim($payload["uri_$key"] ?? '');
             $element = $elements->extractValueByUri($uri);
 
-            if ($element === null) {
+            if ($element === null || empty($uri)) {
                 $elements->addValue(new Value(null, $newUriValue, $value));
 
                 continue;
