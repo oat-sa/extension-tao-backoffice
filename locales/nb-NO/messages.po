@@ -53,11 +53,11 @@ msgstr "Elementet er ikke slettet"
 
 #, tao-public
 msgid "Export"
-msgstr "Eksport"
+msgstr "Eksporter"
 
 #, tao-public
 msgid "Import"
-msgstr "Import"
+msgstr "Importer"
 
 msgid "List"
 msgstr "Liste"
@@ -112,7 +112,7 @@ msgid "TAO Back Office"
 msgstr "TAO Back Office"
 
 msgid "Test Developers and Administrators"
-msgstr "Testutviklere og Administratorer"
+msgstr "Prøveutviklere og Administratorer"
 
 msgid "The list should contain unique URIs"
 msgstr "Listen bør inneholde unike URIer"
