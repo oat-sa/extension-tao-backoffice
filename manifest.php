@@ -37,6 +37,7 @@ return [
             'http://www.tao.lu/Ontologies/generis.rdf#taoBackOfficeManager',
             ['ext' => 'taoBackOffice'],
         ],
+        // @todo Check this one with a fresh installation
         [
             AccessRule::GRANT,
             'http://www.tao.lu/Ontologies/TAO.rdf#PropertyManagerRole',
