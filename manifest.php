@@ -40,7 +40,7 @@ return [
         ],
         [
             AccessRule::GRANT,
-            'http://www.tao.lu/Ontologies/TAO.rdf#PropertyManagerRole',
+            TaoRoles::PROPERTY_MANAGER,
             ['act' => Lists::class .'@getListElements'],
         ],
         [
