@@ -1,6 +1,7 @@
 <?php
 
 use oat\tao\model\user\TaoRoles;
+use oat\taoBackOffice\controller\Lists;
 use oat\taoBackOffice\controller\Redirector;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoBackOffice\model\lists\ListServiceProvider;
@@ -39,8 +40,8 @@ return [
         ],
         [
             AccessRule::GRANT,
-            'http://www.tao.lu/Ontologies/TAO.rdf#PropertyManagerRole',
-            ['controller' => 'oat\taoBackOffice\controller\Lists'],
+            TaoRoles::PROPERTY_MANAGER,
+            ['act' => Lists::class .'@getListElements'],
         ],
         [
             AccessRule::GRANT,
