@@ -423,11 +423,18 @@ define([
     function extendListWithNewElements({elements, totalCount}, listContainer) {
         const $list = listContainer.find('ol');
         let offset = $list.children('[id^=list-element]').length;
+        let lastId = '';
 
         for (let i = 0, id = ''; i < elements.length; i++) {
             id = `list-element_${offset++}_`;
-            $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span>`))
-            .closest('.container-content').scrollTop($list.height());
+            $list.append($(`<li id=${id}>`)
+                .append(`<span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span>`))
+
+            lastId = `${id}${elements[i].uri}`;
+        }
+
+        if (lastId != '') {
+            $(`[id=${lastId}]`).closest('.container-content').scrollTop($list.height());
         }
 
         if (offset === totalCount) {
