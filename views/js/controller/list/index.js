@@ -423,7 +423,7 @@ define([
     function extendListWithNewElements({elements, totalCount}, listContainer) {
         const $list = listContainer.find('ol');
         let offset = $list.children('[id^=list-element]').length;
-        let lastId = '';
+        let lastId = null;
 
         for (let i = 0, id = ''; i < elements.length; i++) {
             id = `list-element_${offset++}_`;
@@ -433,7 +433,7 @@ define([
             lastId = `${id}${elements[i].uri}`;
         }
 
-        if (lastId != '') {
+        if (lastId !== null) {
             $(`[id=${lastId}]`).closest('.container-content').scrollTop($list.height());
         }
 
