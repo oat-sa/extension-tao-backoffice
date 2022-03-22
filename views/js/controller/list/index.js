@@ -423,19 +423,14 @@ define([
     function extendListWithNewElements({elements, totalCount}, listContainer) {
         const $list = listContainer.find('ol');
         let offset = $list.children('[id^=list-element]').length;
-        let lastId = null;
+        let buffer = '';
 
-        for (let i = 0, id = ''; i < elements.length; i++) {
+        for (let i = 0, id = '', len = elements.length; i < len; i++) {
             id = `list-element_${offset++}_`;
-            $list.append($(`<li id=${id}>`)
-                .append(`<span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span>`))
-
-            lastId = `${id}${elements[i].uri}`;
+            buffer += `<li id=${id}><span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span></li>`;
         }
 
-        if (lastId !== null) {
-            $(`[id=${lastId}]`).closest('.container-content').scrollTop($list.height());
-        }
+        $list.append(buffer).closest('.container-content').scrollTop($list.height());
 
         if (offset === totalCount) {
             listContainer.find('.pagination-container').hide();
