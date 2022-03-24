@@ -37,6 +37,7 @@
                     </action>
                 </actions>
             </section>
+            <section id="taoBo-settings" name="Settings" url="/taoBackOffice/Settings/featureVisibility"/>
         </sections>
     </structure>
 </structures>
