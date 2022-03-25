@@ -67,7 +67,7 @@ use tao_helpers_Uri;
 use OverflowException;
 use RuntimeException;
 
-ini_set('memory_limit', '1G');
+//
 
 class Lists extends tao_actions_CommonModule
 {
@@ -114,6 +114,7 @@ class Lists extends tao_actions_CommonModule
             $list = $this->getListService()->getList($listUri);
 
             if ($list !== null) {
+                ini_set('memory_limit', '1G'); // Needed for big lists
                 $listElements = $this->getListElementsFinder()->find(
                     new ListElementsFinderContext([
                         ListElementsFinderContext::PARAMETER_LIST_CLASS => $list,
@@ -306,6 +307,7 @@ class Lists extends tao_actions_CommonModule
             $list = $this->getListService()->getList($listUri);
 
             if ($list !== null) {
+                ini_set('memory_limit', '1G'); // Needed for big lists
                 $listElements = $this->getListElementsFinder()->find(
                     $this->createListElementsFinderContext($list)
                 );
