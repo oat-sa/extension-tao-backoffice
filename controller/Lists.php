@@ -320,15 +320,18 @@ class Lists extends tao_actions_CommonModule
         $this->setSuccessJsonResponse($data);
     }
 
+    /**
+     * @todo Testing code to create some items fasts, it should be reverted
+     */
     public function addItems(ValueCollectionService $valueCollectionService)
     {
-        //die('Boom');
-
         $uri = 'https_2_adf-978_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i622f5146675648fa8156d23b81c0be';
 
-        $listClass = $this->getListService()->getList(tao_helpers_Uri::decode($uri));
+        $listClass = $this->getListService()->getList(
+            tao_helpers_Uri::decode($uri)
+        );
+
         if ($listClass === null) {
-            $this->getLogger()->info("exit 2");
             $this->returnJson(['saved' => false]);
 
             return;
@@ -343,18 +346,15 @@ class Lists extends tao_actions_CommonModule
         $itemsToAdd = 200000;
 
         while($elements->count() < $itemsToAdd) {
-
-            if (0 == ($itemsToAdd%100))
-            $this->getLogger()->info(
-                "Adding new values: ".$elements->count()." < {$itemsToAdd}"
-            );
+            if (0 == ($itemsToAdd%100)) {
+                $this->getLogger()->info(
+                    "Adding new values: ".$elements->count()." < {$itemsToAdd}"
+                );
+            }
 
             $elements->addValue(
-                new Value(
-                    null,
-                    '',
-                    "Element ".(count($elements) + 1)
-                ));
+                new Value(null, '', "Element ".(count($elements) + 1))
+            );
         }
 
         try {
@@ -394,12 +394,11 @@ class Lists extends tao_actions_CommonModule
      */
     public function saveLists(ValueCollectionService $valueCollectionService): void
     {
-        $this->getLogger()->info("Hi");
         $this->assertIsXmlHttpRequest();
 
         if (!$this->hasPostParameter('uri')) {
             $this->returnJson(['saved' => false]);
-            $this->getLogger()->info("exit 1".var_export($_POST,true));
+
             return;
         }
 
@@ -408,7 +407,6 @@ class Lists extends tao_actions_CommonModule
         );
 
         if ($listClass === null) {
-            $this->getLogger()->info("exit 2");
             $this->returnJson(['saved' => false]);
 
             return;
@@ -419,7 +417,6 @@ class Lists extends tao_actions_CommonModule
         unset($payload['uri']);
 
         if (isset($payload['label'])) {
-            $this->getLogger()->info("exit 3");
             $listClass->setLabel($payload['label']);
             unset($payload['label']);
         }
@@ -438,7 +435,6 @@ class Lists extends tao_actions_CommonModule
             ARRAY_FILTER_USE_KEY
         );
 
-        $this->getLogger()->info("foreach with ".count($listElements)." items");
         foreach ($listElements as $key => $value) {
             $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
             $uri = tao_helpers_Uri::decode($encodedUri);
@@ -457,29 +453,6 @@ class Lists extends tao_actions_CommonModule
                 $element->setUri($newUriValue);
             }
         }
-
-        //die('hi');
-
-        /*$itemsToAdd = 200000;
-
-        $valueCollectionService->setMaxItems(
-            $itemsToAdd
-        //$this->getListService()->getMaxItems()
-        );
-
-        while($elements->count() < $itemsToAdd) {
-            $this->getLogger()->info(
-                "Adding new values: ".$elements->count()." < {$itemsToAdd}"
-            );
-
-            $elements->addValue(
-                new Value(
-                    null,
-                    '',
-                    "Element ".(count($elements) + 1)
-                ));
-        }*/
-
 
         try {
             $this->returnJson(
