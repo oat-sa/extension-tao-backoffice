@@ -104,9 +104,6 @@ class Lists extends tao_actions_CommonModule
         $this->setView('Lists/index.tpl');
     }
 
-    /**
-     * @todo Maybe not needed
-     */
     public function listEditForm(): void
     {
         if ($this->hasGetParameter('listUri')) {
@@ -116,11 +113,10 @@ class Lists extends tao_actions_CommonModule
             if ($list !== null) {
                 ini_set('memory_limit', '1G'); // Needed for big lists
                 $listElements = $this->getListElementsFinder()->find(
+                    //$this->createListElementsFinderContext($list)
                     new ListElementsFinderContext([
                         ListElementsFinderContext::PARAMETER_LIST_CLASS => $list,
-                        ListElementsFinderContext::PARAMETER_OFFSET => 0,
-                        // zero disables the limit
-                        ListElementsFinderContext::PARAMETER_LIMIT => 0,
+                        // @todo Offset & length
                     ])
                 );
 
@@ -129,6 +125,8 @@ class Lists extends tao_actions_CommonModule
 
                 $this->setData('uri', $listUri);
                 $this->setData('label', $list->getLabel());
+
+                //$this->setData('list', $listData);
                 $this->setData('elements', $elements);
                 $this->setData('totalCount', $totalCount);
                 $this->setView('Lists/editList.tpl');
