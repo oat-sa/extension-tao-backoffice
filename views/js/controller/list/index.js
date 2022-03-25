@@ -108,7 +108,7 @@ define([
             return totalItems >= maxItems;
         }
 
-        if (list.data('ssr')) {
+        /*if (list.data('ssr')) {
             console.log('Fetching edit form from backend ' + uri);
 
             const getEditForm = urlUtil.route('listEditForm', 'Lists', 'taoBackOffice');
@@ -117,15 +117,15 @@ define([
                 getEditForm,
                 { listUri: uri },
                 response => {
-                    console.log("got data");
-                    console.log(response);
-
-                    $listContainer.find('.container-content').replaceWith(response);
+                    //setTimeout(() => {
+                        console.log("Running timeout handler");
+                        $listContainer.html(response);
+                    //}, 1000);
                 }
             );
 
             return;
-        }
+        }*/
 
         loadListElements(uri, offset, 0).then(newListData => {
             extendListWithNewElements(newListData, $listContainer);
