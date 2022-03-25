@@ -108,25 +108,6 @@ define([
             return totalItems >= maxItems;
         }
 
-        if (list.data('ssr')) {
-            console.log('Fetching edit form from backend ' + uri);
-
-            const getEditForm = urlUtil.route('listEditForm', 'Lists', 'taoBackOffice');
-
-            $.get(
-                getEditForm,
-                { listUri: uri },
-                response => {
-                    console.log("got data");
-                    console.log(response);
-
-                    $listContainer.find('.container-content').replaceWith(response);
-                }
-            );
-
-            return;
-        }
-
         loadListElements(uri, offset, 0).then(newListData => {
             extendListWithNewElements(newListData, $listContainer);
 
@@ -445,8 +426,8 @@ define([
         let buffer = '';
 
         for (let i = 0, id = '', len = elements.length; i < len; i++) {
-            id = `list-element_${offset++}`;
-            buffer += `<li id=${id}><span class='list-element' id='${id}_${elements[i].uri}'>${elements[i].label}</span></li>`;
+            id = `list-element_${offset++}_`;
+            buffer += `<li id=${id}><span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span></li>`;
         }
 
         $list.append(buffer).closest('.container-content').scrollTop($list.height());

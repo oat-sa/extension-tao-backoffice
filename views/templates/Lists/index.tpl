@@ -25,8 +25,7 @@
             <h6 data-testid="listName"><?= _dh($list['label']) ?></h6>
         </header>
         <div class="container-content" id="list-elements_<?= $list['uri'] ?>">
-            <ol data-testid="elements" data-ssr="<?=
-                $list['totalCount'] > count($list['elements']) ? 'true' : 'false' ?>">
+            <ol data-testid="elements">
                 <?php foreach ($list['elements'] as $level => $element): ?>
                 <li id="list-element_<?= $level ?>">
                     <span

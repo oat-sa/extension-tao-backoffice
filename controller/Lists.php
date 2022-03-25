@@ -67,8 +67,6 @@ use tao_helpers_Uri;
 use OverflowException;
 use RuntimeException;
 
-//
-
 class Lists extends tao_actions_CommonModule
 {
     use HttpJsonResponseTrait;
@@ -102,40 +100,6 @@ class Lists extends tao_actions_CommonModule
         $this->setData('lists', $this->getListData());
         $this->setData('maxItems', $this->getListService()->getMaxItems());
         $this->setView('Lists/index.tpl');
-    }
-
-    public function listEditForm(): void
-    {
-        if ($this->hasGetParameter('listUri')) {
-            $listUri = tao_helpers_Uri::decode($this->getGetParameter('listUri'));
-            $list = $this->getListService()->getList($listUri);
-
-            if ($list !== null) {
-                ini_set('memory_limit', '1G'); // Needed for big lists
-                $listElements = $this->getListElementsFinder()->find(
-                    //$this->createListElementsFinderContext($list)
-                    new ListElementsFinderContext([
-                        ListElementsFinderContext::PARAMETER_LIST_CLASS => $list,
-                        // @todo Offset & length
-                    ])
-                );
-
-                $elements = $this->getSortedElementsDependingOnListClass($list, $listElements);
-                $totalCount = $listElements->getTotalCount();
-
-                $this->setData('uri', $listUri);
-                $this->setData('label', $list->getLabel());
-
-                //$this->setData('list', $listData);
-                $this->setData('elements', $elements);
-                $this->setData('totalCount', $totalCount);
-                $this->setView('Lists/editList.tpl');
-
-                return;
-            }
-        }
-
-        $this->setErrorJsonResponse('Requested list not found');
     }
 
     /**
@@ -319,71 +283,6 @@ class Lists extends tao_actions_CommonModule
     }
 
     /**
-     * @todo Testing code to create some items fasts, it should be reverted
-     */
-    public function addItems(ValueCollectionService $valueCollectionService)
-    {
-        $uri = 'https_2_adf-978_0_docker_0_localhost_1_ontologies_1_tao_0_rdf_3_i622f5146675648fa8156d23b81c0be';
-
-        $listClass = $this->getListService()->getList(
-            tao_helpers_Uri::decode($uri)
-        );
-
-        if ($listClass === null) {
-            $this->returnJson(['saved' => false]);
-
-            return;
-        }
-
-        $elements = $valueCollectionService->findAll(
-            new ValueCollectionSearchInput(
-                (new ValueCollectionSearchRequest())->setValueCollectionUri($listClass->getUri())
-            )
-        );
-
-        $itemsToAdd = 200000;
-
-        while($elements->count() < $itemsToAdd) {
-            if (0 == ($itemsToAdd%100)) {
-                $this->getLogger()->info(
-                    "Adding new values: ".$elements->count()." < {$itemsToAdd}"
-                );
-            }
-
-            $elements->addValue(
-                new Value(null, '', "Element ".(count($elements) + 1))
-            );
-        }
-
-        try {
-            $this->returnJson(
-                [
-                    'saved' => $valueCollectionService->persist($elements)
-                ]
-            );
-        } catch (OverflowException $exception) {
-            $this->returnJson(
-                [
-                    'saved' => false,
-                    'errors' => [
-                        __('The list exceeds the allowed number of items'),
-                    ],
-                ]
-            );
-        } catch (ValueConflictException $exception) {
-            $this->returnJson(
-                [
-                    'saved' => false,
-                    'errors' => [
-                        __('The list should contain unique URIs'),
-                    ],
-                ]
-            );
-        }
-
-    }
-
-    /**
      * @throws common_exception_BadRequest
      *
      * @todo Use $this->setSuccessJsonResponse() & setErrorJsonResponse()
@@ -451,6 +350,8 @@ class Lists extends tao_actions_CommonModule
                 $element->setUri($newUriValue);
             }
         }
+
+        $valueCollectionService->setMaxItems($this->getListService()->getMaxItems());
 
         try {
             $this->returnJson(
