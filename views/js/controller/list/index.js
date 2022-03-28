@@ -92,11 +92,19 @@ define([
         findListContainer($(this).attr('id')).toggleClass('with-uri');
     }
 
+    function showElementsEditControls($listContainer) {
+        $listContainer.find('span.list-element')
+            .replaceWith(function () {
+                return transformListElement($(this));
+            });
+    }
+
     function handleEditList (targetUri) {
         const uri = getUriValue(targetUri);
         const $listContainer = findListContainer(uri);
         const list = $listContainer.find('ol');
         const offset = list.children('[id^=list-element]').length;
+        const batchSize = 100;
         let totalItems = 0;
         let maxItems = 1000;
 
@@ -108,7 +116,7 @@ define([
             return totalItems >= maxItems;
         }
 
-        loadListElements(uri, offset, 0).then(newListData => {
+        loadListElements(uri, offset, batchSize).then(newListData => {
             extendListWithNewElements(newListData, $listContainer);
 
             const saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
@@ -130,7 +138,7 @@ define([
             }
 
             if (!$listForm.length) {
-                let nextElementId;
+                let nextElementId = totalItems;
 
                 $listForm = $('<form>');
                 $listContainer.wrapInner($listForm);
@@ -142,11 +150,7 @@ define([
                 $listTitleBar.closest('.container-title').html($labelEdit);
                 $labelEdit.focus();
 
-                nextElementId = $listContainer.find('.list-element')
-                    .replaceWith(function () {
-                        return transformListElement($(this));
-                    })
-                    .length;
+                showElementsEditControls($listContainer);
 
                 $listSaveBtn = createButton(__('Save list'), 'save');
                 $listSaveBtn.on('click', function () {
@@ -180,7 +184,7 @@ define([
                     toggleAddButton(isLimitReached());
 
                     $list.append($('<li>').append(createNewListElement(nextElementId++)))
-                        .closest('.container-content').scrollTop($list.height());
+                         .closest('.container-content').scrollTop($list.height());
 
                     return false;
                 });
@@ -387,8 +391,11 @@ define([
             $btn.find('a').text('Load more');
             $btn.find('.icon-loop').toggleClass('rotate');
             extendListWithNewElements(newListData, $listContainer, listUri);
-        });
 
+            if ($listContainer.find('form').length) {
+                showElementsEditControls($listContainer);
+            }
+        });
     }
 
     /**
