@@ -121,7 +121,6 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         }
     }
 
-    // @todo May be extracted / moved to (another?) service
     private function getMemoryLimit(): int
     {
         $rawMemLimit = ini_get('memory_limit');
