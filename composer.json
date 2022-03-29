@@ -29,11 +29,5 @@
         "psr-4" : {
             "oat\\taoBackOffice\\" : ""
         }
-    },
-    "config": {
-        "allow-plugins": {
-            "oat-sa/oatbox-extension-installer": true,
-            "oat-sa/composer-npm-bridge": true
-        }
     }
 }
