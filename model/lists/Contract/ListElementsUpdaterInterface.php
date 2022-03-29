@@ -24,6 +24,9 @@ use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use core_kernel_classes_Class;
 
+/**
+ * Application service to update elements for a list
+ */
 interface ListElementsUpdaterInterface
 {
     /**

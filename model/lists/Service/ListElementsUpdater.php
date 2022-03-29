@@ -31,18 +31,11 @@ use tao_helpers_Uri;
 use OverflowException;
 
 
-/**
- * Application service to update elements for a list
- */
 class ListElementsUpdater implements ListElementsUpdaterInterface
 {
     private const HUGE_LIST_MIN_ITEMS = 1000;
     private const HUGE_LIST_MAX_MEMORY_MB = 500;
 
-    /**
-     * @throws ValueConflictException
-     * @throws OverflowException
-     */
     public function setListElements(
         ValueCollectionService $valueCollectionService,
         core_kernel_classes_Class $listClass,
