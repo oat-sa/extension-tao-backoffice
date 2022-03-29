@@ -25,27 +25,27 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\controller;
 
-use oat\taoBackOffice\model\lists\Service\ListElementsUpdater;
-use Throwable;
 use oat\generis\model\data\Ontology;
 use oat\tao\helpers\Template;
 use oat\tao\model\featureFlag\FeatureFlagChecker;
 use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\http\HttpJsonResponseTrait;
-use oat\tao\model\Lists\Business\Service\RemoteSource;
-use oat\taoBackOffice\model\lists\Service\ListDeleter;
+use oat\tao\model\Language\Business\Specification\LanguageClassSpecification;
+use oat\tao\model\Language\Service\LanguageListElementSortService;
+use oat\tao\model\Lists\Business\Contract\ListElementSorterInterface;
 use oat\tao\model\Lists\Business\Domain\CollectionType;
 use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\RemoteSourceContext;
-use oat\tao\model\Lists\Business\Service\ValueCollectionService;
-use oat\taoBackOffice\model\lists\Contract\ListDeleterInterface;
-use oat\taoBackOffice\model\lists\Exception\ListDeletionException;
+use oat\tao\model\Lists\Business\Service\RemoteSource;
 use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
+use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
-use oat\tao\model\Lists\Business\Contract\ListElementSorterInterface;
-use oat\tao\model\Language\Business\Specification\LanguageClassSpecification;
-use oat\tao\model\Language\Service\LanguageListElementSortService;
 use oat\tao\model\Specification\ClassSpecificationInterface;
+use oat\taoBackOffice\model\lists\Contract\ListDeleterInterface;
+use oat\taoBackOffice\model\lists\Contract\ListElementsUpdaterInterface;
+use oat\taoBackOffice\model\lists\Exception\ListDeletionException;
+use oat\taoBackOffice\model\lists\Service\ListDeleter;
+use oat\taoBackOffice\model\lists\Service\ListElementsUpdater;
 use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\taoBackOffice\model\lists\ListCreator;
 use oat\taoBackOffice\model\lists\ListService;
@@ -64,6 +64,7 @@ use tao_helpers_Scriptloader;
 use tao_helpers_Uri;
 use OverflowException;
 use RuntimeException;
+use Throwable;
 
 class Lists extends tao_actions_CommonModule
 {
@@ -317,14 +318,10 @@ class Lists extends tao_actions_CommonModule
 
         $valueCollectionService->setMaxItems($this->getListService()->getMaxItems());
 
-        // @todo Retrieve from the service container
-        $updater = new ListElementsUpdater();
-
         try {
             $this->returnJson(
                 [
-                    'saved' => $updater->setListElements(
-                        $valueCollectionService,
+                    'saved' => $this->getListElementsUpdater()->setListElements(
                         $listClass,
                         $payload
                     )
@@ -614,14 +611,14 @@ class Lists extends tao_actions_CommonModule
         return $this->getPsrContainer()->get(ListCreator::class);
     }
 
-    private function getOntology(): Ontology
-    {
-        return $this->getPsrContainer()->get(Ontology::SERVICE_ID);
-    }
-
     private function getListElementsFinder(): ListElementsFinderInterface
     {
         return $this->getPsrContainer()->get(ListElementsFinder::class);
+    }
+
+    private function getListElementsUpdater(): ListElementsUpdaterInterface
+    {
+        return $this->getPsrContainer()->get(ListElementsUpdater::class);
     }
 
     private function getListDeleter(): ListDeleterInterface
@@ -637,5 +634,10 @@ class Lists extends tao_actions_CommonModule
     private function getLanguageListElementSortService(): ListElementSorterInterface
     {
         return $this->getPsrContainer()->get(LanguageListElementSortService::class);
+    }
+
+    private function getOntology(): Ontology
+    {
+        return $this->getPsrContainer()->get(Ontology::SERVICE_ID);
     }
 }

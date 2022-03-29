@@ -20,7 +20,6 @@
 
 namespace oat\taoBackOffice\model\lists\Contract;
 
-use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use core_kernel_classes_Class;
 
@@ -34,7 +33,6 @@ interface ListElementsUpdaterInterface
      * @throws OverflowException
      */
     public function setListElements(
-        ValueCollectionService $valueCollectionService,
         core_kernel_classes_Class $listClass,
         array $payload
     ): bool;

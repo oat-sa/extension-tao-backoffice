@@ -24,31 +24,35 @@ use oat\tao\model\Lists\Business\Domain\Value;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
-use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\taoBackOffice\model\lists\Contract\ListElementsUpdaterInterface;
 use core_kernel_classes_Class;
 use tao_helpers_Uri;
-use OverflowException;
-
 
 class ListElementsUpdater implements ListElementsUpdaterInterface
 {
     private const HUGE_LIST_MIN_ITEMS = 1000;
     private const HUGE_LIST_MAX_MEMORY_MB = 500;
 
+    /** @var ValueCollectionService */
+    private $valueCollectionService;
+
+    public function __construct(ValueCollectionService $valueCollectionService)
+    {
+        $this->valueCollectionService = $valueCollectionService;
+    }
+
     public function setListElements(
-        ValueCollectionService $valueCollectionService,
         core_kernel_classes_Class $listClass,
         array $payload
     ): bool {
         $clause = $this->getListSearchInput($listClass);
         $listElements = $this->getElementsFromPayload($payload);
 
-        if ($this->isHugeList($valueCollectionService, $clause, $listElements)) {
+        if ($this->isHugeList($clause, $listElements)) {
             $this->raiseMemoryLimit();
         }
 
-        $elements = $valueCollectionService->findAll($clause);
+        $elements = $this->valueCollectionService->findAll($clause);
 
         foreach ($listElements as $key => $value) {
             $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
@@ -69,7 +73,7 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
             }
         }
 
-        return $valueCollectionService->persist($elements);
+        return $this->valueCollectionService->persist($elements);
     }
 
     private function getElementsFromPayload(array $payload): array
@@ -83,8 +87,9 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         );
     }
 
-    private function getListSearchInput(core_kernel_classes_Class $listClass): ValueCollectionSearchInput
-    {
+    private function getListSearchInput(
+        core_kernel_classes_Class $listClass
+    ): ValueCollectionSearchInput {
         return new ValueCollectionSearchInput(
             (new ValueCollectionSearchRequest())->setValueCollectionUri(
                 $listClass->getUri()
@@ -93,12 +98,11 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
     }
 
     private function isHugeList(
-        ValueCollectionService $valueCollectionService,
         ValueCollectionSearchInput $clause,
         array $listElements
     ): bool {
         $itemsToProcess = max(
-            $valueCollectionService->count($clause),
+            $this->valueCollectionService->count($clause),
             count($listElements)
         );
 
