@@ -31,126 +31,77 @@ use oat\tao\scripts\tools\migrations\AbstractMigration;
 use oat\taoBackOffice\controller\Lists;
 use oat\taoItems\model\user\TaoItemsRoles;
 
-final class Version202203021737164743_taoBackOffice extends AbstractMigration
+final class Version202203021737164754_taoBackOffice extends AbstractMigration
 {
+    private const SHOW_OPTION = 'show';
+    private const HIDE_OPTION = 'hide';
+    private const GLOBAL_UI_CONFIG_NAME = 'globalUIConfig';
+
     public function getDescription(): string
     {
         return 'Update global UI config';
     }
 
-    const SHOW_OPTION = 'show';
-    const HIDE_OPTION = 'hide';
-    const GLOBAL_UI_CONFIG_NAME = 'globalUIConfig';
-
-    const DEFAULT_CONFIG = [
-        'item/image/mediaAlignment' => 'hide',
-        'test/item/BRS' => 'hide',
-        'item/multiColumn' => 'hide',
-        'item/scrollableMultiColumn' => 'hide',
-        'item/perInteractionRp' => 'hide',
-        'item/response/modalFeedbacks' => 'hide',
-        'item/commonInteractions/choiceInteraction/shufflingChoices' => 'hide',
-        'item/commonInteractions/orderInteraction/shufflingChoices' => 'hide',
-        'item/commonInteractions/extendedTextInteraction/hasMath' => 'hide',
-        'item/commonInteractions/hottextInteraction/disallowHTMLInHottext' => 'hide',
-        'item/customInteractions/customInteractions' => 'hide',
-        'item/customInteractions/likertScaleInteraction' => 'hide',
-        'item/customInteractions/liquidsInteraction' => 'hide',
-        'test/properties/item/itemSessionControl/showFeedback' => 'hide',
-        'test/properties/item/itemSessionControl/allowComment' => 'hide',
-        'test/properties/item/itemSessionControl/allowSkipping' => 'hide',
-        'test/properties/item/timeLimits' => 'hide',
-        'test/properties/section/itemSessionControl/showFeedback' => 'hide',
-        'test/properties/section/itemSessionControl/allowComment' => 'hide',
-        'test/properties/section/itemSessionControl/allowSkipping' => 'hide',
-        'test/properties/section/timeLimits' => 'hide',
-        'test/properties/testPart/itemSessionControl' => 'hide',
-        'test/properties/testPart/timeLimits' => 'hide',
-        'test/properties/test/timeLimits' => 'hide',
-        'delivery/taoLocal' => 'hide'
-    ];
-
-    const EXISTING_CONFIG_MAP = [
-        'tao' => [
-            'client_lib_config_registry' => [
-                'item/image/mediaAlignment' => [
-                    'ui/image/ImgStateActive' => ['mediaAlignment'],
-                ],
-                'test/item/BRS' => [
-                    'taoQtiTest/controller/creator/views/item' => ['BRS'],
-                ],
-                'item/commonInteractions/extendedTextInteraction/hasMath' => [
-                    'taoQtiItem/qtiCreator/widgets/interactions/extendedTextInteraction/states/Question' => ['hasMath'],
-                ],
-                'item/commonInteractions/hottextInteraction/disallowHTMLInHottext' => [
-                    'taoQtiItem/qtiCreator/widgets/interactions/hottextInteraction/states/Question'=> ['disallowHTMLInHottext'],
-                ]
-            ]
-        ],
-        'taoQtiItem' => [
-            'qtiCreator' => [
-                'item/multiColumn' => [
-                    'multi-column' => []
-                ],
-                'item/scrollableMultiColumn' => [
-                    'scrollable-multi-column' => []
-                ],
-                'item/perInteractionRp' => [
-                    'perInteractionRp' => []
-                ],
-            ]
-        ]
-    ];
-
     public function up(Schema $schema): void
     {
-        $resultConfig = self::DEFAULT_CONFIG;
+        $resultConfig = require "./taoBackOffice/config/default/globalUIConfig.conf.php";
         $backOfficeExtension = \common_ext_ExtensionsManager::singleton()->getExtensionById('taoBackOffice');
-        if($backOfficeExtension === null) {
+        if ($backOfficeExtension === null) {
             throw new \Exception(sprintf('Cannot find %s extension', 'taoBackOffice'));
         }
         $existingConfig = $backOfficeExtension->getConfig(self::GLOBAL_UI_CONFIG_NAME);
-        if($existingConfig !== false) {
+        if ($existingConfig !== false) {
             $resultConfig = $existingConfig;
         }
 
-        foreach(self::EXISTING_CONFIG_MAP as $extensionName => $extensionConfig) {
-            $currentExtension = \common_ext_ExtensionsManager::singleton()->getExtensionById($extensionName);
-            if($currentExtension === null) {
-                throw new \Exception(sprintf('Cannot find %s extension', $extensionName));
-            }
-            foreach($extensionConfig as $configFileName => $existingConfig) {
-                $currentExtensionConfig = $currentExtension->getConfig($configFileName);
-                if($currentExtensionConfig === false) {
-                    throw new \Exception(sprintf('Cannot find %s config', $configFileName));
-                }
-
-                $this->updateGlobalUIConfig($existingConfig, $currentExtensionConfig,$resultConfig);
-            }
-        }
+        $resultConfig = array_merge($resultConfig, $this->getFromTaoCore());
+        $resultConfig = array_merge($resultConfig, $this->getFromItemQti());
 
         $backOfficeExtension->setConfig(self::GLOBAL_UI_CONFIG_NAME, $resultConfig);
     }
 
-    private function updateGlobalUIConfig($existingConfig, $currentExtConfig, array &$resultConfig): void
+    private function getFromTaoCore(): array
     {
-        foreach($existingConfig as $globalConfigKey => $configData) {
-            foreach($configData as $configKey => $singleConfig) {
-                if(!array_key_exists($configKey, $currentExtConfig)) {
-                    continue;
-                }
-                if (!empty($singleConfig)) {
-                    foreach($singleConfig as $value) {
-                        if(!array_key_exists($value, $currentExtConfig[$configKey])) {
-                            continue;
-                        }
-                        $resultConfig[$globalConfigKey] = $currentExtConfig[$configKey][$value] ? self::SHOW_OPTION : self::HIDE_OPTION;
-                    }
-                } else {
-                    $resultConfig[$globalConfigKey] = $currentExtConfig[$configKey] ? self::SHOW_OPTION : self::HIDE_OPTION;
-                }
-            }
+        $config = $this->loadConfig('tao', 'client_lib_config_registry');
+
+        return [
+            'item/image/mediaAlignment' => $this->visibilityAsString($config['ui/image/ImgStateActive']['mediaAlignment'] ?? false),
+            'test/item/BRS' => $this->visibilityAsString($config['taoQtiTest/controller/creator/views/item']['BRS'] ?? false),
+            'item/commonInteractions/extendedTextInteraction/hasMath' => $this->visibilityAsString($config['taoQtiItem/qtiCreator/widgets/interactions/extendedTextInteraction/states/Question']['hasMath'] ?? false),
+            'item/commonInteractions/hottextInteraction/disallowHTMLInHottext' => $this->visibilityAsString($config['taoQtiItem/qtiCreator/widgets/interactions/hottextInteraction/states/Question']['disallowHTMLInHottext'] ?? false),
+        ];
+    }
+
+    private function getFromItemQti(): array
+    {
+        $config = $this->loadConfig('taoQtiItem', 'qtiCreator');
+
+        return [
+            'item/multiColumn' => $this->visibilityAsString($config['multi-column'] ?? false),
+            'item/scrollableMultiColumn' => $this->visibilityAsString($config['scrollable-multi-column'] ?? false),
+            'item/perInteractionRp' => $this->visibilityAsString($config['perInteractionRp'] ?? false),
+        ];
+    }
+
+    private function loadConfig(string $extensionName, string $configName): array
+    {
+        $currentExtension = \common_ext_ExtensionsManager::singleton()->getExtensionById($extensionName);
+
+        if ($currentExtension === null) {
+            throw new \Exception(sprintf("Extension %s cannot be found", 'tao'));
         }
+
+        $config = $currentExtension->getConfig($configName);
+        if ($config === false) {
+            throw new \Exception(sprintf("Config %s cannot be read", 'tao'));
+        }
+
+        return $config;
+    }
+
+    private function visibilityAsString(bool $isVisible): string
+    {
+        return $isVisible ? self::SHOW_OPTION : self::HIDE_OPTION;
     }
 
     public function down(Schema $schema): void
