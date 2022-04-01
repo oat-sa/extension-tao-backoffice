@@ -64,8 +64,7 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
     private function mergeCollectionElementsWithPayload(
         ValueCollection $elements,
         array $elementsFromPayload
-    ): ValueCollection
-    {
+    ): ValueCollection {
         foreach ($elementsFromPayload as $key => $value) {
             $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
             $uri = tao_helpers_Uri::decode($encodedUri);
@@ -121,7 +120,8 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         return $itemsToProcess > self::HUGE_LIST_MIN_ITEMS;
     }
 
-    private function raiseMemoryLimit(): void {
+    private function raiseMemoryLimit(): void
+    {
         $currentLimit = $this->getMemoryLimit();
         $maxAllowedBytes = self::HUGE_LIST_MAX_MEMORY_MB * 1024 * 1024;
 
@@ -133,7 +133,7 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
     private function getMemoryLimit(): int
     {
         $rawMemLimit = ini_get('memory_limit');
-        if(trim($rawMemLimit) == '') {
+        if (trim($rawMemLimit) == '') {
             return 0;
         }
 
@@ -144,11 +144,13 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
     {
         $val = substr(trim($val), 0, -1);
 
-        switch(strtolower($val[strlen($val)-1])) {
+        switch (strtolower($val[strlen($val) - 1])) {
             case 'g':
                 $val *= 1024;
+                // intentional fallthrough
             case 'm':
                 $val *= 1024;
+                // intentional fallthrough
             case 'k':
                 $val *= 1024;
         }
