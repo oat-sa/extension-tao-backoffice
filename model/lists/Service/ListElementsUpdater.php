@@ -53,39 +53,36 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
             $this->raiseMemoryLimit();
         }
 
-        return $this->valueCollectionService->persist(
-            $this->mergeCollectionElementsWithPayload(
-                $this->valueCollectionService->findAll($clause),
-                $elementsFromPayload
-            )
-        );
-    }
+        $valueCollection = $this->valueCollectionService->findAll($clause);
 
-    private function mergeCollectionElementsWithPayload(
-        ValueCollection $elements,
-        array $elementsFromPayload
-    ): ValueCollection {
         foreach ($elementsFromPayload as $key => $value) {
-            $newUriValue = trim($payload["uri_$key"] ?? '');
-            $element = $this->getValueByUriKey($elements, $key);
-
-            if ($element === null || empty($uri)) {
-                $elements->addValue(new Value(null, $newUriValue, $value));
-
-                continue;
-            }
-
-            $element->setLabel($value);
-
-            if ($newUriValue) {
-                $element->setUri($newUriValue);
-            }
+            $this->addElementToCollection($valueCollection, $key, $value);
         }
 
-        return $elements;
+        return $this->valueCollectionService->persist($valueCollection);
     }
 
-    private function getValueByUriKey(ValueCollection $elements, $key): ?Value
+    private function addElementToCollection(
+        ValueCollection $valueCollection,
+        $key,
+        $value
+    ): void {
+        $newUriValue = trim($payload["uri_$key"] ?? '');
+        $element = $this->getValueByUriKey($valueCollection, $key);
+
+        if ($element === null || empty($uri)) {
+            $valueCollection->addValue(new Value(null, $newUriValue, $value));
+            return;
+        }
+
+        $element->setLabel($value);
+
+        if ($newUriValue) {
+            $element->setUri($newUriValue);
+        }
+    }
+
+    private function getValueByUriKey(ValueCollection $valueCollection, $key): ?Value
     {
         $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
         $uri = tao_helpers_Uri::decode($encodedUri);
@@ -94,7 +91,7 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
             return null;
         }
 
-        return $elements->extractValueByUri($uri);
+        return $valueCollection->extractValueByUri($uri);
     }
 
     private function getElementsFromPayload(array $payload): array
