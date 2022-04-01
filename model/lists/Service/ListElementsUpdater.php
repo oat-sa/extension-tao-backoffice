@@ -21,6 +21,7 @@
 namespace oat\taoBackOffice\model\lists\Service;
 
 use oat\tao\model\Lists\Business\Domain\Value;
+use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
@@ -46,15 +47,26 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         array $payload
     ): bool {
         $clause = $this->getListSearchInput($listClass);
-        $listElements = $this->getElementsFromPayload($payload);
+        $elementsFromPayload = $this->getElementsFromPayload($payload);
 
-        if ($this->isHugeList($clause, $listElements)) {
+        if ($this->isHugeList($clause, $elementsFromPayload)) {
             $this->raiseMemoryLimit();
         }
 
-        $elements = $this->valueCollectionService->findAll($clause);
+        return $this->valueCollectionService->persist(
+            $this->mergeCollectionElementsWithPayload(
+                $this->valueCollectionService->findAll($clause),
+                $elementsFromPayload
+            )
+        );
+    }
 
-        foreach ($listElements as $key => $value) {
+    private function mergeCollectionElementsWithPayload(
+        ValueCollection $elements,
+        array $elementsFromPayload
+    ): ValueCollection
+    {
+        foreach ($elementsFromPayload as $key => $value) {
             $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
             $uri = tao_helpers_Uri::decode($encodedUri);
             $newUriValue = trim($payload["uri_$key"] ?? '');
@@ -73,7 +85,7 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
             }
         }
 
-        return $this->valueCollectionService->persist($elements);
+        return $elements;
     }
 
     private function getElementsFromPayload(array $payload): array
