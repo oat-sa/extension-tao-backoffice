@@ -66,10 +66,8 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         array $elementsFromPayload
     ): ValueCollection {
         foreach ($elementsFromPayload as $key => $value) {
-            $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
-            $uri = tao_helpers_Uri::decode($encodedUri);
             $newUriValue = trim($payload["uri_$key"] ?? '');
-            $element = $elements->extractValueByUri($uri);
+            $element = $this->getValueByUriKey($elements, $key);
 
             if ($element === null || empty($uri)) {
                 $elements->addValue(new Value(null, $newUriValue, $value));
@@ -85,6 +83,18 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         }
 
         return $elements;
+    }
+
+    private function getValueByUriKey(ValueCollection $elements, $key): ?Value
+    {
+        $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
+        $uri = tao_helpers_Uri::decode($encodedUri);
+
+        if (empty($uri)) {
+            return null;
+        }
+
+        return $elements->extractValueByUri($uri);
     }
 
     private function getElementsFromPayload(array $payload): array
