@@ -70,7 +70,7 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         $newUriValue = trim($payload["uri_$key"] ?? '');
         $element = $this->getValueByUriKey($valueCollection, $key);
 
-        if ($element === null || empty($uri)) {
+        if ($element === null) {
             $valueCollection->addValue(new Value(null, $newUriValue, $value));
             return;
         }
