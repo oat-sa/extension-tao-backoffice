@@ -316,6 +316,18 @@ class Lists extends tao_actions_CommonModule
             unset($payload['label']);
         }
 
+        if (count($payload) > 500) {
+            $this->returnJson(
+                [
+                    'saved' => false,
+                    'errors' =>
+                    [
+                        __('Payload contains too many items'),
+                    ],
+                ]
+            );
+        }
+
         $valueCollectionService->setMaxItems($this->getListService()->getMaxItems());
 
         try {

@@ -74,13 +74,14 @@ define([
     }
 
     function createListElement(name, value = '') {
+        const uri = Uri.decode(clearUri(name));
         return $(`<div class='list-element'>
             <div class='list-element'>
                 <div class='list-element__input-container'>
-                    <input type='text' name='${name}' value='${value}' data-testid='elementNameInput'/>
+                    <input type='text' name='${name}' value='${value}' data-testid='elementNameInput' data-former-value='${value}'/>
                     <div class='list-element__input-container__uri'>
                         <label for='uri_${name}' class='title'>URI</label>
-                        <input id='uri_${name}' type='text' name='uri_${name}' value='${Uri.decode(clearUri(name))}' data-testid='elementUriInput'>
+                        <input id='uri_${name}' type='text' name='uri_${name}' value='${uri}' data-former-value='${uri}' data-testid='elementUriInput'>
                     </div>
                 </div>
                 <span class='icon-checkbox-crossed list-element-delete-btn' data-testid='deleteElementButton'>
@@ -137,6 +138,58 @@ define([
                 $tooltip.toggleClass('tooltip-hidden', !isDisabled);
             }
 
+            /**
+             * We should keep all data for elements whose value *or* URI has changed
+             * (that is, we send both in case either the URI or the value has changed).
+             * Therefore, this function checks also, for each input, if the associated
+             * URI (for values) or value (for URIs) has also changed to do the filtering.
+             */
+            function listItemHasChanged(form, item) {
+                if (!item.hasOwnProperty('name') || !item.hasOwnProperty('value')) {
+                    return true;
+                }
+
+                let hasChanged = false;
+                let isKnownInput = false;
+
+                if (item.name.startsWith('list-element_')) {
+                    let formerValue = $('[name="' + item.name + '"]', form).data('formerValue');
+                    let formerURI = $('[name="uri_' + item.name + '"]', form).data('formerValue');
+                    let newURI = $('[name="uri_' + item.name + '"]', form).val();
+
+                    isKnownInput = true;
+
+                    if (formerURI.trim() == '') {
+                        hasChanged = true;
+                    } else {
+                        hasChanged = ((formerValue != item.value) || (formerURI != newURI));
+                    }
+                }
+
+                if (item.name.startsWith('uri_list-element_')) {
+                    const cleanName = item.name.substring(4);
+                    let formerURI = $('[name="' + item.name + '"]', form).data('formerValue');
+                    let formerValue = $('[name="' + cleanName + '"]', form).data('formerValue');
+                    let newValue = $('[name="' + cleanName + '"]', form).val();
+
+                    isKnownInput = true;
+
+                    if (formerURI.trim() == '') {
+                        hasChanged = true; // New item
+                    } else {
+                        hasChanged = ((formerValue != newValue) || (formerURI != item.value));
+                    }
+                }
+
+                if (!isKnownInput) {
+                    // Filter only inputs for list elements
+                    // (always send the name and URI for the list itself)
+                    return true;
+                }
+
+                return hasChanged;
+            }
+
             if (!$listForm.length) {
                 let nextElementId = totalItems;
 
@@ -154,9 +207,11 @@ define([
 
                 $listSaveBtn = createButton(__('Save list'), 'save');
                 $listSaveBtn.on('click', function () {
+                    const form = $(this).closest('form');
+
                     $.postJson(
                         saveUrl,
-                        $(this).closest('form').serializeArray(),
+                        form.serializeArray().filter((item) => listItemHasChanged(form, item)),
                         response => {
                             if (response.saved) {
                                 feedback().success(__('List saved'));
