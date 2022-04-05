@@ -18,6 +18,8 @@
  * Copyright (c) 2022 (original work) Open Assessment Technologies SA.
  */
 
+declare(strict_types=1);
+
 namespace oat\taoBackOffice\model\lists\Service;
 
 use oat\tao\model\Lists\Business\Domain\Value;
@@ -25,60 +27,103 @@ use oat\tao\model\Lists\Business\Domain\ValueCollection;
 use oat\tao\model\Lists\Business\Domain\ValueCollectionSearchRequest;
 use oat\tao\model\Lists\Business\Input\ValueCollectionSearchInput;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
-use oat\taoBackOffice\model\lists\Contract\ListElementsUpdaterInterface;
+use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
+use oat\taoBackOffice\model\lists\Contract\ListUpdaterInterface;
+use oat\taoBackOffice\model\lists\ListService;
+use Psr\Http\Message\ServerRequestInterface;
 use core_kernel_classes_Class;
 use tao_helpers_Uri;
+use BadFunctionCallException;
+use OverflowException;
 
-class ListElementsUpdater implements ListElementsUpdaterInterface
+class ListUpdater implements ListUpdaterInterface
 {
-    private const HUGE_LIST_MIN_ITEMS = 1000;
-    private const HUGE_LIST_MAX_MEMORY_MB = 500;
-
     /** @var ValueCollectionService */
     private $valueCollectionService;
 
-    public function __construct(ValueCollectionService $valueCollectionService)
+    /** @var ListService */
+    private $listService;
+
+    public function __construct(
+        ValueCollectionService $valueCollectionService,
+        ListService $listService
+    )
     {
         $this->valueCollectionService = $valueCollectionService;
+        $this->listService = $listService;
     }
 
-    public function setListElements(
+    /**
+     * @throws BadFunctionCallException if the payload contains too many items
+     * @throws OverflowException if the list exceeds the allowed number of items
+     * @throws ValueConflictException if element URIs are non-unique
+     */
+    public function updateByRequest(ServerRequestInterface $request): bool
+    {
+        $post = (array) $request->getParsedBody();
+
+        if (!isset($post['uri'])) {
+            return false;
+        }
+
+        $listClass = $this->listService->getList(
+            tao_helpers_Uri::decode($post['uri'])
+        );
+
+        if ($listClass === null) {
+            return false;
+        }
+
+        $payload = $post;
+
+        if (isset($payload['label'])) {
+            $listClass->setLabel($payload['label']);
+        }
+
+        unset($payload['uri'], $payload['label']);
+
+        if (count($payload) > 500) {
+            throw new BadFunctionCallException(
+                __('Payload contains too many items')
+            );
+        }
+
+        return $this->setListElements($listClass, $payload);
+    }
+
+    private function setListElements(
         core_kernel_classes_Class $listClass,
         array $payload
     ): bool {
         $clause = $this->getListSearchInput($listClass);
         $elementsFromPayload = $this->getElementsFromPayload($payload);
-
-        if ($this->isHugeList($clause, $elementsFromPayload)) {
-            $this->raiseMemoryLimit();
-        }
-
-        $valueCollection = $this->valueCollectionService->findAll($clause);
+        $collection = $this->valueCollectionService->findAll($clause);
 
         foreach ($elementsFromPayload as $key => $value) {
-            $this->addElementToCollection($valueCollection, $key, $value);
+            $newUri = trim($payload["uri_$key"] ?? '');
+            $this->addElementToCollection($collection, $key, $value, $newUri);
         }
 
-        return $this->valueCollectionService->persist($valueCollection);
+        return $this->valueCollectionService->persist($collection);
     }
 
     private function addElementToCollection(
         ValueCollection $valueCollection,
         $key,
-        $value
+        $value,
+        $newUri
     ): void {
-        $newUriValue = trim($payload["uri_$key"] ?? '');
         $element = $this->getValueByUriKey($valueCollection, $key);
 
         if ($element === null) {
-            $valueCollection->addValue(new Value(null, $newUriValue, $value));
+            $valueCollection->addValue(new Value(null, $newUri, $value));
             return;
         }
 
         $element->setLabel($value);
 
-        if ($newUriValue) {
-            $element->setUri($newUriValue);
+        if ($newUri) {
+            $element->setUri($newUri);
         }
     }
 
@@ -115,7 +160,7 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         );
     }
 
-    private function isHugeList(
+    /*private function isHugeList(
         ValueCollectionSearchInput $clause,
         array $listElements
     ): bool {
@@ -163,5 +208,5 @@ class ListElementsUpdater implements ListElementsUpdaterInterface
         }
 
         return $val;
-    }
+    }*/
 }

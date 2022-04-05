@@ -21,19 +21,17 @@
 namespace oat\taoBackOffice\model\lists\Contract;
 
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
-use core_kernel_classes_Class;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Application service to update elements for a list
  */
-interface ListElementsUpdaterInterface
+interface ListUpdaterInterface
 {
     /**
-     * @throws ValueConflictException
-     * @throws OverflowException
+     * @throws BadFunctionCallException if the payload contains too many items
+     * @throws OverflowException if the list exceeds the allowed number of items
+     * @throws ValueConflictException if element URIs are non-unique
      */
-    public function setListElements(
-        core_kernel_classes_Class $listClass,
-        array $payload
-    ): bool;
+    public function updateByRequest(ServerRequestInterface $request): bool;
 }

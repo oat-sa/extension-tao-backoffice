@@ -29,7 +29,7 @@ use oat\taoBackOffice\model\ListElement\Service\ListElementsDeleter;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use oat\tao\model\Lists\DataAccess\Repository\ParentPropertyListCachedRepository;
-use oat\taoBackOffice\model\lists\Service\ListElementsUpdater;
+use oat\taoBackOffice\model\lists\Service\ListUpdater;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
@@ -77,11 +77,12 @@ class ListServiceProvider implements ContainerServiceProviderInterface
             );
 
         $services
-            ->set(ListElementsUpdater::class, ListElementsUpdater::class)
+            ->set(ListUpdater::class, ListUpdater::class)
             ->public()
             ->args(
                 [
                     service(ValueCollectionService::class),
+                    service(ListService::class),
                 ]
             );
     }

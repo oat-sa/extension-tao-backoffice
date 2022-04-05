@@ -42,16 +42,17 @@ use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoBackOffice\model\lists\Contract\ListDeleterInterface;
-use oat\taoBackOffice\model\lists\Contract\ListElementsUpdaterInterface;
+use oat\taoBackOffice\model\lists\Contract\ListUpdaterInterface;
 use oat\taoBackOffice\model\lists\Exception\ListDeletionException;
 use oat\taoBackOffice\model\lists\Service\ListDeleter;
-use oat\taoBackOffice\model\lists\Service\ListElementsUpdater;
+use oat\taoBackOffice\model\lists\Service\ListUpdater;
 use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\taoBackOffice\model\lists\ListCreator;
 use oat\taoBackOffice\model\lists\ListService;
 use oat\taoBackOffice\model\ListElement\Context\ListElementsFinderContext;
 use oat\taoBackOffice\model\ListElement\Contract\ListElementsFinderInterface;
 use oat\taoBackOffice\model\ListElement\Service\ListElementsFinder;
+use BadFunctionCallException;
 use common_Exception;
 use common_exception_BadRequest;
 use common_exception_Error;
@@ -291,52 +292,25 @@ class Lists extends tao_actions_CommonModule
     {
         $this->assertIsXmlHttpRequest();
 
-        if (!$this->hasPostParameter('uri')) {
-            $this->returnJson(['saved' => false]);
-
-            return;
-        }
-
-        $listClass = $this->getListService()->getList(
-            tao_helpers_Uri::decode($this->getPostParameter('uri'))
+        $valueCollectionService->setMaxItems(
+            $this->getListService()->getMaxItems()
         );
-
-        if ($listClass === null) {
-            $this->returnJson(['saved' => false]);
-
-            return;
-        }
-
-        // use $_POST instead of getRequestParameters to prevent html encoding
-        $payload = $_POST;
-        unset($payload['uri']);
-
-        if (isset($payload['label'])) {
-            $listClass->setLabel($payload['label']);
-            unset($payload['label']);
-        }
-
-        if (count($payload) > 500) {
-            $this->returnJson(
-                [
-                    'saved' => false,
-                    'errors' =>
-                    [
-                        __('Payload contains too many items'),
-                    ],
-                ]
-            );
-        }
-
-        $valueCollectionService->setMaxItems($this->getListService()->getMaxItems());
 
         try {
             $this->returnJson(
                 [
-                    'saved' => $this->getListElementsUpdater()->setListElements(
-                        $listClass,
-                        $payload
+                    'saved' => $this->getListUpdater()->updateByRequest(
+                        $this->getPsrRequest()
                     )
+                ]
+            );
+        } catch (BadFunctionCallException $exception) {
+            $this->returnJson(
+                [
+                    'saved' => false,
+                    'errors' => [
+                        $exception->getMessage(),
+                    ],
                 ]
             );
         } catch (OverflowException $exception) {
@@ -628,9 +602,9 @@ class Lists extends tao_actions_CommonModule
         return $this->getPsrContainer()->get(ListElementsFinder::class);
     }
 
-    private function getListElementsUpdater(): ListElementsUpdaterInterface
+    private function getListUpdater(): ListUpdaterInterface
     {
-        return $this->getPsrContainer()->get(ListElementsUpdater::class);
+        return $this->getPsrContainer()->get(ListUpdater::class);
     }
 
     private function getListDeleter(): ListDeleterInterface
