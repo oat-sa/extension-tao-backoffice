@@ -152,9 +152,9 @@ define([
 
             function hasChangedListItemURI(form, item) {
                 const cleanName = item.name.substring(4);
-                let formerURI = $('[name="' + item.name + '"]', form).data('formerValue');
-                let formerValue = $('[name="' + cleanName + '"]', form).data('formerValue');
-                let newValue = $('[name="' + cleanName + '"]', form).val();
+                const formerURI = $('[name="' + item.name + '"]', form).data('formerValue');
+                const formerValue = $('[name="' + cleanName + '"]', form).data('formerValue');
+                const newValue = $('[name="' + cleanName + '"]', form).val();
 
                 if (formerURI.trim() == '') {
                     return true; // New item
@@ -174,26 +174,15 @@ define([
                     return true;
                 }
 
-                let hasChanged = false;
-                let isKnownInput = false;
-
                 if (item.name.startsWith('list-element_')) {
-                    isKnownInput = true;
-                    hasChanged = hasChangedListItemValue(form, item);
+                    return hasChangedListItemValue(form, item);
+                } else if (item.name.startsWith('uri_list-element_')) {
+                    return hasChangedListItemURI(form, item);
                 }
 
-                if (item.name.startsWith('uri_list-element_')) {
-                    isKnownInput = true;
-                    hasChanged = hasChangedListItemURI(form, item);
-                }
-
-                if (!isKnownInput) {
-                    // Always send the name and URI for the list itself (only
-                    // list element inputs may be filtered out)
-                    return true;
-                }
-
-                return hasChanged;
+                // Always send the name and URI for the list itself (only
+                // list element inputs may be filtered out)
+                return true;
             }
 
             if (!$listForm.length) {
