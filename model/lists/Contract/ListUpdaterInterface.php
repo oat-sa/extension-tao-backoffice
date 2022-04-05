@@ -22,6 +22,9 @@ namespace oat\taoBackOffice\model\lists\Contract;
 
 use oat\tao\model\Lists\DataAccess\Repository\ValueConflictException;
 use Psr\Http\Message\ServerRequestInterface;
+use BadFunctionCallException;
+use OverflowException;
+use RuntimeException;
 
 /**
  * Application service to update elements for a list
@@ -32,6 +35,7 @@ interface ListUpdaterInterface
      * @throws BadFunctionCallException if the payload contains too many items
      * @throws OverflowException if the list exceeds the allowed number of items
      * @throws ValueConflictException if element URIs are non-unique
+     * @throws RuntimeException if there is an unexpected persistence error
      */
-    public function updateByRequest(ServerRequestInterface $request): bool;
+    public function updateByRequest(ServerRequestInterface $request): void;
 }

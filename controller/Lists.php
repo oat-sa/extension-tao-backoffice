@@ -297,19 +297,19 @@ class Lists extends tao_actions_CommonModule
         );
 
         try {
+            $this->getListUpdater()->updateByRequest($this->getPsrRequest());
+
             $this->returnJson(
                 [
-                    'saved' => $this->getListUpdater()->updateByRequest(
-                        $this->getPsrRequest()
-                    )
+                    'saved' => true
                 ]
             );
-        } catch (BadFunctionCallException $exception) {
+        } catch (BadFunctionCallException | RuntimeException $exception) {
             $this->returnJson(
                 [
                     'saved' => false,
                     'errors' => [
-                        $exception->getMessage(),
+                        __($exception->getMessage()),
                     ],
                 ]
             );

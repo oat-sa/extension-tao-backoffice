@@ -35,6 +35,7 @@ use core_kernel_classes_Class;
 use tao_helpers_Uri;
 use BadFunctionCallException;
 use OverflowException;
+use RuntimeException;
 
 class ListUpdater implements ListUpdaterInterface
 {
@@ -56,13 +57,14 @@ class ListUpdater implements ListUpdaterInterface
      * @throws BadFunctionCallException if the payload contains too many items
      * @throws OverflowException if the list exceeds the allowed number of items
      * @throws ValueConflictException if element URIs are non-unique
+     * @throws RuntimeException if there is an unexpected persistence error
      */
-    public function updateByRequest(ServerRequestInterface $request): bool
+    public function updateByRequest(ServerRequestInterface $request): void
     {
         $post = (array) $request->getParsedBody();
 
         if (!isset($post['uri'])) {
-            return false;
+            throw new BadFunctionCallException('Payload is missing the list URI');
         }
 
         $listClass = $this->listService->getList(
@@ -70,7 +72,7 @@ class ListUpdater implements ListUpdaterInterface
         );
 
         if ($listClass === null) {
-            return false;
+            throw new BadFunctionCallException('Provided list class does not exist');
         }
 
         $payload = $post;
@@ -82,12 +84,12 @@ class ListUpdater implements ListUpdaterInterface
         unset($payload['uri'], $payload['label']);
 
         if (count($payload) > 500) {
-            throw new BadFunctionCallException(
-                __('Payload contains too many items')
-            );
+            throw new BadFunctionCallException('Payload contains too many items');
         }
 
-        return $this->setListElements($listClass, $payload);
+        if (!$this->setListElements($listClass, $payload)) {
+            throw new RuntimeException('Error saving list items');
+        }
     }
 
     private function setListElements(
@@ -108,9 +110,9 @@ class ListUpdater implements ListUpdaterInterface
 
     private function addElementToCollection(
         ValueCollection $valueCollection,
-        $key,
-        $value,
-        $newUri
+        string $key,
+        string $value,
+        string $newUri
     ): void {
         $element = $this->getValueByUriKey($valueCollection, $key);
 
@@ -126,8 +128,10 @@ class ListUpdater implements ListUpdaterInterface
         }
     }
 
-    private function getValueByUriKey(ValueCollection $valueCollection, $key): ?Value
-    {
+    private function getValueByUriKey(
+        ValueCollection $valueCollection,
+        string $key
+    ): ?Value {
         $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
         $uri = tao_helpers_Uri::decode($encodedUri);
 
