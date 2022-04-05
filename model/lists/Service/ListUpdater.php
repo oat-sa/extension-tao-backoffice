@@ -47,8 +47,7 @@ class ListUpdater implements ListUpdaterInterface
     public function __construct(
         ValueCollectionService $valueCollectionService,
         ListService $listService
-    )
-    {
+    ) {
         $this->valueCollectionService = $valueCollectionService;
         $this->listService = $listService;
     }
