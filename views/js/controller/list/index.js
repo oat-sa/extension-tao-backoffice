@@ -138,6 +138,31 @@ define([
                 $tooltip.toggleClass('tooltip-hidden', !isDisabled);
             }
 
+            function hasChangedListItemValue(form, item) {
+                const formerValue = $('[name="' + item.name + '"]', form).data('formerValue');
+                const formerURI = $('[name="uri_' + item.name + '"]', form).data('formerValue');
+                const newURI = $('[name="uri_' + item.name + '"]', form).val();
+
+                if (formerURI.trim() == '') {
+                    return true; // New item
+                }
+
+                return ((formerValue != item.value) || (formerURI != newURI));
+            }
+
+            function hasChangedListItemURI(form, item) {
+                const cleanName = item.name.substring(4);
+                let formerURI = $('[name="' + item.name + '"]', form).data('formerValue');
+                let formerValue = $('[name="' + cleanName + '"]', form).data('formerValue');
+                let newValue = $('[name="' + cleanName + '"]', form).val();
+
+                if (formerURI.trim() == '') {
+                    return true; // New item
+                }
+
+                return ((formerValue != newValue) || (formerURI != item.value));
+            }
+
             /**
              * We should keep all data for elements whose value *or* URI has changed
              * (that is, we send both in case either the URI or the value has changed).
@@ -153,37 +178,18 @@ define([
                 let isKnownInput = false;
 
                 if (item.name.startsWith('list-element_')) {
-                    let formerValue = $('[name="' + item.name + '"]', form).data('formerValue');
-                    let formerURI = $('[name="uri_' + item.name + '"]', form).data('formerValue');
-                    let newURI = $('[name="uri_' + item.name + '"]', form).val();
-
                     isKnownInput = true;
-
-                    if (formerURI.trim() == '') {
-                        hasChanged = true;
-                    } else {
-                        hasChanged = ((formerValue != item.value) || (formerURI != newURI));
-                    }
+                    hasChanged = hasChangedListItemValue(form, item);
                 }
 
                 if (item.name.startsWith('uri_list-element_')) {
-                    const cleanName = item.name.substring(4);
-                    let formerURI = $('[name="' + item.name + '"]', form).data('formerValue');
-                    let formerValue = $('[name="' + cleanName + '"]', form).data('formerValue');
-                    let newValue = $('[name="' + cleanName + '"]', form).val();
-
                     isKnownInput = true;
-
-                    if (formerURI.trim() == '') {
-                        hasChanged = true; // New item
-                    } else {
-                        hasChanged = ((formerValue != newValue) || (formerURI != item.value));
-                    }
+                    hasChanged = hasChangedListItemURI(form, item);
                 }
 
                 if (!isKnownInput) {
-                    // Filter only inputs for list elements
-                    // (always send the name and URI for the list itself)
+                    // Always send the name and URI for the list itself (only
+                    // list element inputs may be filtered out)
                     return true;
                 }
 
