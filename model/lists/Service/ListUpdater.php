@@ -92,15 +92,37 @@ class ListUpdater implements ListUpdaterInterface
         }
     }
 
+    /**
+     * Updates the ValueCollection instance corresponding to a class.
+     *
+     * The payload is used to call ValueCollectionService::persist(): Depending
+     * on the particular underlying repository class used (instance of
+     * ValueCollectionRepositoryInterface), that may cause removing all existing
+     * items first (i.e. for remote lists) or merging the values provided with
+     * pre-existing values.
+     *
+     * @param core_kernel_classes_Class $listClass
+     * @param array $payload
+     * @return bool
+     */
     private function setListElements(
         core_kernel_classes_Class $listClass,
         array $payload
     ): bool {
-        $clause = $this->getListSearchInput($listClass);
-        $elementsFromPayload = $this->getElementsFromPayload($payload);
-        $collection = $this->valueCollectionService->findAll($clause);
+        // This method does not really fetch elements (the object returned by
+        // getListSearchInput() has a limit set to 0) and assumes the repository
+        // (for example, RdfValueCollectionRepository) will check if it needs to
+        // update an existing item or insert a new one based on its URI (or
+        // absence of).
+        //
+        // Note also we cannot POST two items with the same former URI, so there
+        // is no need to check for duplicates in the input data.
+        //
+        $collection = $this->valueCollectionService->findAll(
+            $this->getListSearchInput($listClass)
+        );
 
-        foreach ($elementsFromPayload as $key => $value) {
+        foreach ($this->getElementsFromPayload($payload) as $key => $value) {
             $newUri = trim($payload["uri_$key"] ?? '');
             $this->addElementToCollection($collection, $key, $value, $newUri);
         }
@@ -157,9 +179,9 @@ class ListUpdater implements ListUpdaterInterface
         core_kernel_classes_Class $listClass
     ): ValueCollectionSearchInput {
         return new ValueCollectionSearchInput(
-            (new ValueCollectionSearchRequest())->setValueCollectionUri(
-                $listClass->getUri()
-            )
+            (new ValueCollectionSearchRequest())
+                ->setValueCollectionUri($listClass->getUri())
+                ->setLimit(0)
         );
     }
 }
