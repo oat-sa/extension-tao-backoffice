@@ -100,10 +100,6 @@ class ListUpdater implements ListUpdaterInterface
      * ValueCollectionRepositoryInterface), that may cause removing all existing
      * items first (i.e. for remote lists) or merging the values provided with
      * pre-existing values.
-     *
-     * @param core_kernel_classes_Class $listClass
-     * @param array $payload
-     * @return bool
      */
     private function setListElements(
         core_kernel_classes_Class $listClass,
