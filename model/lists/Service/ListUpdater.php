@@ -105,34 +105,37 @@ class ListUpdater implements ListUpdaterInterface
         core_kernel_classes_Class $listClass,
         array $payload
     ): bool {
-        // This method does not really fetch elements (the object returned by
-        // getListSearchInput() has a limit set to 0) and assumes the repository
-        // (for example, RdfValueCollectionRepository) will check if it needs to
-        // update an existing item or insert a new one based on its URI (or
-        // absence of).
+        // This method retrieves only elements corresponding to the URIs that
+        // are modified by the request (i.e. present in the POST data) instead
+        // of all list items.
+        //
+        // Retrieving existing elements is needed in order to return an accurate
+        // value for Value::hasModifiedUri() calls, as the repository might
+        // depend on that to check if an element needs to be created or updated.
         //
         // Note also we cannot POST two items with the same former URI, so there
-        // is no need to check for duplicates in the input data.
+        // is no need to check for duplicates in the input data itself.
         //
+        $elements = $this->getElementsFromPayload($payload);
         $collection = $this->valueCollectionService->findAll(
-            $this->getListSearchInput($listClass)
+            $this->getListSearchInput($listClass, $elements)
         );
 
-        foreach ($this->getElementsFromPayload($payload) as $key => $value) {
-            $newUri = trim($payload["uri_$key"] ?? '');
-            $this->addElementToCollection($collection, $key, $value, $newUri);
+        foreach ($elements as $uriKey => $value) {
+            $newUri = trim($payload["uri_{$uriKey}"] ?? '');
+            $this->addOneElement($collection, $uriKey, $value, $newUri);
         }
 
         return $this->valueCollectionService->persist($collection);
     }
 
-    private function addElementToCollection(
+    private function addOneElement(
         ValueCollection $valueCollection,
-        string $key,
+        string $uri,
         string $value,
         string $newUri
     ): void {
-        $element = $this->getValueByUriKey($valueCollection, $key);
+        $element = $this->getValueByUriKey($valueCollection, $uri);
 
         if ($element === null) {
             $valueCollection->addValue(new Value(null, $newUri, $value));
@@ -150,14 +153,42 @@ class ListUpdater implements ListUpdaterInterface
         ValueCollection $valueCollection,
         string $key
     ): ?Value {
-        $encodedUri = preg_replace('/^list-element_[0-9]+_/', '', $key);
-        $uri = tao_helpers_Uri::decode($encodedUri);
-
+        $uri = $this->getElementURIFromKey($key);
         if (empty($uri)) {
             return null;
         }
 
         return $valueCollection->extractValueByUri($uri);
+    }
+
+    private function getListSearchInput(
+        core_kernel_classes_Class $listClass,
+        $elements
+    ): ValueCollectionSearchInput {
+        $uris = [];
+
+        foreach ($elements as $key => $_value) {
+            $uri = $this->getElementURIFromKey($key);
+            if(!empty($uri)) {
+                $uris[] = $uri;
+            }
+        }
+
+        $uris = array_unique($uris);
+
+        return new ValueCollectionSearchInput(
+            (new ValueCollectionSearchRequest())
+                ->setValueCollectionUri($listClass->getUri())
+                ->setLimit(count($uris))
+                ->setUris(...$uris)
+        );
+    }
+
+    private function getElementURIFromKey(string $key): ?string
+    {
+        return tao_helpers_Uri::decode(
+            preg_replace('/^list-element_[0-9]+_/', '', $key)
+        );
     }
 
     private function getElementsFromPayload(array $payload): array
@@ -168,16 +199,6 @@ class ListUpdater implements ListUpdaterInterface
                 return (bool)preg_match('/^list-element_/', $key);
             },
             ARRAY_FILTER_USE_KEY
-        );
-    }
-
-    private function getListSearchInput(
-        core_kernel_classes_Class $listClass
-    ): ValueCollectionSearchInput {
-        return new ValueCollectionSearchInput(
-            (new ValueCollectionSearchRequest())
-                ->setValueCollectionUri($listClass->getUri())
-                ->setLimit(0)
         );
     }
 }
