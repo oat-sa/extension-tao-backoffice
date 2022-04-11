@@ -163,7 +163,7 @@ class ListUpdater implements ListUpdaterInterface
 
     private function getListSearchInput(
         core_kernel_classes_Class $listClass,
-        $elements
+        array $elements
     ): ValueCollectionSearchInput {
         $uris = [];
 
