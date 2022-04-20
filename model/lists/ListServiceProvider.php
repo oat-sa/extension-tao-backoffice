@@ -22,12 +22,14 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
+use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\taoBackOffice\model\lists\Service\ListDeleter;
 use oat\generis\model\resource\Repository\ClassRepository;
 use oat\taoBackOffice\model\ListElement\Service\ListElementsDeleter;
 use oat\generis\model\DependencyInjection\ContainerServiceProviderInterface;
 use oat\tao\model\Lists\Business\Specification\RemoteListClassSpecification;
 use oat\tao\model\Lists\DataAccess\Repository\ParentPropertyListCachedRepository;
+use oat\taoBackOffice\model\lists\Service\ListUpdater;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
@@ -71,6 +73,16 @@ class ListServiceProvider implements ContainerServiceProviderInterface
                     service(RemoteListClassSpecification::class),
                     service(ParentPropertyListCachedRepository::class),
                     service(ClassRepository::class),
+                ]
+            );
+
+        $services
+            ->set(ListUpdater::class, ListUpdater::class)
+            ->public()
+            ->args(
+                [
+                    service(ValueCollectionService::class),
+                    service(ListService::class),
                 ]
             );
     }

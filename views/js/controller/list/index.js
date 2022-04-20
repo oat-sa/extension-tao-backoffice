@@ -74,13 +74,14 @@ define([
     }
 
     function createListElement(name, value = '') {
+        const uri = Uri.decode(clearUri(name));
         return $(`<div class='list-element'>
             <div class='list-element'>
                 <div class='list-element__input-container'>
-                    <input type='text' name='${name}' value='${value}' data-testid='elementNameInput'/>
+                    <input type='text' name='${name}' value='${value}' data-testid='elementNameInput' data-former-value='${value}'/>
                     <div class='list-element__input-container__uri'>
                         <label for='uri_${name}' class='title'>URI</label>
-                        <input id='uri_${name}' type='text' name='uri_${name}' value='${Uri.decode(clearUri(name))}' data-testid='elementUriInput'>
+                        <input id='uri_${name}' type='text' name='uri_${name}' value='${uri}' data-former-value='${uri}' data-testid='elementUriInput'>
                     </div>
                 </div>
                 <span class='icon-checkbox-crossed list-element-delete-btn' data-testid='deleteElementButton'>
@@ -92,11 +93,19 @@ define([
         findListContainer($(this).attr('id')).toggleClass('with-uri');
     }
 
+    function showElementsEditControls($listContainer) {
+        $listContainer.find('span.list-element')
+            .replaceWith(function () {
+                return transformListElement($(this));
+            });
+    }
+
     function handleEditList (targetUri) {
         const uri = getUriValue(targetUri);
         const $listContainer = findListContainer(uri);
         const list = $listContainer.find('ol');
         const offset = list.children('[id^=list-element]').length;
+        const batchSize = 100;
         let totalItems = 0;
         let maxItems = 1000;
 
@@ -108,7 +117,7 @@ define([
             return totalItems >= maxItems;
         }
 
-        loadListElements(uri, offset, 0).then(newListData => {
+        loadListElements(uri, offset, batchSize).then(newListData => {
             extendListWithNewElements(newListData, $listContainer);
 
             const saveUrl = urlUtil.route('saveLists', 'Lists', 'taoBackOffice');
@@ -129,8 +138,55 @@ define([
                 $tooltip.toggleClass('tooltip-hidden', !isDisabled);
             }
 
+            function hasChangedListItemValue(form, item) {
+                const formerValue = $('[name="' + item.name + '"]', form).data('formerValue');
+                const formerURI = $('[name="uri_' + item.name + '"]', form).data('formerValue');
+                const newURI = $('[name="uri_' + item.name + '"]', form).val();
+
+                if (formerURI.trim() == '') {
+                    return true; // New item
+                }
+
+                return ((formerValue != item.value) || (formerURI != newURI));
+            }
+
+            function hasChangedListItemURI(form, item) {
+                const cleanName = item.name.substring(4);
+                const formerURI = $('[name="' + item.name + '"]', form).data('formerValue');
+                const formerValue = $('[name="' + cleanName + '"]', form).data('formerValue');
+                const newValue = $('[name="' + cleanName + '"]', form).val();
+
+                if (formerURI.trim() == '') {
+                    return true; // New item
+                }
+
+                return ((formerValue != newValue) || (formerURI != item.value));
+            }
+
+            /**
+             * We should keep all data for elements whose value *or* URI has changed
+             * (that is, we send both in case either the URI or the value has changed).
+             * Therefore, this function checks also, for each input, if the associated
+             * URI (for values) or value (for URIs) has also changed to do the filtering.
+             */
+            function listItemHasChanged(form, item) {
+                if (!item.hasOwnProperty('name') || !item.hasOwnProperty('value')) {
+                    return true;
+                }
+
+                if (item.name.startsWith('list-element_')) {
+                    return hasChangedListItemValue(form, item);
+                } else if (item.name.startsWith('uri_list-element_')) {
+                    return hasChangedListItemURI(form, item);
+                }
+
+                // Always send the name and URI for the list itself (only
+                // list element inputs may be filtered out)
+                return true;
+            }
+
             if (!$listForm.length) {
-                let nextElementId;
+                let nextElementId = totalItems;
 
                 $listForm = $('<form>');
                 $listContainer.wrapInner($listForm);
@@ -142,17 +198,15 @@ define([
                 $listTitleBar.closest('.container-title').html($labelEdit);
                 $labelEdit.focus();
 
-                nextElementId = $listContainer.find('.list-element')
-                    .replaceWith(function () {
-                        return transformListElement($(this));
-                    })
-                    .length;
+                showElementsEditControls($listContainer);
 
                 $listSaveBtn = createButton(__('Save list'), 'save');
                 $listSaveBtn.on('click', function () {
+                    const form = $(this).closest('form');
+
                     $.postJson(
                         saveUrl,
-                        $(this).closest('form').serializeArray(),
+                        form.serializeArray().filter((item) => listItemHasChanged(form, item)),
                         response => {
                             if (response.saved) {
                                 feedback().success(__('List saved'));
@@ -180,7 +234,7 @@ define([
                     toggleAddButton(isLimitReached());
 
                     $list.append($('<li>').append(createNewListElement(nextElementId++)))
-                        .closest('.container-content').scrollTop($list.height());
+                         .closest('.container-content').scrollTop($list.height());
 
                     return false;
                 });
@@ -387,8 +441,11 @@ define([
             $btn.find('a').text('Load more');
             $btn.find('.icon-loop').toggleClass('rotate');
             extendListWithNewElements(newListData, $listContainer, listUri);
-        });
 
+            if ($listContainer.find('form').length) {
+                showElementsEditControls($listContainer);
+            }
+        });
     }
 
     /**
@@ -423,12 +480,14 @@ define([
     function extendListWithNewElements({elements, totalCount}, listContainer) {
         const $list = listContainer.find('ol');
         let offset = $list.children('[id^=list-element]').length;
+        let buffer = '';
 
-        for (let i = 0, id = ''; i < elements.length; i++) {
+        for (let i = 0, id = '', len = elements.length; i < len; i++) {
             id = `list-element_${offset++}_`;
-            $list.append($(`<li id=${id}>`).append(`<span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span>`))
-            .closest('.container-content').scrollTop($list.height());
+            buffer += `<li id=${id}><span class='list-element' id='${id}${elements[i].uri}'>${elements[i].label}</span></li>`;
         }
+
+        $list.append(buffer).closest('.container-content').scrollTop($list.height());
 
         if (offset === totalCount) {
             listContainer.find('.pagination-container').hide();
