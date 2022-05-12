@@ -20,6 +20,7 @@
 
 namespace oat\taoBackOffice\controller;
 
+use Throwable;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
@@ -57,17 +58,22 @@ class Redirector extends \tao_actions_CommonModule
         $urlBuilder = $this->getServiceLocator()->get(ResourceUrlBuilder::SERVICE_ID);
         $resource = $this->getResource($uri);
 
-        if ($resource->exists()) {
-            return $this->returnJson([
-                'success' => true,
-                'data'    => $urlBuilder->buildUrl($resource)
-            ]);
+        try {
+            $this->returnJson(
+                [
+                    'success' => true,
+                    'data' => $urlBuilder->buildUrl($resource),
+                ]
+            );
+        } catch (Throwable $exception) {
+            $this->returnJson(
+                [
+                    'success' => false,
+                    'errorCode' => 202,
+                    'errorMessage' => __('The requested resource does not exist or has been deleted'),
+                ],
+                202
+            );
         }
-
-        return $this->returnJson([
-            'success' => false,
-            'errorCode' => 202,
-            'errorMessage' => __('The requested resource does not exist or has been deleted')
-        ], 202);
     }
 }
