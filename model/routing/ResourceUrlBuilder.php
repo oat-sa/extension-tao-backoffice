@@ -16,6 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * Copyright (c) 2018-2022 (original work) Open Assessment Technologies SA.
+ *
+ * @author Gyula Szucs <gyula@taotesting.com>
  */
 
 declare(strict_types=1);
@@ -30,16 +32,10 @@ use oat\tao\model\menu\Section;
 use core_kernel_classes_Resource;
 use oat\tao\model\menu\MenuService;
 use oat\tao\model\menu\Perspective;
-use oat\generis\model\OntologyAwareTrait;
 use oat\oatbox\service\ConfigurableService;
 
-/**
- * @author Gyula Szucs <gyula@taotesting.com>
- */
 class ResourceUrlBuilder extends ConfigurableService
 {
-    use OntologyAwareTrait;
-
     public const SERVICE_ID = 'taoBackOffice/resourceUrlBuilder';
 
     /**
@@ -49,7 +45,7 @@ class ResourceUrlBuilder extends ConfigurableService
      */
     public function buildUrl(core_kernel_classes_Resource $resource)
     {
-        $resourceClass = $this->getClass($resource);
+        $resourceClass = $resource->getClass($resource);
 
         if (!$resource->exists() && !$resourceClass->exists()) {
             throw new InvalidArgumentException('The requested resource does not exist or has been deleted');
@@ -69,11 +65,18 @@ class ResourceUrlBuilder extends ConfigurableService
             }
         }
 
-        throw new LogicException('No url could be built for "' . $resource->getUri() . '"');
+        throw new LogicException(
+            sprintf(
+                'No url could be built for "%s"',
+                $resource->getUri()
+            )
+        );
     }
 
     /**
      * Generates the actual URL based on perspective and section
+     *
+     * @return string
      */
     private function getBackofficeUrl(
         Perspective $perspective,
@@ -87,14 +90,11 @@ class ResourceUrlBuilder extends ConfigurableService
         ]);
     }
 
-    /**
-     * @return bool
-     */
-    private function isSectionApplicable(core_kernel_classes_Class $resourceClass, Section $section)
+    private function isSectionApplicable(core_kernel_classes_Class $resourceClass, Section $section): bool
     {
         /** @var Tree $tree */
         foreach ($section->getTrees() as $tree) {
-            $rootClass = $this->getClass($tree->get('rootNode'));
+            $rootClass = $resourceClass->getClass($tree->get('rootNode'));
 
             if ($rootClass->equals($resourceClass) || $resourceClass->isSubClassOf($rootClass)) {
                 return true;

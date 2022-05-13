@@ -20,6 +20,8 @@
  * @author Gyula Szucs <gyula@taotesting.com>
  */
 
+declare(strict_types=1);
+
 namespace oat\taoBackOffice\controller;
 
 use Throwable;
