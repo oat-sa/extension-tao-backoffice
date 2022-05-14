@@ -27,6 +27,7 @@ namespace oat\taoBackOffice\controller;
 use Throwable;
 use tao_actions_CommonModule;
 use InvalidArgumentException;
+use core_kernel_classes_Resource;
 use common_exception_MissingParameter;
 use oat\generis\model\OntologyAwareTrait;
 use oat\tao\model\http\HttpJsonResponseTrait;
@@ -45,23 +46,12 @@ class Redirector extends tao_actions_CommonModule
      */
     public function redirectTaskToInstance(): void
     {
-        $queryParams = $this->getPsrRequest()->getQueryParams();
-
-        if (!isset($queryParams[self::PARAMETER_TASK_ID])) {
-            throw new common_exception_MissingParameter(self::PARAMETER_TASK_ID, $this->getRequestURI());
-        }
-
-        $entity = $this->getTaskLog()->getByIdAndUser(
-            $queryParams[self::PARAMETER_TASK_ID],
-            $this->getSession()->getUserUri(),
-            true // in Sync mode, task is archived straightaway
-        );
-
-        $uri = $entity->getResourceUriFromReport();
-        $resource = $this->getResource($uri);
-
         try {
-            $this->setSuccessJsonResponse($this->getResourceUrlBuilder()->buildUrl($resource));
+            $this->setSuccessJsonResponse(
+                $this->getResourceUrlBuilder()->buildUrl(
+                    $this->getTaskInstance()
+                )
+            );
         } catch (InvalidArgumentException $exception) {
             $this->logError($exception->getMessage());
             $this->setErrorJsonResponse(
@@ -79,6 +69,23 @@ class Redirector extends tao_actions_CommonModule
                 500
             );
         }
+    }
+
+    private function getTaskInstance(): core_kernel_classes_Resource
+    {
+        $queryParams = $this->getPsrRequest()->getQueryParams();
+
+        if (!isset($queryParams[self::PARAMETER_TASK_ID])) {
+            throw new common_exception_MissingParameter(self::PARAMETER_TASK_ID, $this->getRequestURI());
+        }
+
+        $entity = $this->getTaskLog()->getByIdAndUser(
+            $queryParams[self::PARAMETER_TASK_ID],
+            $this->getSession()->getUserUri(),
+            true // in Sync mode, task is archived straightaway
+        );
+
+        return $this->getResource($entity->getResourceUriFromReport());
     }
 
     private function getTaskLog(): TaskLogInterface
