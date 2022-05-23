@@ -15,59 +15,86 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2018-2022 (original work) Open Assessment Technologies SA.
+ *
+ * @author Gyula Szucs <gyula@taotesting.com>
  */
+
+declare(strict_types=1);
 
 namespace oat\taoBackOffice\controller;
 
+use Throwable;
+use tao_actions_CommonModule;
+use InvalidArgumentException;
+use core_kernel_classes_Resource;
+use common_exception_MissingParameter;
 use oat\generis\model\OntologyAwareTrait;
+use oat\tao\model\http\HttpJsonResponseTrait;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\taoBackOffice\model\routing\ResourceUrlBuilder;
 
-/**
- * @author Gyula Szucs <gyula@taotesting.com>
- */
-class Redirector extends \tao_actions_CommonModule
+class Redirector extends tao_actions_CommonModule
 {
-    const PARAMETER_TASK_ID = 'taskId';
-
     use OntologyAwareTrait;
+    use HttpJsonResponseTrait;
+
+    private const PARAMETER_TASK_ID = 'taskId';
 
     /**
      * Redirect to a resource generated in a task.
      */
-    public function redirectTaskToInstance()
+    public function redirectTaskToInstance(): void
     {
-        if (!$this->hasRequestParameter(self::PARAMETER_TASK_ID)) {
-            throw new \common_exception_MissingParameter(self::PARAMETER_TASK_ID, $this->getRequestURI());
+        try {
+            $this->setSuccessJsonResponse(
+                $this->getResourceUrlBuilder()->buildUrl(
+                    $this->getTaskInstance()
+                )
+            );
+        } catch (InvalidArgumentException $exception) {
+            $this->logError($exception->getMessage());
+            $this->setErrorJsonResponse(
+                __('The requested resource does not exist or has been deleted'),
+                202,
+                [],
+                202
+            );
+        } catch (Throwable $exception) {
+            $this->logError($exception->getMessage());
+            $this->setErrorJsonResponse(
+                __('There was a problem redirecting to the requested resource'),
+                500,
+                [],
+                500
+            );
+        }
+    }
+
+    private function getTaskInstance(): core_kernel_classes_Resource
+    {
+        $queryParams = $this->getPsrRequest()->getQueryParams();
+
+        if (!isset($queryParams[self::PARAMETER_TASK_ID])) {
+            throw new common_exception_MissingParameter(self::PARAMETER_TASK_ID, $this->getRequestURI());
         }
 
-        /** @var TaskLogInterface $taskLogService */
-        $taskLogService = $this->getServiceLocator()->get(TaskLogInterface::SERVICE_ID);
-
-        $entity = $taskLogService->getByIdAndUser(
-            $this->getRequestParameter(self::PARAMETER_TASK_ID),
+        $entity = $this->getTaskLog()->getByIdAndUser(
+            $queryParams[self::PARAMETER_TASK_ID],
             $this->getSession()->getUserUri(),
             true // in Sync mode, task is archived straightaway
         );
 
-        $uri = $entity->getResourceUriFromReport();
+        return $this->getResource($entity->getResourceUriFromReport());
+    }
 
-        /** @var ResourceUrlBuilder $urlBuilder */
-        $urlBuilder = $this->getServiceLocator()->get(ResourceUrlBuilder::SERVICE_ID);
-        $resource = $this->getResource($uri);
+    private function getTaskLog(): TaskLogInterface
+    {
+        return $this->getPsrContainer()->get(TaskLogInterface::SERVICE_ID);
+    }
 
-        if ($resource->exists()) {
-            return $this->returnJson([
-                'success' => true,
-                'data'    => $urlBuilder->buildUrl($resource)
-            ]);
-        }
-
-        return $this->returnJson([
-            'success' => false,
-            'errorCode' => 202,
-            'errorMessage' => __('The requested resource does not exist or has been deleted')
-        ], 202);
+    private function getResourceUrlBuilder(): ResourceUrlBuilder
+    {
+        return $this->getPsrContainer()->get(ResourceUrlBuilder::SERVICE_ID);
     }
 }
