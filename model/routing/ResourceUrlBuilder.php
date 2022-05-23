@@ -15,46 +15,49 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2018 (original work) Open Assessment Technologies SA ;
+ * Copyright (c) 2018-2022 (original work) Open Assessment Technologies SA.
+ *
+ * @author Gyula Szucs <gyula@taotesting.com>
  */
+
+declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\routing;
 
-use oat\generis\model\OntologyAwareTrait;
-use oat\oatbox\service\ConfigurableService;
+use LogicException;
+use oat\tao\model\menu\Tree;
+use InvalidArgumentException;
+use core_kernel_classes_Class;
+use oat\tao\model\menu\Section;
+use core_kernel_classes_Resource;
 use oat\tao\model\menu\MenuService;
 use oat\tao\model\menu\Perspective;
-use oat\tao\model\menu\Section;
+use oat\oatbox\service\ConfigurableService;
 
-/**
- * @author Gyula Szucs <gyula@taotesting.com>
- */
 class ResourceUrlBuilder extends ConfigurableService
 {
-    use OntologyAwareTrait;
-
-    const SERVICE_ID = 'taoBackOffice/resourceUrlBuilder';
+    public const SERVICE_ID = 'taoBackOffice/resourceUrlBuilder';
 
     /**
      * Builds a full URL for a resource
      *
-     * @param \core_kernel_classes_Resource $resource
      * @return string
      */
-    public function buildUrl(\core_kernel_classes_Resource $resource)
+    public function buildUrl(core_kernel_classes_Resource $resource)
     {
-        if (!$resource->exists()) {
-            throw new \InvalidArgumentException('The requested resource does not exist or has been deleted');
+        $resourceClass = $resource->getClass($resource);
+
+        if (!$resource->exists() && !$resourceClass->exists()) {
+            throw new InvalidArgumentException('The requested resource does not exist or has been deleted');
+        }
+
+        if (!$resource->isClass()) {
+            $resourceClass = array_values($resource->getTypes())[0];
         }
 
         /** @var Perspective $perspective */
-        /** @var Section $section */
-
-        $resourceClass = $resource->isClass()
-            ? $this->getClass($resource)
-            : array_values($resource->getTypes())[0];
-
         foreach (MenuService::getAllPerspectives() as $perspective) {
+            /** @var Section $section */
             foreach ($perspective->getChildren() as $section) {
                 if ($this->isSectionApplicable($resourceClass, $section)) {
                     return $this->getBackofficeUrl($perspective, $section, $resource);
@@ -62,17 +65,24 @@ class ResourceUrlBuilder extends ConfigurableService
             }
         }
 
-        throw new \LogicException('No url could be built for "' . $resource->getUri() . '"');
+        throw new LogicException(
+            sprintf(
+                'No url could be built for "%s"',
+                $resource->getUri()
+            )
+        );
     }
 
     /**
      * Generates the actual URL based on perspective and section
-     * @param Perspective $perspective
-     * @param Section $section
-     * @param \core_kernel_classes_Resource $resource
+     *
+     * @return string
      */
-    private function getBackofficeUrl(Perspective $perspective, Section $section, \core_kernel_classes_Resource $resource)
-    {
+    private function getBackofficeUrl(
+        Perspective $perspective,
+        Section $section,
+        core_kernel_classes_Resource $resource
+    ) {
         return _url('index', 'Main', 'tao', [
             'structure' => $perspective->getId(),
             'section' => $section->getId(),
@@ -80,16 +90,12 @@ class ResourceUrlBuilder extends ConfigurableService
         ]);
     }
 
-    /**
-     * @param \core_kernel_classes_Class $resourceClass
-     * @param Section                    $section
-     * @return bool
-     */
-    private function isSectionApplicable(\core_kernel_classes_Class $resourceClass, Section $section)
+    private function isSectionApplicable(core_kernel_classes_Class $resourceClass, Section $section): bool
     {
         /** @var Tree $tree */
         foreach ($section->getTrees() as $tree) {
-            $rootClass = $this->getClass($tree->get('rootNode'));
+            $rootClass = $resourceClass->getClass($tree->get('rootNode'));
+
             if ($rootClass->equals($resourceClass) || $resourceClass->isSubClassOf($rootClass)) {
                 return true;
             }
