@@ -1,5 +1,7 @@
 # extension-tao-backoffice
 
+[![codecov](https://codecov.io/gh/oat-sa/extension-tao-backoffice/branch/master/graph/badge.svg)](https://codecov.io/gh/oat-sa/extension-tao-backoffice)
+
 ## Lists
 
 ### Environment variables
