@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint117\n"
-"PO-Revision-Date: 2020-09-22T16:02:13\n"
+"Project-Id-Version: TAO 2022.09\n"
+"PO-Revision-Date: 2022-08-12T16:45:50\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -13,11 +13,14 @@ msgstr ""
 "X-Poedit-KeywordsList: __\n"
 "X-Poedit-SearchPath-0: .\n"
 
-msgid "Create a list"
-msgstr "リスト作成"
+msgid "Attempt for reloading of remote list was not successful"
+msgstr ""
+
+msgid "Create a remote list"
+msgstr ""
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr "アイテムの作成、アイテムとテストバンクの管理、デリバリの作成、レポートの準備、ワークフローの設定。"
+msgstr "アイテム作成、アイテム・テストバンク管理、デリバリ作成、レポート準備、ワークフロー設定"
 
 #, tao-public
 msgid "Delete"
@@ -33,7 +36,10 @@ msgstr "リスト編集"
 msgid "Edit Tree"
 msgstr "ツリー編集"
 
-msgid "element"
+msgid "Edit URI"
+msgstr ""
+
+msgid "Element"
 msgstr "エレメント"
 
 msgid "Element deleted"
@@ -56,11 +62,17 @@ msgstr "リスト"
 msgid "List deleted"
 msgstr "リストが削除されました"
 
+msgid "List failed to be reloaded"
+msgstr ""
+
 msgid "List not deleted"
 msgstr "リストは削除されませんでした"
 
 msgid "List not saved"
 msgstr "リストは保存されませんでした"
+
+msgid "List reloaded"
+msgstr "リストは再読込されました"
 
 msgid "List saved"
 msgstr "リストを保存しました"
@@ -68,6 +80,9 @@ msgstr "リストを保存しました"
 #, tao-public
 msgid "Lists"
 msgstr "リスト"
+
+msgid "Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator."
+msgstr ""
 
 msgid "Please confirm you want to delete this list element."
 msgstr "このリストを削除します。よろしいですか？"
@@ -78,6 +93,16 @@ msgstr "このリストを削除します。よろしいですか？この操作
 #, tao-public
 msgid "Properties"
 msgstr "プロパティ"
+
+msgid "Reload this list"
+msgstr "このリストを再読み込み"
+
+msgid "Remote list was successfully reloaded"
+msgstr ""
+
+#, tao-public
+msgid "Remote Lists"
+msgstr "リモートリスト"
 
 msgid "Save list"
 msgstr "リストを保存"
@@ -90,19 +115,31 @@ msgid "TAO Back Office"
 msgstr "TAOバックオフィス"
 
 msgid "Test Developers and Administrators"
-msgstr "テスト開発者と管理者"
+msgstr "テスト開発・管理"
+
+msgid "The list exceeds the allowed number of items"
+msgstr ""
+
+msgid "The list should contain unique URIs"
+msgstr ""
 
 msgid "The requested resource does not exist or has been deleted"
 msgstr "リクエストリソースはありません。削除されています。"
+
+msgid "There was a problem redirecting to the requested resource"
+msgstr ""
 
 #, tao-public
 msgid "Trees"
 msgstr "ツリー"
 
-msgid "View tree"
-msgstr "ツリー表示"
+msgid "Unable to delete the selected list"
+msgstr ""
 
 #, tao-public
 msgid "View Tree"
+msgstr "ツリー表示"
+
+msgid "View tree"
 msgstr "ツリー表示"
 
