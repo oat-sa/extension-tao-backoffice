@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-3x\n"
+"PO-Revision-Date: 2023-04-21 15:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: pt\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-3x\n"
+"X-Crowdin-Project-ID: 582145\n"
+"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-File: /taoBackOffice/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 1397\n"
+"Language-Team: Portuguese, Brazilian\n"
+
+msgid " Probably given list was already imported."
+msgstr " Provavelmente essa lista já foi importada."
+
+msgid "Create a list"
+msgstr "Criar uma lista"
+
+msgid "Create a remote list"
+msgstr "Criar uma lista remota"
+
+msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
+msgstr "Criar itens, gerenciar itens e bancos de test, organizar grupos e entregas, preparar relatórios, configurar fluxos de trabalho."
+
+#, tao-public
+msgid "Delete"
+msgstr "Excluir"
+
+msgid "Delete this list"
+msgstr "Excluir esta lista"
+
+msgid "Edit this list"
+msgstr "Editar esta lista"
+
+#, tao-public
+msgid "Edit Tree"
+msgstr "Editar árvore"
+
+msgid "Edit URI"
+msgstr "Editar URI"
+
+msgid "element"
+msgstr "elemento"
+
+msgid "Element deleted"
+msgstr "Elemento excluído"
+
+msgid "Element not deleted"
+msgstr "Elemento não excluído"
+
+#, tao-public
+msgid "Export"
+msgstr "Exportar"
+
+#, tao-public
+msgid "Import"
+msgstr "Importar"
+
+msgid "List"
+msgstr "Lista"
+
+msgid "List deleted"
+msgstr "Lista excluída"
+
+msgid "List failed to be reloaded"
+msgstr "Falha ao recarregar a lista"
+
+msgid "List not deleted"
+msgstr "Lista não excluída"
+
+msgid "List not saved"
+msgstr "Lista não foi salva"
+
+msgid "List reloaded"
+msgstr "Lista recarregada"
+
+msgid "List saved"
+msgstr "Lista salva"
+
+#, tao-public
+msgid "Lists"
+msgstr "Listas"
+
+msgid "Please confirm you want to delete this list element."
+msgstr "Por favor confirme se deseja eliminar este item."
+
+msgid "Please confirm you want to delete this list. This operation cannot be undone."
+msgstr "Por favor, confirme que você deseja excluir esta lista. Esta operação não pode ser desfeita."
+
+#, tao-public
+msgid "Properties"
+msgstr "Propriedades"
+
+msgid "Reload this list"
+msgstr "Recarregar esta lista"
+
+#, tao-public
+msgid "Remote Lists"
+msgstr "Listas Remotas"
+
+msgid "Save list"
+msgstr "Salvar lista"
+
+#, tao-public
+msgid "Settings"
+msgstr "Configurações"
+
+msgid "TAO Back Office"
+msgstr "TAO Área Administrativa"
+
+msgid "Test Developers and Administrators"
+msgstr "Desenvolvedores de Teste e Administradores"
+
+msgid "The list should contain unique URIs"
+msgstr "A lista deve conter URIs únicas"
+
+msgid "The requested resource does not exist or has been deleted"
+msgstr "O recurso solicitado não existe ou foi removido"
+
+#, tao-public
+msgid "Trees"
+msgstr "Árvores"
+
+msgid "View tree"
+msgstr "Ver árvore"
+
+#, tao-public
+msgid "View Tree"
+msgstr "Ver Árvore"
+
