@@ -104,7 +104,12 @@ class ClassActionRegistry extends AbstractRegistry
         while (!empty($toDo)) {
             $current = array_pop($toDo);
             $classes[$current->getUri()] = $current;
-            if (!in_array($current->getUri(), [TaoOntology::OBJECT_CLASS_URI, GenerisRdf::CLASS_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ])) {
+            if (
+                !in_array(
+                    $current->getUri(),
+                    [TaoOntology::OBJECT_CLASS_URI, GenerisRdf::CLASS_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ]
+                )
+            ) {
                 foreach ($current->getParentClasses(false) as $parent) {
                     if (!in_array($parent->getUri(), array_keys($classes))) {
                         $toDo[$parent->getUri()] = $parent;
