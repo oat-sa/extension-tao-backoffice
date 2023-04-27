@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015-2023 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015-2023 (original work) Open Assessment Technologies SA.
  */
 
 use oat\tao\model\user\TaoRoles;
@@ -51,7 +51,9 @@ return [
     ],
     'install' => [
         'rdf' => [
+            //phpcs:disable
             __DIR__ . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'structures.rdf'
+            //phpcs:enable
         ],
         'php' => [
             __DIR__ . '/scripts/install/registerEntryPoint.php'
