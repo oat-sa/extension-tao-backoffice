@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2023 (original work) Open Assessment Technologies SA.
  */
 
 namespace oat\taoBackOffice\model\tree;
@@ -32,9 +30,9 @@ use core_kernel_classes_Property;
  */
 class TreeService extends tao_models_classes_ClassService
 {
-    const CLASS_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Tree';
+    public const CLASS_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Tree';
 
-    const PROPERTY_CHILD_OF = 'http://www.tao.lu/Ontologies/TAO.rdf#isChildOf';
+    public const PROPERTY_CHILD_OF = 'http://www.tao.lu/Ontologies/TAO.rdf#isChildOf';
 
     public function getRootClass()
     {

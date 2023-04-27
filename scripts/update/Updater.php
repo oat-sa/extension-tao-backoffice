@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2023 (original work) Open Assessment Technologies SA.
  */
 
 namespace oat\taoBackOffice\scripts\update;
@@ -34,7 +32,9 @@ use oat\taoBackOffice\controller\Redirector;
 
 /**
  * Class TreeService
- * @deprecated use migrations instead. See https://github.com/oat-sa/generis/wiki/Tao-Update-Process
+ *
+ * @deprecated use migrations instead.
+ * @see https://github.com/oat-sa/generis/wiki/Tao-Update-Process
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
