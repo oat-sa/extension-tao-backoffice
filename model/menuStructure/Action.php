@@ -29,7 +29,6 @@ use oat\tao\model\menu\Icon;
  */
 interface Action
 {
-
     /**
      * context of actions that apply to all resources
      * @var string

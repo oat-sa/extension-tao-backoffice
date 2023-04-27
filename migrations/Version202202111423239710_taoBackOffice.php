@@ -42,7 +42,7 @@ final class Version202202111423239710_taoBackOffice extends AbstractMigration
         AclProxy::applyRule($this->createRule());
 
         $this->addReport(Report::createInfo(
-            'Access to Lists::getListElements() has been granted for '.
+            'Access to Lists::getListElements() has been granted for ' .
             TaoRoles::PROPERTY_MANAGER
         ));
     }

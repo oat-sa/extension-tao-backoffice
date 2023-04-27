@@ -38,7 +38,6 @@ use oat\taoBackOffice\model\tree\TreeService;
  */
 class Trees extends \tao_actions_RdfController
 {
-
     /**
      * @return TreeService
      */

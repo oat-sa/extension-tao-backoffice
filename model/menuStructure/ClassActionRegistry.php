@@ -36,9 +36,8 @@ use tao_models_classes_GenerisService;
  */
 class ClassActionRegistry extends AbstractRegistry
 {
-    
     const CLASS_PREFIX = 'class_';
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\oatbox\AbstractRegistry::getExtension()
@@ -47,7 +46,7 @@ class ClassActionRegistry extends AbstractRegistry
     {
         return \common_ext_ExtensionsManager::singleton()->getExtensionById('taoBackOffice');
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\oatbox\AbstractRegistry::getConfigId()
@@ -73,7 +72,7 @@ class ClassActionRegistry extends AbstractRegistry
         }
         return $actions;
     }
-    
+
     /**
      * Register an action with a class
      *
@@ -89,7 +88,7 @@ class ClassActionRegistry extends AbstractRegistry
         $this->set($class->getUri(), $actions);
         MenuService::flushCache();
     }
-    
+
     public function unregisterAction(core_kernel_classes_Class $class, Action $action)
     {
         $actions = $this->isRegistered($class->getUri())

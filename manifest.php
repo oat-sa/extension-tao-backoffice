@@ -41,7 +41,7 @@ return [
         [
             AccessRule::GRANT,
             TaoRoles::PROPERTY_MANAGER,
-            ['act' => Lists::class .'@getListElements'],
+            ['act' => Lists::class . '@getListElements'],
         ],
         [
             AccessRule::GRANT,

@@ -32,7 +32,6 @@ use core_kernel_classes_Property;
  */
 class TreeService extends tao_models_classes_ClassService
 {
-
     const CLASS_URI = 'http://www.tao.lu/Ontologies/TAO.rdf#Tree';
 
     const PROPERTY_CHILD_OF = 'http://www.tao.lu/Ontologies/TAO.rdf#isChildOf';
