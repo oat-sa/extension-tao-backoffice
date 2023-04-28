@@ -44,7 +44,7 @@ final class Version202203021737164728_taoBackOffice extends AbstractMigration
         AclProxy::applyRule($this->getNewRule());
 
         $this->addReport(Report::createInfo(
-            'Access to taoBackOffice has been updated for '.
+            'Access to taoBackOffice has been updated for ' .
             TaoRoles::PROPERTY_MANAGER
         ));
     }
@@ -55,7 +55,7 @@ final class Version202203021737164728_taoBackOffice extends AbstractMigration
         AclProxy::applyRule($this->getOldRule());
 
         $this->addReport(Report::createInfo(
-            'Access to taoBackOffice has been updated for '.
+            'Access to taoBackOffice has been updated for ' .
             TaoRoles::PROPERTY_MANAGER
         ));
     }
@@ -66,7 +66,7 @@ final class Version202203021737164728_taoBackOffice extends AbstractMigration
             AccessRule::GRANT,
             TaoRoles::PROPERTY_MANAGER,
             [
-                'act' => Lists::class .'@getListElements',
+                'act' => Lists::class . '@getListElements',
             ]
         );
     }
