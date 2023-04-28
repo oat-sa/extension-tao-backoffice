@@ -169,7 +169,7 @@ class ListUpdater implements ListUpdaterInterface
 
         foreach ($elements as $key => $_value) {
             $uri = $this->getElementURIFromKey($key);
-            if(!empty($uri)) {
+            if (!empty($uri)) {
                 $uris[] = $uri;
             }
         }

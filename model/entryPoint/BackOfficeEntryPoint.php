@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2023 (original work) Open Assessment Technologies SA.
  */
 
 namespace oat\taoBackOffice\model\entryPoint;
@@ -28,27 +26,28 @@ use oat\tao\model\entryPoint\Entrypoint;
 
 class BackOfficeEntryPoint extends Configurable implements Entrypoint
 {
-
     public function getId()
     {
         return 'backoffice';
     }
-    
+
     public function getTitle()
     {
         return __('Test Developers and Administrators');
     }
-    
+
     public function getLabel()
     {
         return __('TAO Back Office');
     }
-    
+
     public function getDescription()
     {
+        // phpcs:disable
         return __('Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows.');
+        //phpcs:enable
     }
-    
+
     public function getUrl()
     {
         return _url("index", "Main", "tao");

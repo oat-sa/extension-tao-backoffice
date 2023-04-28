@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2014 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2014-2023 (original work) Open Assessment Technologies SA.
  */
 
 namespace oat\taoBackOffice\model\menuStructure;
@@ -36,9 +34,8 @@ use tao_models_classes_GenerisService;
  */
 class ClassActionRegistry extends AbstractRegistry
 {
-    
-    const CLASS_PREFIX = 'class_';
-    
+    public const CLASS_PREFIX = 'class_';
+
     /**
      * (non-PHPdoc)
      * @see \oat\oatbox\AbstractRegistry::getExtension()
@@ -47,7 +44,7 @@ class ClassActionRegistry extends AbstractRegistry
     {
         return \common_ext_ExtensionsManager::singleton()->getExtensionById('taoBackOffice');
     }
-    
+
     /**
      * (non-PHPdoc)
      * @see \oat\oatbox\AbstractRegistry::getConfigId()
@@ -73,7 +70,7 @@ class ClassActionRegistry extends AbstractRegistry
         }
         return $actions;
     }
-    
+
     /**
      * Register an action with a class
      *
@@ -89,7 +86,7 @@ class ClassActionRegistry extends AbstractRegistry
         $this->set($class->getUri(), $actions);
         MenuService::flushCache();
     }
-    
+
     public function unregisterAction(core_kernel_classes_Class $class, Action $action)
     {
         $actions = $this->isRegistered($class->getUri())
@@ -107,7 +104,12 @@ class ClassActionRegistry extends AbstractRegistry
         while (!empty($toDo)) {
             $current = array_pop($toDo);
             $classes[$current->getUri()] = $current;
-            if (!in_array($current->getUri(), [TaoOntology::OBJECT_CLASS_URI, GenerisRdf::CLASS_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ])) {
+            if (
+                !in_array(
+                    $current->getUri(),
+                    [TaoOntology::OBJECT_CLASS_URI, GenerisRdf::CLASS_GENERIS_RESOURCE, OntologyRdfs::RDFS_CLASS ]
+                )
+            ) {
                 foreach ($current->getParentClasses(false) as $parent) {
                     if (!in_array($parent->getUri(), array_keys($classes))) {
                         $toDo[$parent->getUri()] = $parent;

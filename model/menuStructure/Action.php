@@ -15,9 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015 (original work) Open Assessment Technologies SA;
- *
- *
+ * Copyright (c) 2015-2023 (original work) Open Assessment Technologies SA.
  */
 
 namespace oat\taoBackOffice\model\menuStructure;
@@ -29,36 +27,35 @@ use oat\tao\model\menu\Icon;
  */
 interface Action
 {
-
     /**
      * context of actions that apply to all resources
      * @var string
      */
-    const CONTEXT_RESOURCE = 'resource';
+    public const CONTEXT_RESOURCE = 'resource';
 
     /**
      * context of actions that only apply to classes
      * @var string
      */
-    const CONTEXT_CLASS = 'class';
+    public const CONTEXT_CLASS = 'class';
 
     /**
      * context of actions that only apply to instances
      * @var string
      */
-    const CONTEXT_INSTANCE = 'instance';
+    public const CONTEXT_INSTANCE = 'instance';
 
     /**
      * Default js binding of actions
      * @var string
      */
-    const BINDING_DEFAULT = 'load';
+    public const BINDING_DEFAULT = 'load';
 
     /**
      * Default group to add the action to
      * @var string
      */
-    const GROUP_DEFAULT = 'tree';
+    public const GROUP_DEFAULT = 'tree';
 
     /**
      * @return string Identifier of action

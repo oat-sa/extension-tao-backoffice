@@ -1,12 +1,5 @@
 <?php
 
-use oat\tao\model\user\TaoRoles;
-use oat\taoBackOffice\controller\Lists;
-use oat\taoBackOffice\controller\Redirector;
-use oat\tao\model\accessControl\func\AccessRule;
-use oat\taoBackOffice\model\lists\ListServiceProvider;
-use oat\taoBackOffice\model\ListElement\ListElementServiceProvider;
-
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,8 +15,15 @@ use oat\taoBackOffice\model\ListElement\ListElementServiceProvider;
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * Copyright (c) 2015-2021 (original work) Open Assessment Technologies SA;
+ * Copyright (c) 2015-2023 (original work) Open Assessment Technologies SA.
  */
+
+use oat\tao\model\user\TaoRoles;
+use oat\taoBackOffice\controller\Lists;
+use oat\taoBackOffice\controller\Redirector;
+use oat\tao\model\accessControl\func\AccessRule;
+use oat\taoBackOffice\model\lists\ListServiceProvider;
+use oat\taoBackOffice\model\ListElement\ListElementServiceProvider;
 
 return [
     'name' => 'taoBackOffice',
@@ -41,7 +41,7 @@ return [
         [
             AccessRule::GRANT,
             TaoRoles::PROPERTY_MANAGER,
-            ['act' => Lists::class .'@getListElements'],
+            ['act' => Lists::class . '@getListElements'],
         ],
         [
             AccessRule::GRANT,
@@ -51,7 +51,9 @@ return [
     ],
     'install' => [
         'rdf' => [
+            //phpcs:disable
             __DIR__ . DIRECTORY_SEPARATOR . 'model' . DIRECTORY_SEPARATOR . 'ontology' . DIRECTORY_SEPARATOR . 'structures.rdf'
+            //phpcs:enable
         ],
         'php' => [
             __DIR__ . '/scripts/install/registerEntryPoint.php'
