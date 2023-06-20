@@ -24,6 +24,7 @@ use oat\taoBackOffice\controller\Redirector;
 use oat\tao\model\accessControl\func\AccessRule;
 use oat\taoBackOffice\model\lists\ListServiceProvider;
 use oat\taoBackOffice\model\ListElement\ListElementServiceProvider;
+use oat\taoBackOffice\scripts\install\MapPasswordControlFeatureFlag;
 
 return [
     'name' => 'taoBackOffice',
@@ -56,7 +57,8 @@ return [
             //phpcs:enable
         ],
         'php' => [
-            __DIR__ . '/scripts/install/registerEntryPoint.php'
+            __DIR__ . '/scripts/install/registerEntryPoint.php',
+            MapPasswordControlFeatureFlag::class
         ]
     ],
     'uninstall' => [
