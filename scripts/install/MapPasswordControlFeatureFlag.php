@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace oat\taoBackOffice\scripts\install;
 
 use oat\oatbox\extension\InstallAction;
+use oat\tao\model\featureFlag\FeatureFlagCheckerInterface;
 use oat\tao\model\menu\SectionVisibilityFilter;
 
 class MapPasswordControlFeatureFlag extends InstallAction
@@ -31,12 +32,17 @@ class MapPasswordControlFeatureFlag extends InstallAction
     {
         $sectionVisibilityFilter = $this->getServiceManager()->get(SectionVisibilityFilter::SERVICE_ID);
         $featureFlagSections = $sectionVisibilityFilter
-            ->getOption(SectionVisibilityFilter::OPTION_FEATURE_FLAG_SECTIONS);
-        $featureFlagSections['settings_my_password'] = ['FEATURE_FLAG_PASSWORD_CHANGE_AVAILABLE'];
+            ->getOption(SectionVisibilityFilter::OPTION_FEATURE_FLAG_SECTIONS_TO_HIDE);
+
+        $featureFlagSections['settings_my_password'] = [
+            FeatureFlagCheckerInterface::FEATURE_FLAG_PASSWORD_CHANGE_DISABLED
+        ];
+
         $sectionVisibilityFilter->setOption(
-            SectionVisibilityFilter::OPTION_FEATURE_FLAG_SECTIONS,
+            SectionVisibilityFilter::OPTION_FEATURE_FLAG_SECTIONS_TO_HIDE,
             $featureFlagSections
         );
+
         $this->getServiceManager()->register(SectionVisibilityFilter::SERVICE_ID, $sectionVisibilityFilter);
     }
 }
