@@ -12,7 +12,7 @@ use oat\taoBackOffice\scripts\install\MapPasswordControlFeatureFlag;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version202306141009333245_taoBackOffice extends AbstractMigration
+final class Version202306141009333246_taoBackOffice extends AbstractMigration
 {
 
     public function getDescription(): string
