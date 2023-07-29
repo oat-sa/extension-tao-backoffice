@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 10:42\n"
+"PO-Revision-Date: 2023-07-29 10:19\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de\n"
@@ -24,7 +24,7 @@ msgid " Probably given list was already imported."
 msgstr ""
 
 msgid "Create a list"
-msgstr ""
+msgstr "Eine Liste erstellen"
 
 msgid "Create a remote list"
 msgstr ""
