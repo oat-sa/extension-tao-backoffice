@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 10:42\n"
+"PO-Revision-Date: 2023-08-12 13:22\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl\n"
@@ -102,14 +102,14 @@ msgid "Properties"
 msgstr ""
 
 msgid "Reload this list"
-msgstr ""
+msgstr "Deze lijst opnieuw laden"
 
 #, tao-public
 msgid "Remote Lists"
 msgstr ""
 
 msgid "Save list"
-msgstr ""
+msgstr "Lijst sparen"
 
 #, tao-public
 msgid "Settings"
@@ -122,7 +122,7 @@ msgid "Test Developers and Administrators"
 msgstr "Toets-ontwikkelaars en beheerders"
 
 msgid "The list should contain unique URIs"
-msgstr ""
+msgstr "De lijst moet unieke URI's bevatten"
 
 msgid "The requested resource does not exist or has been deleted"
 msgstr "De gevraagde resource bestaat niet of is verwijderd"
