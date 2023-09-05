@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 10:42\n"
+"PO-Revision-Date: 2023-09-05 09:53\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja\n"
@@ -21,13 +21,13 @@ msgstr ""
 "Language-Team: Japanese\n"
 
 msgid " Probably given list was already imported."
-msgstr ""
+msgstr " 指定されたリストはおそらく以前にインポートされた可能性があります。"
 
 msgid "Create a list"
-msgstr ""
+msgstr "リストを作成"
 
 msgid "Create a remote list"
-msgstr ""
+msgstr "外部リストを作成"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
 msgstr "アイテム作成、アイテム・テストバンク管理、デリバリ作成、レポート準備、ワークフロー設定"
@@ -47,10 +47,10 @@ msgid "Edit Tree"
 msgstr "ツリー編集"
 
 msgid "Edit URI"
-msgstr ""
+msgstr "URIを編集"
 
 msgid "element"
-msgstr ""
+msgstr "要素"
 
 msgid "Element deleted"
 msgstr "エレメントが削除されました"
@@ -73,7 +73,7 @@ msgid "List deleted"
 msgstr "リストが削除されました"
 
 msgid "List failed to be reloaded"
-msgstr ""
+msgstr "リストの再読み込みに失敗しました。"
 
 msgid "List not deleted"
 msgstr "リストは削除されませんでした"
@@ -122,7 +122,7 @@ msgid "Test Developers and Administrators"
 msgstr "テスト開発・管理"
 
 msgid "The list should contain unique URIs"
-msgstr ""
+msgstr "リストにはユニークなURLを指定してください。"
 
 msgid "The requested resource does not exist or has been deleted"
 msgstr "リクエストリソースはありません。削除されています。"
