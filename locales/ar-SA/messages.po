@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-14 15:14\n"
+"PO-Revision-Date: 2023-10-12 11:15\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -50,13 +50,13 @@ msgid "Edit URI"
 msgstr ""
 
 msgid "element"
-msgstr ""
+msgstr "العنصر"
 
 msgid "Element deleted"
 msgstr ""
 
 msgid "Element not deleted"
-msgstr ""
+msgstr "عنصر لم يتم حذفه"
 
 #, tao-public
 msgid "Export"
@@ -67,35 +67,35 @@ msgid "Import"
 msgstr "استورد"
 
 msgid "List"
-msgstr ""
+msgstr "قائمة"
 
 msgid "List deleted"
-msgstr ""
+msgstr "قائمة محذوفة"
 
 msgid "List failed to be reloaded"
 msgstr ""
 
 msgid "List not deleted"
-msgstr ""
+msgstr "قائمة غير محذوفة"
 
 msgid "List not saved"
-msgstr ""
+msgstr "قائمة لم تحفظ"
 
 msgid "List reloaded"
 msgstr ""
 
 msgid "List saved"
-msgstr ""
+msgstr "تم حفظ القائمة"
 
 #, tao-public
 msgid "Lists"
-msgstr ""
+msgstr "قوائم"
 
 msgid "Please confirm you want to delete this list element."
-msgstr ""
+msgstr "يرجى تأكيد رغبتك في حذف هذا البند من القائمة."
 
 msgid "Please confirm you want to delete this list. This operation cannot be undone."
-msgstr ""
+msgstr "رجاء، أكد رغبتك في حذف هذه القائمة. هذه العملية لا رجعة فيها إذا تمت."
 
 #, tao-public
 msgid "Properties"
@@ -109,7 +109,7 @@ msgid "Remote Lists"
 msgstr ""
 
 msgid "Save list"
-msgstr ""
+msgstr "احفظ القائمة"
 
 #, tao-public
 msgid "Settings"
