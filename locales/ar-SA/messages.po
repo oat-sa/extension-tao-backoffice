@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-10-12 11:15\n"
+"PO-Revision-Date: 2023-10-20 09:47\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -24,7 +24,7 @@ msgid " Probably given list was already imported."
 msgstr ""
 
 msgid "Create a list"
-msgstr ""
+msgstr "بناء رائز"
 
 msgid "Create a remote list"
 msgstr ""
@@ -53,7 +53,7 @@ msgid "element"
 msgstr "العنصر"
 
 msgid "Element deleted"
-msgstr ""
+msgstr "تم حذف العنصر"
 
 msgid "Element not deleted"
 msgstr "عنصر لم يتم حذفه"
