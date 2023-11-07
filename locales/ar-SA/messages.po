@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-10-20 09:47\n"
+"PO-Revision-Date: 2023-11-07 13:35\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -21,33 +21,33 @@ msgstr ""
 "Language-Team: Arabic\n"
 
 msgid " Probably given list was already imported."
-msgstr ""
+msgstr " ربما تم مقدّمًا استيراد القائمة المحددة."
 
 msgid "Create a list"
-msgstr "بناء رائز"
+msgstr "بناء قائمة"
 
 msgid "Create a remote list"
-msgstr ""
+msgstr "إنشاء قائمة عن بعد"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr ""
+msgstr "إنشاء العناصر وإدارة بنوك العناصر والاختبارات وتنظيم المجموعات وعمليات التسليم وإعداد التقارير وتنظيم سير العمل."
 
 #, tao-public
 msgid "Delete"
 msgstr ""
 
 msgid "Delete this list"
-msgstr ""
+msgstr "احذف هذه القائمة"
 
 msgid "Edit this list"
-msgstr ""
+msgstr "حرر هذه القائمة"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr ""
+msgstr "حرر الشجرة"
 
 msgid "Edit URI"
-msgstr ""
+msgstr "حرر URI"
 
 msgid "element"
 msgstr "العنصر"
@@ -73,7 +73,7 @@ msgid "List deleted"
 msgstr "قائمة محذوفة"
 
 msgid "List failed to be reloaded"
-msgstr ""
+msgstr "فشل إعادة تحميل القائمة"
 
 msgid "List not deleted"
 msgstr "قائمة غير محذوفة"
@@ -82,7 +82,7 @@ msgid "List not saved"
 msgstr "قائمة لم تحفظ"
 
 msgid "List reloaded"
-msgstr ""
+msgstr "تم إعادة تحميل القائمة"
 
 msgid "List saved"
 msgstr "تم حفظ القائمة"
@@ -102,11 +102,11 @@ msgid "Properties"
 msgstr ""
 
 msgid "Reload this list"
-msgstr ""
+msgstr "أعد تحميل هذه القائمة"
 
 #, tao-public
 msgid "Remote Lists"
-msgstr ""
+msgstr "قوائم عن بعد"
 
 msgid "Save list"
 msgstr "احفظ القائمة"
@@ -116,25 +116,25 @@ msgid "Settings"
 msgstr "إعدادات/تطبيقات"
 
 msgid "TAO Back Office"
-msgstr ""
+msgstr "المكتب الخلفي لـ TAO"
 
 msgid "Test Developers and Administrators"
-msgstr ""
+msgstr "مطوري ومسؤولي الاختبار"
 
 msgid "The list should contain unique URIs"
-msgstr ""
+msgstr "يجب أن تحتوي القائمة على عناوين URL فريدة"
 
 msgid "The requested resource does not exist or has been deleted"
-msgstr ""
+msgstr "المورد المطلوب غير موجود أو تم حذفه"
 
 #, tao-public
 msgid "Trees"
-msgstr ""
+msgstr "الأشجار"
 
 msgid "View tree"
-msgstr ""
+msgstr "عرض الشجرة"
 
 #, tao-public
 msgid "View Tree"
-msgstr ""
+msgstr "عرض الشجرة"
 
