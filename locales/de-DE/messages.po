@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-11-07 13:35\n"
+"PO-Revision-Date: 2023-11-08 13:33\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de\n"
@@ -34,7 +34,7 @@ msgstr "Erstellen Sie Elemente (items), verwalten Sie Element- und Fragenbanken 
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 msgid "Delete this list"
 msgstr "Diese Liste löschen"
@@ -64,7 +64,7 @@ msgstr ""
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Importieren"
 
 msgid "List"
 msgstr "Liste"
