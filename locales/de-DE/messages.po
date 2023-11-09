@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-11-08 13:33\n"
+"PO-Revision-Date: 2023-11-09 13:41\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: de\n"
@@ -60,7 +60,7 @@ msgstr "Element wurde nicht gelöscht"
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "Export"
 
 #, tao-public
 msgid "Import"
@@ -99,7 +99,7 @@ msgstr "Bitte bestätigen Sie, dass Sie diese Liste löschen möchten. Diese Akt
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Eigenschaften"
 
 msgid "Reload this list"
 msgstr "Diese Liste neu laden"
