@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-11-07 13:35\n"
+"PO-Revision-Date: 2023-11-13 14:13\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -34,7 +34,7 @@ msgstr "إنشاء العناصر وإدارة بنوك العناصر والا�
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "حذف"
 
 msgid "Delete this list"
 msgstr "احذف هذه القائمة"
