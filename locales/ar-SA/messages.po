@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-11-15 14:58\n"
+"PO-Revision-Date: 2023-11-16 15:07\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ar\n"
@@ -30,7 +30,7 @@ msgid "Create a remote list"
 msgstr "إنشاء قائمة عن بعد"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr "إنشاء العناصر وإدارة بنوك العناصر والاختبارات وتنظيم المجموعات وعمليات التسليم وإعداد التقارير وتنظيم سير العمل."
+msgstr "إنشاء البنود وإدارة بنوك النود والاختبارات وتنظيم المجموعات وعمليات التسليم وإعداد التقارير وتنظيم سير العمل."
 
 #, tao-public
 msgid "Delete"
