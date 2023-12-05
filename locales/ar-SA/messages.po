@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2023-11-23 18:08\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: ar\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: ar\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-backoffice] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 659\n"
+"Language-Team: Arabic\n"
+
+msgid " Probably given list was already imported."
+msgstr " ربما تم مقدّمًا استيراد القائمة المحددة."
+
+msgid "Create a list"
+msgstr "إنشاء قائمة"
+
+msgid "Create a remote list"
+msgstr "إنشاء قائمة عن بعد"
+
+msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
+msgstr "إنشاء البنود وإدارة بنوك البنود والروائز وتنظيم المجموعات وعمليات التسليم وإعداد التقارير وتنظيم سير العمل."
+
+#, tao-public
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Delete this list"
+msgstr "احذف هذه القائمة"
+
+msgid "Edit this list"
+msgstr "حرر هذه القائمة"
+
+#, tao-public
+msgid "Edit Tree"
+msgstr "حرر الشجرة"
+
+msgid "Edit URI"
+msgstr "حرر URI"
+
+msgid "element"
+msgstr "العنصر"
+
+msgid "Element deleted"
+msgstr "تم حذف العنصر"
+
+msgid "Element not deleted"
+msgstr "عنصر لم يتم حذفه"
+
+#, tao-public
+msgid "Export"
+msgstr "تصدير"
+
+#, tao-public
+msgid "Import"
+msgstr "استورد"
+
+msgid "List"
+msgstr "قائمة"
+
+msgid "List deleted"
+msgstr "قائمة محذوفة"
+
+msgid "List failed to be reloaded"
+msgstr "فشل إعادة تحميل القائمة"
+
+msgid "List not deleted"
+msgstr "قائمة غير محذوفة"
+
+msgid "List not saved"
+msgstr "قائمة لم تحفظ"
+
+msgid "List reloaded"
+msgstr "تم إعادة تحميل القائمة"
+
+msgid "List saved"
+msgstr "تم حفظ القائمة"
+
+#, tao-public
+msgid "Lists"
+msgstr "قوائم"
+
+msgid "Please confirm you want to delete this list element."
+msgstr "يرجى تأكيد رغبتك في حذف هذا البند من القائمة."
+
+msgid "Please confirm you want to delete this list. This operation cannot be undone."
+msgstr "رجاء، أكد رغبتك في حذف هذه القائمة. هذه العملية لا رجعة فيها إذا تمت."
+
+#, tao-public
+msgid "Properties"
+msgstr "خصائص"
+
+msgid "Reload this list"
+msgstr "أعد تحميل هذه القائمة"
+
+#, tao-public
+msgid "Remote Lists"
+msgstr "قوائم عن بعد"
+
+msgid "Save list"
+msgstr "احفظ القائمة"
+
+#, tao-public
+msgid "Settings"
+msgstr "إعدادات/تطبيقات"
+
+msgid "TAO Back Office"
+msgstr "المكتب الخلفي لـ TAO"
+
+msgid "Test Developers and Administrators"
+msgstr "مطورو ومسؤولو الاختبار"
+
+msgid "The list should contain unique URIs"
+msgstr "يجب أن تحتوي القائمة على عناوين URL فريدة"
+
+msgid "The requested resource does not exist or has been deleted"
+msgstr "المورد المطلوب غير موجود أو تم حذفه"
+
+#, tao-public
+msgid "Trees"
+msgstr "الأشجار"
+
+msgid "View tree"
+msgstr "عرض الشجرة"
+
+#, tao-public
+msgid "View Tree"
+msgstr "عرض الشجرة"
+
