@@ -58,7 +58,6 @@ return [
         ],
         'php' => [
             __DIR__ . '/scripts/install/registerEntryPoint.php',
-            MapPasswordControlFeatureFlag::class
         ]
     ],
     'uninstall' => [
