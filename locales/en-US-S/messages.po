@@ -1,0 +1,154 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TAO 2024.06\n"
+"PO-Revision-Date: 2024-06-04T10:23:51\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: en-US\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+
+msgid " Probably given list was already imported."
+msgstr ""
+
+msgid "Attempt for reloading of remote list was not successful"
+msgstr ""
+
+msgid "Create a list"
+msgstr ""
+
+msgid "Create a remote list"
+msgstr ""
+
+msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
+msgstr "Create questions, manage question and test banks, organize cohorts and assessments, prepare reports, set up workflows."
+
+#, tao-public
+msgid "Delete"
+msgstr ""
+
+msgid "Delete this list"
+msgstr ""
+
+msgid "Edit this list"
+msgstr ""
+
+#, tao-public
+msgid "Edit Tree"
+msgstr ""
+
+msgid "Edit URI"
+msgstr ""
+
+msgid "Element"
+msgstr ""
+
+msgid "element"
+msgstr ""
+
+msgid "Element deleted"
+msgstr ""
+
+msgid "Element not deleted"
+msgstr ""
+
+#, tao-public
+msgid "Export"
+msgstr ""
+
+#, tao-public
+msgid "Import"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "List deleted"
+msgstr ""
+
+msgid "List failed to be reloaded"
+msgstr ""
+
+msgid "List not deleted"
+msgstr ""
+
+msgid "List not saved"
+msgstr ""
+
+msgid "List reloaded"
+msgstr ""
+
+msgid "List saved"
+msgstr ""
+
+#, tao-public
+msgid "Lists"
+msgstr ""
+
+msgid "Maximum allowed number of elements is reached, you cannot add more elements. Please contact your administrator."
+msgstr ""
+
+msgid "Please confirm you want to delete this list element."
+msgstr ""
+
+msgid "Please confirm you want to delete this list. This operation cannot be undone."
+msgstr ""
+
+#, tao-public
+msgid "Properties"
+msgstr ""
+
+msgid "Reload this list"
+msgstr ""
+
+msgid "Remote list was successfully reloaded"
+msgstr ""
+
+#, tao-public
+msgid "Remote Lists"
+msgstr ""
+
+msgid "Save list"
+msgstr ""
+
+#, tao-public
+msgid "Settings"
+msgstr ""
+
+msgid "TAO Back Office"
+msgstr ""
+
+msgid "Test Developers and Administrators"
+msgstr ""
+
+msgid "The list exceeds the allowed number of items"
+msgstr "The list exceeds the allowed number of questions"
+
+msgid "The list should contain unique URIs"
+msgstr ""
+
+msgid "The requested resource does not exist or has been deleted"
+msgstr ""
+
+msgid "There was a problem redirecting to the requested resource"
+msgstr ""
+
+#, tao-public
+msgid "Trees"
+msgstr ""
+
+msgid "Unable to delete the selected list"
+msgstr ""
+
+#, tao-public
+msgid "View Tree"
+msgstr ""
+
+msgid "View tree"
+msgstr ""
+
