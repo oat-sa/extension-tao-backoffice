@@ -19,7 +19,7 @@ final class Version202406131030273245_taoBackOffice extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Hiding taoBo_remotelist and taoBo_tree sections in case solar design is enabled';
     }
 
     public function up(Schema $schema): void
