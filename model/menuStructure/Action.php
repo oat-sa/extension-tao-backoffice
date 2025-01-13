@@ -58,6 +58,12 @@ interface Action
     public const GROUP_DEFAULT = 'tree';
 
     /**
+     * Default value of action weight
+     * @var int
+     */
+    public const WEIGHT_DEFAULT = 0;
+
+    /**
      * @return string Identifier of action
      */
     public function getId();
@@ -103,4 +109,9 @@ interface Action
      * @return array
      */
     public function getRequiredRights();
+
+    /**
+     * @return int Weight of the action
+     */
+    public function getWeight();
 }
