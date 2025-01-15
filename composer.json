@@ -22,7 +22,7 @@
     "minimum-stability" : "dev",
     "require": {
         "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-        "oat-sa/tao-core": ">=54.14.7"
+        "oat-sa/tao-core": ">=54.29.1"
     },
     "autoload" : {
         "psr-4" : {
