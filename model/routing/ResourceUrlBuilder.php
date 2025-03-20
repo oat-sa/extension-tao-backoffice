@@ -85,6 +85,7 @@ class ResourceUrlBuilder extends ConfigurableService
     ) {
         return _url('index', 'Main', 'tao', [
             'structure' => $perspective->getId(),
+            'ext' => $perspective->getExtension(),
             'section' => $section->getId(),
             'uri' => $resource->getUri(),
         ]);
