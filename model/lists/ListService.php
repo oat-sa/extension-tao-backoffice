@@ -54,7 +54,7 @@ class ListService extends tao_models_classes_ListService
      */
     public function isEditable(RdfClass $listClass)
     {
-        return $this->isLocked($listClass)
+        return !$this->isLocked($listClass)
             && $this->getEditableListClassSpecification()->isSatisfiedBy($listClass);
     }
 
@@ -172,8 +172,14 @@ class ListService extends tao_models_classes_ListService
 
     private function isLocked(RdfClass $listClass): bool
     {
-        return $listClass->getOnePropertyValue(
+        $property = $listClass->getOnePropertyValue(
             $listClass->getProperty(RemoteSourcedListOntology::LOCKED)
-            ) === GenerisRdf::GENERIS_TRUE;
+        );
+
+        if ($property === null) {
+            return false;
+        }
+
+        return $property->getUri() === GenerisRdf::GENERIS_TRUE;
     }
 }
