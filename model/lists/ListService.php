@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
+use oat\generis\model\GenerisRdf;
+use oat\tao\model\Lists\Business\Service\RemoteSourcedListOntology;
 use Throwable;
 use tao_models_classes_ListService;
 use Psr\Container\ContainerInterface;
@@ -52,7 +54,8 @@ class ListService extends tao_models_classes_ListService
      */
     public function isEditable(RdfClass $listClass)
     {
-        return $this->getEditableListClassSpecification()->isSatisfiedBy($listClass);
+        return $this->isLocked($listClass)
+            && $this->getEditableListClassSpecification()->isSatisfiedBy($listClass);
     }
 
     public function getListElement(RdfClass $listClass, $uri)
@@ -165,5 +168,12 @@ class ListService extends tao_models_classes_ListService
     private function getContainer(): ContainerInterface
     {
         return $this->getServiceLocator()->getContainer();
+    }
+
+    private function isLocked(RdfClass $listClass): bool
+    {
+        return $listClass->getOnePropertyValue(
+            $listClass->getProperty(RemoteSourcedListOntology::LOCKED)
+            ) === GenerisRdf::GENERIS_TRUE;
     }
 }

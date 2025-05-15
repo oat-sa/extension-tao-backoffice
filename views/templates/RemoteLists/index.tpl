@@ -41,12 +41,14 @@
                     class="icon-reload list-reload-btn btn-info small rgt"
                     data-uri="<?= $list['uri'] ?>"
                 ></button>
+                <?php if ($list['editable']): ?>
                 <button
                     type="button"
                     title="<?= $deleteListTitle ?>"
                     class="icon-bin list-delete-btn btn-warning small rgt"
                     data-uri="<?= $list['uri'] ?>"
                 ></button>
+                <?php endif ?>
             </footer>
         </section>
     <?php endforeach ?>
