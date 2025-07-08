@@ -47,6 +47,7 @@ use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoBackOffice\model\lists\Contract\ListDeleterInterface;
 use oat\taoBackOffice\model\lists\Contract\ListUpdaterInterface;
 use oat\taoBackOffice\model\lists\Exception\ListDeletionException;
+use oat\taoBackOffice\model\lists\RemoteListService;
 use oat\taoBackOffice\model\lists\Service\ListDeleter;
 use oat\taoBackOffice\model\lists\Service\ListUpdater;
 use oat\taoBackOffice\model\lists\ListCreatedResponse;
@@ -110,7 +111,7 @@ class Lists extends tao_actions_CommonModule
      * @throws common_ext_ExtensionException
      * @throws core_kernel_persistence_Exception
      */
-    public function remote(ValueCollectionService $valueCollectionService, RemoteSource $remoteSource): void
+    public function remote(): void
     {
         tao_helpers_Scriptloader::addCssFile(Template::css('lists.css', 'tao'));
 
@@ -134,7 +135,7 @@ class Lists extends tao_actions_CommonModule
                 $newList = $this->createList($values);
 
                 try {
-                    $this->sync($valueCollectionService, $remoteSource, $newList);
+                    $this->getRemoteListService()->sync($newList);
                     $listElements = $this->getListElementsFinder()->find(
                         $this->createListElementsFinderContext($newList)
                     );
@@ -185,9 +186,7 @@ class Lists extends tao_actions_CommonModule
 
         if ($uri !== null) {
             try {
-                $this->sync(
-                    $valueCollectionService,
-                    $remoteSource,
+                $this->getRemoteListService()->sync(
                     $this->getListService()->getList(tao_helpers_Uri::decode($uri)),
                     true
                 );
@@ -205,30 +204,6 @@ class Lists extends tao_actions_CommonModule
             'saved' => $saved,
             'message' => $message,
         ]);
-    }
-
-    private function sync(
-        ValueCollectionService $valueCollectionService,
-        RemoteSource $remoteSource,
-        core_kernel_classes_Class $collectionClass,
-        bool $isReloading = false
-    ): void {
-        $context = $this->createRemoteSourceContext($collectionClass);
-        $collection = new ValueCollection(
-            $collectionClass->getUri(),
-            ...iterator_to_array($remoteSource->fetchByContext($context))
-        );
-
-        $result = $valueCollectionService->persist($collection);
-
-        if (!$result) {
-            throw new RuntimeException(
-                sprintf(
-                    'Attempt for %s of remote list was not successful',
-                    $isReloading ? 'reloading' : 'loading'
-                )
-            );
-        }
     }
 
     /**
@@ -516,35 +491,6 @@ class Lists extends tao_actions_CommonModule
         return $listElements->jsonSerialize();
     }
 
-    private function createRemoteSourceContext(core_kernel_classes_Class $collectionClass): RemoteSourceContext
-    {
-        $sourceUrl = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_SOURCE_URI)
-        );
-        $uriPath = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_URI_PATH)
-        );
-        $labelPath = (string) $collectionClass->getOnePropertyValue(
-            $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_ITEM_LABEL_PATH)
-        );
-
-        $parameters = [
-            RemoteSourceContext::PARAM_SOURCE_URL => $sourceUrl,
-            RemoteSourceContext::PARAM_URI_PATH => $uriPath,
-            RemoteSourceContext::PARAM_LABEL_PATH => $labelPath,
-            RemoteSourceContext::PARAM_PARSER => 'jsonpath',
-        ];
-
-        if ($this->isListsDependencyEnabled()) {
-            $dependencyUriPath = (string) $collectionClass->getOnePropertyValue(
-                $collectionClass->getProperty(RemoteSourcedListOntology::PROPERTY_DEPENDENCY_ITEM_URI_PATH)
-            );
-            $parameters[RemoteSourceContext::PARAM_DEPENDENCY_URI_PATH] = $dependencyUriPath;
-        }
-
-        return new RemoteSourceContext($parameters);
-    }
-
     private function createListElementsFinderContext(core_kernel_classes_Class $listClass): ListElementsFinderContext
     {
         $parameters = [
@@ -628,5 +574,10 @@ class Lists extends tao_actions_CommonModule
     private function getOntology(): Ontology
     {
         return $this->getPsrContainer()->get(Ontology::SERVICE_ID);
+    }
+
+    private function getRemoteListService(): RemoteListService
+    {
+        return $this->getServiceManager()->getContainer()->get(RemoteListService::class);
     }
 }
