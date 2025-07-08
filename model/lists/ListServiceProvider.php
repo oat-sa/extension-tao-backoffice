@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace oat\taoBackOffice\model\lists;
 
+use oat\tao\model\featureFlag\FeatureFlagChecker;
+use oat\tao\model\Lists\Business\Service\RemoteSource;
 use oat\tao\model\Lists\Business\Service\ValueCollectionService;
 use oat\taoBackOffice\model\lists\Service\ListDeleter;
 use oat\generis\model\resource\Repository\ClassRepository;
@@ -85,5 +87,13 @@ class ListServiceProvider implements ContainerServiceProviderInterface
                     service(ListService::class),
                 ]
             );
+
+        $services->set(RemoteListService::class)
+            ->args([
+                service(ValueCollectionService::class),
+                service(RemoteSource::SERVICE_ID),
+                service(FeatureFlagChecker::class),
+            ])
+            ->public();
     }
 }
