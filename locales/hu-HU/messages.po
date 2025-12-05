@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2025-12-05 08:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: hu\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-backoffice] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 659\n"
+"Language-Team: Hungarian\n"
+
+msgid " Probably given list was already imported."
+msgstr " Valószínűleg a megadott lista már importálva lett."
+
+msgid "Create a list"
+msgstr "Lista létrehozása"
+
+msgid "Create a remote list"
+msgstr "Távoli lista létrehozása"
+
+msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
+msgstr "Tételek létrehozása, tétel- és tesztbankok kezelése, kohorszok és szállítások rendszerezése, jelentések készítése, munkafolyamatok beállítása."
+
+#, tao-public
+msgid "Delete"
+msgstr "Töröl"
+
+msgid "Delete this list"
+msgstr "Lista törlése"
+
+msgid "Edit this list"
+msgstr "Lista szerkesztése"
+
+#, tao-public
+msgid "Edit Tree"
+msgstr "Fa szerkesztése"
+
+msgid "Edit URI"
+msgstr "URI szerkesztése"
+
+msgid "element"
+msgstr "elem"
+
+msgid "Element deleted"
+msgstr "Elem törölve"
+
+msgid "Element not deleted"
+msgstr "Az elem nem törölve"
+
+#, tao-public
+msgid "Export"
+msgstr "Export"
+
+#, tao-public
+msgid "Import"
+msgstr "Importálás"
+
+msgid "List"
+msgstr "Lista"
+
+msgid "List deleted"
+msgstr "Lista törölve"
+
+msgid "List failed to be reloaded"
+msgstr "A lista újratöltése sikertelen"
+
+msgid "List not deleted"
+msgstr "A lista nem törölve"
+
+msgid "List not saved"
+msgstr "A lista nincs mentve"
+
+msgid "List reloaded"
+msgstr "Lista újratöltve"
+
+msgid "List saved"
+msgstr "Lista mentve"
+
+#, tao-public
+msgid "Lists"
+msgstr "Listák"
+
+msgid "Please confirm you want to delete this list element."
+msgstr "Kérjük, erősítse meg, hogy törölni kívánja ezt a listaelemet."
+
+msgid "Please confirm you want to delete this list. This operation cannot be undone."
+msgstr "Kérjük, erősítse meg, hogy törölni kívánja ezt a listát. Ez a művelet nem vonható vissza."
+
+#, tao-public
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+msgid "Reload this list"
+msgstr "Lista újratöltése"
+
+#, tao-public
+msgid "Remote Lists"
+msgstr "Távoli listák"
+
+msgid "Save list"
+msgstr "Lista mentése"
+
+#, tao-public
+msgid "Settings"
+msgstr "Beállítások"
+
+msgid "TAO Back Office"
+msgstr "TAO háttériroda"
+
+msgid "Test Developers and Administrators"
+msgstr "Tesztfejlesztők és -adminisztrátorok"
+
+msgid "The list should contain unique URIs"
+msgstr "A listának egyedi URI-kat kell tartalmaznia"
+
+msgid "The requested resource does not exist or has been deleted"
+msgstr "A kért erőforrás nem létezik, vagy törölték"
+
+#, tao-public
+msgid "Trees"
+msgstr "Fák"
+
+msgid "View tree"
+msgstr "Nézetfa"
+
+#, tao-public
+msgid "View Tree"
+msgstr "Nézetfa"
+
