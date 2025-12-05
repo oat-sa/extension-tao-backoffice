@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: tao-open-source\n"
+"PO-Revision-Date: 2025-12-05 08:46\n"
+"Last-Translator: TAO Translation Team <translation@tao.lu>\n"
+"MIME-Version: 1.0\n"
+"Language: sk\n"
+"sourceLanguage: en-US\n"
+"targetLanguage: en-US\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../../\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 3;\n"
+"X-Crowdin-Project: tao-open-source\n"
+"X-Crowdin-Project-ID: 590867\n"
+"X-Crowdin-Language: sk\n"
+"X-Crowdin-File: /[oat-sa.extension-tao-backoffice] develop/locales/en-US/messages.po\n"
+"X-Crowdin-File-ID: 659\n"
+"Language-Team: Slovak\n"
+
+msgid " Probably given list was already imported."
+msgstr " Pravdepodobne bol daný zoznam už importovaný."
+
+msgid "Create a list"
+msgstr "Vytvoriť zoznam"
+
+msgid "Create a remote list"
+msgstr "Vytvorte vzdialený zoznam"
+
+msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
+msgstr "Vytvárajte položky, spravujte banky položiek a testov, organizujte kohorty a dodávky, pripravujte správy, nastavujte pracovné postupy."
+
+#, tao-public
+msgid "Delete"
+msgstr "Odstrániť"
+
+msgid "Delete this list"
+msgstr "Odstrániť tento zoznam"
+
+msgid "Edit this list"
+msgstr "Upraviť tento zoznam"
+
+#, tao-public
+msgid "Edit Tree"
+msgstr "Upraviť strom"
+
+msgid "Edit URI"
+msgstr "Upraviť URI"
+
+msgid "element"
+msgstr "prvok"
+
+msgid "Element deleted"
+msgstr "Prvok odstránený"
+
+msgid "Element not deleted"
+msgstr "Prvok nebol odstránený"
+
+#, tao-public
+msgid "Export"
+msgstr "Export"
+
+#, tao-public
+msgid "Import"
+msgstr "Importovať"
+
+msgid "List"
+msgstr "Zoznam"
+
+msgid "List deleted"
+msgstr "Zoznam bol odstránený"
+
+msgid "List failed to be reloaded"
+msgstr "Zoznam sa nepodarilo znova načítať"
+
+msgid "List not deleted"
+msgstr "Zoznam nebol odstránený"
+
+msgid "List not saved"
+msgstr "Zoznam nebol uložený"
+
+msgid "List reloaded"
+msgstr "Zoznam sa znova načítal"
+
+msgid "List saved"
+msgstr "Zoznam uložený"
+
+#, tao-public
+msgid "Lists"
+msgstr "Zoznamy"
+
+msgid "Please confirm you want to delete this list element."
+msgstr "Potvrďte, že chcete odstrániť tento prvok zoznamu."
+
+msgid "Please confirm you want to delete this list. This operation cannot be undone."
+msgstr "Potvrďte, že chcete tento zoznam odstrániť. Túto operáciu nie je možné vrátiť späť."
+
+#, tao-public
+msgid "Properties"
+msgstr "Nehnuteľnosti"
+
+msgid "Reload this list"
+msgstr "Znovu načítať tento zoznam"
+
+#, tao-public
+msgid "Remote Lists"
+msgstr "Vzdialené zoznamy"
+
+msgid "Save list"
+msgstr "Uložiť zoznam"
+
+#, tao-public
+msgid "Settings"
+msgstr "Nastavenia"
+
+msgid "TAO Back Office"
+msgstr "Back Office TAO"
+
+msgid "Test Developers and Administrators"
+msgstr "Vývojári a administrátori testov"
+
+msgid "The list should contain unique URIs"
+msgstr "Zoznam by mal obsahovať jedinečné URI"
+
+msgid "The requested resource does not exist or has been deleted"
+msgstr "Požadovaný zdroj neexistuje alebo bol odstránený."
+
+#, tao-public
+msgid "Trees"
+msgstr "Stromy"
+
+msgid "View tree"
+msgstr "Zobraziť strom"
+
+#, tao-public
+msgid "View Tree"
+msgstr "Zobraziť strom"
+
