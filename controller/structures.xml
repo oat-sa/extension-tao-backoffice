@@ -16,23 +16,23 @@
                         />
                 </trees>
                 <actions allowClassActions="true">
-                    <action id="tree-class-select" name="Properties" url="/taoBackOffice/Trees/dummy" group="content" context="class">
+                    <action id="tree-class-select" name="Properties" url="/taoBackOffice/Trees/dummy" group="content" context="class" weight="10">
                         <icon id="icon-edit"/>
                     </action>
 
-                    <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance">
+                    <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance" weight="9">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="tree-edit"  name="Edit Tree"  url="/tao/PropertiesAuthoring/index" group="content" context="instance">
+                    <action id="tree-edit"  name="Edit Tree"  url="/tao/PropertiesAuthoring/index" group="content" context="instance" weight="8">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="tree-delete" name="Delete" url="/taoBackOffice/Trees/deleteResource" context="instance" group="tree" binding="removeNode">
+                    <action id="tree-delete" name="Delete" url="/taoBackOffice/Trees/deleteResource" context="instance" group="tree" binding="removeNode" weight="9">
                         <icon id="icon-bin"/>
                     </action>
-                    <action id="tree-import" name="Import" url="/tao/Import/index" context="resource" group="tree" binding="loadClass">
+                    <action id="tree-import" name="Import" url="/tao/Import/index" context="resource" group="tree" binding="loadClass" weight="8">
                         <icon id="icon-import"/>
                     </action>
-                    <action id="tree-export" name="Export" url="/tao/Export/index" context="instance" group="tree">
+                    <action id="tree-export" name="Export" url="/tao/Export/index" context="instance" group="tree" weight="7">
                         <icon id="icon-export"/>
                     </action>
                 </actions>
