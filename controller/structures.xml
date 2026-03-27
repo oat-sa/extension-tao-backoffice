@@ -16,14 +16,14 @@
                         />
                 </trees>
                 <actions allowClassActions="true">
-                    <action id="tree-class-select" name="Properties" url="/taoBackOffice/Trees/dummy" group="content" context="class" weight="10">
+                    <action id="tree-class-select" name="Properties" url="/taoBackOffice/Trees/dummy" group="content" context="class" weight="1">
                         <icon id="icon-edit"/>
                     </action>
 
-                    <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance" weight="9">
+                    <action id="tree-view"  name="View Tree"  url="/taoBackOffice/Trees/viewTree" group="content" context="instance" weight="1">
                         <icon id="icon-edit"/>
                     </action>
-                    <action id="tree-edit"  name="Edit Tree"  url="/tao/PropertiesAuthoring/index" group="content" context="instance" weight="8">
+                    <action id="tree-edit"  name="Edit Tree"  url="/tao/PropertiesAuthoring/index" group="content" context="instance" weight="2">
                         <icon id="icon-edit"/>
                     </action>
                     <action id="tree-delete" name="Delete" url="/taoBackOffice/Trees/deleteResource" context="instance" group="tree" binding="removeNode" weight="9">
