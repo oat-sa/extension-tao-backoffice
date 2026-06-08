@@ -1,5 +1,5 @@
 msgid ""
-msgstr ""
+msgstr " {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 "Project-Id-Version: tao-open-source\n"
 "PO-Revision-Date: 2023-09-05 09:53\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
@@ -21,120 +21,120 @@ msgstr ""
 "Language-Team: Japanese\n"
 
 msgid " Probably given list was already imported."
-msgstr " 指定されたリストはおそらく以前にインポートされた可能性があります。"
+msgstr " 指定されたリストはおそらく以前にインポートされた可能性があります。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Create a list"
-msgstr "リストを作成"
+msgstr "リストを作成 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Create a remote list"
-msgstr "外部リストを作成"
+msgstr "外部リストを作成 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr "アイテム作成、アイテム・テストバンク管理、デリバリ作成、レポート準備、ワークフロー設定"
+msgstr "アイテム作成、アイテム・テストバンク管理、デリバリ作成、レポート準備、ワークフロー設定 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Delete"
-msgstr "削除"
+msgstr "削除 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Delete this list"
-msgstr "このリストを削除"
+msgstr "このリストを削除 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Edit this list"
-msgstr "リスト編集"
+msgstr "リスト編集 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr "ツリー編集"
+msgstr "ツリー編集 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Edit URI"
-msgstr "URIを編集"
+msgstr "URIを編集 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "element"
-msgstr "要素"
+msgstr "要素 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Element deleted"
-msgstr "エレメントが削除されました"
+msgstr "エレメントが削除されました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Element not deleted"
-msgstr "エレメントは削除されませんでした"
+msgstr "エレメントは削除されませんでした {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Export"
-msgstr "エクスポート"
+msgstr "エクスポート {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Import"
-msgstr "インポート"
+msgstr "インポート {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "List"
-msgstr "リスト"
+msgstr "リスト {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "List deleted"
-msgstr "リストが削除されました"
+msgstr "リストが削除されました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "List failed to be reloaded"
-msgstr "リストの再読み込みに失敗しました。"
+msgstr "リストの再読み込みに失敗しました。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "List not deleted"
-msgstr "リストは削除されませんでした"
+msgstr "リストは削除されませんでした {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "List not saved"
-msgstr "リストは保存されませんでした"
+msgstr "リストは保存されませんでした {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "List reloaded"
-msgstr "リストは再読込されました"
+msgstr "リストは再読込されました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "List saved"
-msgstr "リストを保存しました"
+msgstr "リストを保存しました {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Lists"
-msgstr "リスト"
+msgstr "リスト {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Please confirm you want to delete this list element."
-msgstr "このリストを削除します。よろしいですか？"
+msgstr "このリストを削除します。よろしいですか？ {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Please confirm you want to delete this list. This operation cannot be undone."
-msgstr "このリストを削除します。よろしいですか？この操作は元に戻せません。"
+msgstr "このリストを削除します。よろしいですか？この操作は元に戻せません。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Properties"
-msgstr "プロパティ"
+msgstr "プロパティ {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Reload this list"
-msgstr "このリストを再読み込み"
+msgstr "このリストを再読み込み {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Remote Lists"
-msgstr "リモートリスト"
+msgstr "リモートリスト {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Save list"
-msgstr "リストを保存"
+msgstr "リストを保存 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Settings"
-msgstr "設定"
+msgstr "設定 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "TAO Back Office"
-msgstr "TAOバックオフィス"
+msgstr "TAOバックオフィス {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "Test Developers and Administrators"
-msgstr "テスト開発・管理"
+msgstr "テスト開発・管理 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "The list should contain unique URIs"
-msgstr "リストにはユニークなURLを指定してください。"
+msgstr "リストにはユニークなURLを指定してください。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "The requested resource does not exist or has been deleted"
-msgstr "リクエストリソースはありません。削除されています。"
+msgstr "リクエストリソースはありません。削除されています。 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "Trees"
-msgstr "ツリー"
+msgstr "ツリー {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 msgid "View tree"
-msgstr "ツリー表示"
+msgstr "ツリー表示 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
 #, tao-public
 msgid "View Tree"
-msgstr "ツリー表示"
+msgstr "ツリー表示 {ruby}{rb}6{/rb}{rt}7{/rt}{/ruby}"
 
