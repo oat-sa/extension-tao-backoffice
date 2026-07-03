@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 10:42\n"
+"PO-Revision-Date: 2026-07-03 12:25\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl_BE\n"
@@ -21,42 +21,42 @@ msgstr ""
 "Language-Team: Dutch, Belgium\n"
 
 msgid " Probably given list was already imported."
-msgstr ""
+msgstr " De gegeven lijst is waarschijnlijk al geïmporteerd."
 
 msgid "Create a list"
-msgstr ""
+msgstr "Maak een lijst"
 
 msgid "Create a remote list"
-msgstr ""
+msgstr "Maak een externe lijst"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr ""
+msgstr "Maak lijsten. beheer items en toetsbank, organiseer cohorten en pakketten, bereid rapporten voor en zet workflows op."
 
 #, tao-public
 msgid "Delete"
 msgstr ""
 
 msgid "Delete this list"
-msgstr ""
+msgstr "Verwijder deze lijst"
 
 msgid "Edit this list"
-msgstr ""
+msgstr "Pas deze lijst aan"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr ""
+msgstr "Pas boom aan"
 
 msgid "Edit URI"
-msgstr ""
+msgstr "Edit URI"
 
 msgid "element"
-msgstr ""
+msgstr "element"
 
 msgid "Element deleted"
-msgstr ""
+msgstr "Element verwijderd"
 
 msgid "Element not deleted"
-msgstr ""
+msgstr "Element niet verwijderd"
 
 #, tao-public
 msgid "Export"
@@ -67,74 +67,74 @@ msgid "Import"
 msgstr ""
 
 msgid "List"
-msgstr ""
+msgstr "Lijst"
 
 msgid "List deleted"
-msgstr ""
+msgstr "Lijst verwijderd"
 
 msgid "List failed to be reloaded"
-msgstr ""
+msgstr "Lijst kan niet opnieuw worden geladen"
 
 msgid "List not deleted"
-msgstr ""
+msgstr "Lijst niet verwijderd"
 
 msgid "List not saved"
-msgstr ""
+msgstr "Lijst niet opgeslagen"
 
 msgid "List reloaded"
-msgstr ""
+msgstr "Lijst herladen"
 
 msgid "List saved"
-msgstr ""
+msgstr "Lijst opgeslagen"
 
 #, tao-public
 msgid "Lists"
-msgstr ""
+msgstr "Lijsten"
 
 msgid "Please confirm you want to delete this list element."
-msgstr ""
+msgstr "Bevestig a.u.b. dat u dit lijstelement wilt verwijderen."
 
 msgid "Please confirm you want to delete this list. This operation cannot be undone."
-msgstr ""
+msgstr "Bevestig a.u.b. dat u deze lijst wilt verwijderen. Deze actie kan niet ongedaan worden gemaakt."
 
 #, tao-public
 msgid "Properties"
 msgstr ""
 
 msgid "Reload this list"
-msgstr ""
+msgstr "Deze lijst opnieuw laden"
 
 #, tao-public
 msgid "Remote Lists"
-msgstr ""
+msgstr "Externe lijsten"
 
 msgid "Save list"
-msgstr ""
+msgstr "Lijst sparen"
 
 #, tao-public
 msgid "Settings"
 msgstr ""
 
 msgid "TAO Back Office"
-msgstr ""
+msgstr "TAO Back Office"
 
 msgid "Test Developers and Administrators"
-msgstr ""
+msgstr "Toets-ontwikkelaars en beheerders"
 
 msgid "The list should contain unique URIs"
-msgstr ""
+msgstr "De lijst moet unieke URI's bevatten"
 
 msgid "The requested resource does not exist or has been deleted"
-msgstr ""
+msgstr "De gevraagde resource bestaat niet of is verwijderd"
 
 #, tao-public
 msgid "Trees"
-msgstr ""
+msgstr "Bomen"
 
 msgid "View tree"
-msgstr ""
+msgstr "Bekijk boomstructuur"
 
 #, tao-public
 msgid "View Tree"
-msgstr ""
+msgstr "Bekijk boomstructuur"
 
