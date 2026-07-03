@@ -1,32 +1,31 @@
 {
-
-    "name": "oat-sa/extension-tao-backoffice",
-    "description" : "",
-    "type" : "tao-extension",
-    "authors" : [
-        {
-        "name": "Open Assessment Technologies SA"
-        }
-    ],
-    "keywords" : [
-        "tao",
-        "computer-based-assessment"
-    ],
-    "homepage" : "http://www.taotesting.com",
-    "license" : [
-        "GPL-2.0-only"
-    ],
-    "extra" : {
-        "tao-extension-name" : "taoBackOffice"
-    },
-    "minimum-stability" : "dev",
-    "require": {
-        "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
-        "oat-sa/tao-core": ">=54.29.1"
-    },
-    "autoload" : {
-        "psr-4" : {
-            "oat\\taoBackOffice\\" : ""
-        }
+  "name": "oat-sa/extension-tao-backoffice",
+  "description": "",
+  "type": "tao-extension",
+  "authors": [
+    {
+      "name": "Open Assessment Technologies SA"
     }
+  ],
+  "keywords": [
+    "tao",
+    "computer-based-assessment"
+  ],
+  "homepage": "http://www.taotesting.com",
+  "license": [
+    "GPL-2.0-only"
+  ],
+  "extra": {
+    "tao-extension-name": "taoBackOffice"
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "oat-sa/oatbox-extension-installer": "~1.1||dev-master",
+    "oat-sa/tao-core": ">=54.49.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "oat\\taoBackOffice\\": ""
+    }
+  }
 }

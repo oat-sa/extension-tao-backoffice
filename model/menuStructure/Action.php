@@ -61,7 +61,7 @@ interface Action
      * Default value of action weight
      * @var int
      */
-    public const WEIGHT_DEFAULT = 0;
+    public const WEIGHT_DEFAULT = 14;
 
     /**
      * @return string Identifier of action

@@ -20,10 +20,10 @@
 
 declare(strict_types=1);
 
-namespace oat\taoMediaManager\test\unit\model;
+namespace oat\taoBackoffice\test\unit\model;
 
 use ArrayIterator;
-use oat\generis\test\TestCase;
+use PHPUnit\Framework\TestCase;
 use oat\tao\model\Specification\ClassSpecificationInterface;
 use oat\taoBackOffice\model\lists\ListCreatedResponse;
 use oat\taoBackOffice\model\lists\ListCreator;
@@ -33,14 +33,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class ListCreatorTest extends TestCase
 {
-    /** @var ListService|MockObject */
-    private $listService;
-
-    /** @var ClassSpecificationInterface|MockObject */
-    private $remoteListClassSpecification;
-
-    /** @var ListCreator */
-    private $sut;
+    private ListService|MockObject $listService;
+    private ClassSpecificationInterface|MockObject $remoteListClassSpecification;
+    private ListCreator $sut;
 
     public function setUp(): void
     {
@@ -60,19 +55,9 @@ class ListCreatorTest extends TestCase
         ];
 
         $this->remoteListClassSpecification
-            ->expects($this->at(0))
+            ->expects($this->exactly(3))
             ->method('isSatisfiedBy')
-            ->willReturn(false);
-
-        $this->remoteListClassSpecification
-            ->expects($this->at(1))
-            ->method('isSatisfiedBy')
-            ->willReturn(false);
-
-        $this->remoteListClassSpecification
-            ->expects($this->at(2))
-            ->method('isSatisfiedBy')
-            ->willReturn(true);
+            ->willReturnOnConsecutiveCalls(false, false, true);
 
         $this->listService
             ->method('getLists')
