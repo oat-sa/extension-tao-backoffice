@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2025-12-05 08:46\n"
+"PO-Revision-Date: 2026-07-03 12:25\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: sk\n"
@@ -30,7 +30,7 @@ msgid "Create a remote list"
 msgstr "Vytvorte vzdialený zoznam"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr "Vytvárajte položky, spravujte banky položiek a testov, organizujte kohorty a dodávky, pripravujte správy, nastavujte pracovné postupy."
+msgstr "Vytvárajte položky, spravujte databázy položiek a testov, organizujte skupiny študentov a termíny testovania, vytvárajte prehľady, nastavujte pracovné postupy."
 
 #, tao-public
 msgid "Delete"
@@ -44,7 +44,7 @@ msgstr "Upraviť tento zoznam"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr "Upraviť strom"
+msgstr "Upraviť stromovú štruktúru"
 
 msgid "Edit URI"
 msgstr "Upraviť URI"
@@ -73,7 +73,7 @@ msgid "List deleted"
 msgstr "Zoznam bol odstránený"
 
 msgid "List failed to be reloaded"
-msgstr "Zoznam sa nepodarilo znova načítať"
+msgstr "Zoznam sa nepodarilo načítať"
 
 msgid "List not deleted"
 msgstr "Zoznam nebol odstránený"
@@ -82,10 +82,10 @@ msgid "List not saved"
 msgstr "Zoznam nebol uložený"
 
 msgid "List reloaded"
-msgstr "Zoznam sa znova načítal"
+msgstr "Zoznam bol obnovený"
 
 msgid "List saved"
-msgstr "Zoznam uložený"
+msgstr "Zoznam bol uložený"
 
 #, tao-public
 msgid "Lists"
@@ -99,10 +99,10 @@ msgstr "Potvrďte, že chcete tento zoznam odstrániť. Túto operáciu nie je m
 
 #, tao-public
 msgid "Properties"
-msgstr "Nehnuteľnosti"
+msgstr "Vlastnosti"
 
 msgid "Reload this list"
-msgstr "Znovu načítať tento zoznam"
+msgstr "Obnoviť tento zoznam"
 
 #, tao-public
 msgid "Remote Lists"
@@ -116,10 +116,10 @@ msgid "Settings"
 msgstr "Nastavenia"
 
 msgid "TAO Back Office"
-msgstr "Back Office TAO"
+msgstr "Back Office PET"
 
 msgid "Test Developers and Administrators"
-msgstr "Vývojári a administrátori testov"
+msgstr "Tvorcovia a administrátori testov"
 
 msgid "The list should contain unique URIs"
 msgstr "Zoznam by mal obsahovať jedinečné URI"
@@ -129,12 +129,12 @@ msgstr "Požadovaný zdroj neexistuje alebo bol odstránený."
 
 #, tao-public
 msgid "Trees"
-msgstr "Stromy"
+msgstr "Stromové štruktúry"
 
 msgid "View tree"
 msgstr "Zobraziť strom"
 
 #, tao-public
 msgid "View Tree"
-msgstr "Zobraziť strom"
+msgstr "Zobraziť stromovú štruktúru"
 
