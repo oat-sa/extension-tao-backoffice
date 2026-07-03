@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-08-12 13:22\n"
+"PO-Revision-Date: 2026-07-03 12:25\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl\n"
@@ -21,13 +21,13 @@ msgstr ""
 "Language-Team: Dutch\n"
 
 msgid " Probably given list was already imported."
-msgstr ""
+msgstr " De gegeven lijst is waarschijnlijk al geïmporteerd."
 
 msgid "Create a list"
 msgstr "Maak een lijst"
 
 msgid "Create a remote list"
-msgstr ""
+msgstr "Maak een externe lijst"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
 msgstr "Maak lijsten. beheer items en toetsbank, organiseer cohorten en pakketten, bereid rapporten voor en zet workflows op."
@@ -47,10 +47,10 @@ msgid "Edit Tree"
 msgstr "Pas boom aan"
 
 msgid "Edit URI"
-msgstr ""
+msgstr "Edit URI"
 
 msgid "element"
-msgstr ""
+msgstr "element"
 
 msgid "Element deleted"
 msgstr "Element verwijderd"
@@ -60,11 +60,11 @@ msgstr "Element niet verwijderd"
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "Exporteren"
 
 #, tao-public
 msgid "Import"
-msgstr ""
+msgstr "Importeren"
 
 msgid "List"
 msgstr "Lijst"
@@ -73,7 +73,7 @@ msgid "List deleted"
 msgstr "Lijst verwijderd"
 
 msgid "List failed to be reloaded"
-msgstr ""
+msgstr "Lijst kan niet opnieuw worden geladen"
 
 msgid "List not deleted"
 msgstr "Lijst niet verwijderd"
@@ -82,7 +82,7 @@ msgid "List not saved"
 msgstr "Lijst niet opgeslagen"
 
 msgid "List reloaded"
-msgstr ""
+msgstr "Lijst herladen"
 
 msgid "List saved"
 msgstr "Lijst opgeslagen"
@@ -99,24 +99,24 @@ msgstr "Bevestig a.u.b. dat u deze lijst wilt verwijderen. Deze actie kan niet o
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Eigenschappen"
 
 msgid "Reload this list"
 msgstr "Deze lijst opnieuw laden"
 
 #, tao-public
 msgid "Remote Lists"
-msgstr ""
+msgstr "Externe lijsten"
 
 msgid "Save list"
 msgstr "Lijst sparen"
 
 #, tao-public
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 msgid "TAO Back Office"
-msgstr ""
+msgstr "TAO Back Office"
 
 msgid "Test Developers and Administrators"
 msgstr "Toets-ontwikkelaars en beheerders"

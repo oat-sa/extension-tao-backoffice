@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tao-open-source\n"
-"PO-Revision-Date: 2023-06-07 10:42\n"
+"PO-Revision-Date: 2026-07-03 12:25\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: es\n"
@@ -21,120 +21,120 @@ msgstr ""
 "Language-Team: Spanish\n"
 
 msgid " Probably given list was already imported."
-msgstr ""
+msgstr " Probablemente la lista dada ya fue importada."
 
 msgid "Create a list"
-msgstr ""
+msgstr "Crear una lista"
 
 msgid "Create a remote list"
-msgstr ""
+msgstr "Crear una lista remota"
 
 msgid "Create items, manage item and test banks, organize cohorts and deliveries, prepare reports, set up workflows."
-msgstr ""
+msgstr "Cree artículos, administre artículos y pruebe bancos, organice cohortes y entregas, prepare informes, establezca flujos de trabajo."
 
 #, tao-public
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 msgid "Delete this list"
-msgstr ""
+msgstr "Eliminar esta lista"
 
 msgid "Edit this list"
-msgstr ""
+msgstr "Editar esta lista"
 
 #, tao-public
 msgid "Edit Tree"
-msgstr ""
+msgstr "Editar árbol"
 
 msgid "Edit URI"
-msgstr ""
+msgstr "Edit URI"
 
 msgid "element"
-msgstr ""
+msgstr "elemento"
 
 msgid "Element deleted"
-msgstr ""
+msgstr "Elemento eliminado"
 
 msgid "Element not deleted"
-msgstr ""
+msgstr "Elemento no eliminado"
 
 #, tao-public
 msgid "Export"
-msgstr ""
+msgstr "Exportar"
 
 #, tao-public
 msgid "Import"
 msgstr "Importar"
 
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 msgid "List deleted"
-msgstr ""
+msgstr "Lista eliminada"
 
 msgid "List failed to be reloaded"
-msgstr ""
+msgstr "No se pudo recargar la lista"
 
 msgid "List not deleted"
-msgstr ""
+msgstr "Lista no eliminada"
 
 msgid "List not saved"
-msgstr ""
+msgstr "Lista no guardada"
 
 msgid "List reloaded"
-msgstr ""
+msgstr "Lista recargada"
 
 msgid "List saved"
-msgstr ""
+msgstr "Lista guardada"
 
 #, tao-public
 msgid "Lists"
-msgstr ""
+msgstr "Listas"
 
 msgid "Please confirm you want to delete this list element."
-msgstr ""
+msgstr "Por favor, confirme que desea eliminar este elemento de lista."
 
 msgid "Please confirm you want to delete this list. This operation cannot be undone."
-msgstr ""
+msgstr "Por favor, confirme que desea eliminar esta lista. Esta operación no se puede deshacer."
 
 #, tao-public
 msgid "Properties"
-msgstr ""
+msgstr "Propiedades"
 
 msgid "Reload this list"
-msgstr ""
+msgstr "Recargar esta lista"
 
 #, tao-public
 msgid "Remote Lists"
-msgstr ""
+msgstr "Listas remotas"
 
 msgid "Save list"
-msgstr ""
+msgstr "Guardar lista"
 
 #, tao-public
 msgid "Settings"
-msgstr ""
+msgstr "Ajustes"
 
 msgid "TAO Back Office"
-msgstr ""
+msgstr "TAO Back Office"
 
 msgid "Test Developers and Administrators"
-msgstr ""
+msgstr "Probar desarrolladores y administradores"
 
 msgid "The list should contain unique URIs"
-msgstr ""
+msgstr "La lista debe contener URIs únicas"
 
 msgid "The requested resource does not exist or has been deleted"
-msgstr ""
+msgstr "El recurso solicitado no existe o ha sido eliminado"
 
 #, tao-public
 msgid "Trees"
-msgstr ""
+msgstr "Árboles"
 
 msgid "View tree"
-msgstr ""
+msgstr "Ver árbol"
 
 #, tao-public
 msgid "View Tree"
-msgstr ""
+msgstr "Ver árbol"
 
